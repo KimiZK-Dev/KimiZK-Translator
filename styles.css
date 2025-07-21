@@ -1,0 +1,378 @@
+/* Reset và namespace để tránh xung đột với CSS của website */
+.xt-translator-popup {
+    all: initial;
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    width: 280px;
+    max-height: 70vh;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 
+        0 12px 28px rgba(0, 0, 0, 0.12),
+        0 2px 8px rgba(0, 0, 0, 0.08),
+        0 0 0 1px rgba(0, 0, 0, 0.04);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+    font-size: 12px;
+    line-height: 1.3;
+    color: #2d3748;
+    z-index: 2147483647 !important;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.xt-translator-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 10px 10px 0 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.xt-translator-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+    pointer-events: none;
+}
+
+.xt-translator-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+    font-size: 13px;
+    position: relative;
+    z-index: 1;
+}
+
+.xt-translator-icon {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.xt-translator-word {
+    max-width: 130px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.xt-translator-controls {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    position: relative;
+    z-index: 1;
+}
+
+.xt-translator-minimize,
+.xt-translator-close {
+    width: 26px;
+    height: 26px;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(10px);
+}
+
+.xt-translator-minimize:hover,
+.xt-translator-close:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: scale(1.05);
+}
+
+.xt-translator-close:hover {
+    background: rgba(239, 68, 68, 0.8);
+}
+
+.xt-translator-content {
+    max-height: 55vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e0 transparent;
+}
+
+.xt-translator-content::-webkit-scrollbar {
+    width: 4px;
+}
+
+.xt-translator-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.xt-translator-content::-webkit-scrollbar-thumb {
+    background: #cbd5e0;
+    border-radius: 2px;
+}
+
+.xt-translator-content::-webkit-scrollbar-thumb:hover {
+    background: #a0aec0;
+}
+
+.xt-translator-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 25px 14px;
+    gap: 10px;
+    color: #718096;
+}
+
+.xt-loading-spinner {
+    width: 24px;
+    height: 24px;
+    border: 2px solid #e2e8f0;
+    border-top: 2px solid #667eea;
+    border-radius: 50%;
+    animation: xt-spin 1s linear infinite;
+}
+
+@keyframes xt-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.xt-translator-error {
+    text-align: center;
+    padding: 25px 14px;
+    color: #e53e3e;
+}
+
+.xt-error-icon {
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+.xt-error-subtitle {
+    font-size: 10px;
+    color: #a0aec0;
+    display: block;
+    margin-top: 5px;
+}
+
+.xt-translator-main {
+    padding: 15px 14px;
+    background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.xt-main-info {
+    margin-bottom: 14px;
+    text-align: center;
+}
+
+.xt-word-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1a202c;
+    margin-bottom: 5px;
+    /* text-transform: capitalize; */
+}
+
+.xt-phonetic {
+    font-size: 13px;
+    color: #667eea;
+    font-family: 'Times New Roman', serif;
+    font-style: italic;
+    margin-bottom: 3px;
+}
+
+.xt-part-of-speech {
+    display: inline-block !important;
+    background: linear-gradient(135deg, #667eea, #764ba2) !important;
+    color: white !important;
+    padding: 3px 10px !important;
+    border-radius: 14px !important;
+    font-size: 10px !important;
+    font-weight: 500 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.2px !important;
+    min-width: 45px !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3) !important;
+}
+
+.xt-meaning,
+.xt-description,
+.xt-translation {
+    margin-bottom: 12px;
+}
+
+.xt-meaning h3,
+.xt-description h3,
+.xt-translation h3 {
+    font-size: 11px;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.2px;
+}
+
+.xt-meaning p,
+.xt-description p,
+.xt-translation p {
+    font-size: 12px;
+    color: #4a5568;
+    line-height: 1.4;
+}
+
+.xt-translator-secondary {
+    padding: 14px;
+}
+
+.xt-section {
+    margin-bottom: 15px;
+}
+
+.xt-section:last-child {
+    margin-bottom: 0;
+}
+
+.xt-section h3 {
+    font-size: 11px;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.2px;
+}
+
+.xt-section-icon {
+    font-size: 13px;
+}
+
+.xt-examples-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.xt-example-item {
+    background: #f7fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px;
+    transition: all 0.2s ease;
+}
+
+.xt-example-item:hover {
+    background: #edf2f7;
+    border-color: #cbd5e0;
+    transform: translateY(-1px);
+}
+
+.xt-example-en {
+    font-style: italic;
+    color: #2d3748;
+    margin-bottom: 4px;
+    font-size: 11px;
+}
+
+.xt-example-vi {
+    color: #718096;
+    font-size: 10px;
+    line-height: 1.2;
+}
+
+.xt-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.xt-tag {
+    background: linear-gradient(135deg, #e2e8f0, #cbd5e0) !important;
+    color: #2d3748 !important;
+    padding: 2px 6px !important;
+    border-radius: 12px !important;
+    font-size: 10px !important;
+    font-weight: 500 !important;
+    border: 1px solid #e2e8f0 !important;
+    transition: all 0.2s ease !important;
+    cursor: default !important;
+    display: inline-block !important;
+    box-sizing: border-box !important;
+    white-space: nowrap !important;
+    vertical-align: middle !important;
+}
+
+.xt-tag:hover {
+    background: linear-gradient(135deg, #cbd5e0, #a0aec0);
+    transform: translateY(-1px);
+}
+
+.xt-no-data {
+    color: #a0aec0;
+    font-style: italic;
+    font-size: 10px;
+}
+
+.xt-translator-footer {
+    background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+    border-top: 1px solid #e2e8f0;
+    padding: 8px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 9px;
+}
+
+.xt-footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 600;
+    color: #667eea;
+}
+
+.xt-brand-icon {
+    font-size: 10px;
+}
+
+.xt-footer-info {
+    color: #a0aec0;
+    font-size: 8px;
+}
+
+@media (max-width: 480px) {
+    .xt-translator-popup {
+        width: 260px;
+        max-height: 60vh;
+    }
+    
+    .xt-translator-main {
+        padding: 12px;
+    }
+    
+    .xt-translator-secondary {
+        padding: 12px;
+    }
+    
+    .xt-word-title {
+        font-size: 12px;
+    }
+}
