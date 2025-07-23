@@ -39,10 +39,11 @@ function stopCurrentAudio() {
         currentAudio.currentTime = 0;
         currentAudio = null;
     }
-    if (currentAudioUrl) {
+    // Only revoke if not cached
+    if (currentAudioUrl && !Object.values(ttsAudioCache).includes(currentAudioUrl)) {
         URL.revokeObjectURL(currentAudioUrl);
-        currentAudioUrl = null;
     }
+    currentAudioUrl = null;
     document.querySelectorAll('.xt-audio-controls').forEach(control => control.remove());
 }
 
@@ -406,8 +407,10 @@ function createPopup() {
 
 function setupDragging(element) {
     const header = element.querySelector('.xt-translator-header');
-    if (!header) return;
+    const dragOverlay = header?.querySelector('.xt-header-drag-overlay');
+    if (!header || !dragOverlay) return;
 
+    // Only handle drag events on the overlay
     const startDrag = e => {
         if (e.button !== 0) return;
         isDragging = true;
@@ -442,37 +445,10 @@ function setupDragging(element) {
         document.removeEventListener('mouseup', stopDrag);
     };
 
-    header.style.cursor = 'move';
-    header.addEventListener('mousedown', startDrag);
-    header.querySelectorAll('*').forEach(child => {
+    dragOverlay.addEventListener('mousedown', startDrag);
+    dragOverlay.querySelectorAll('*').forEach(child => {
         child.addEventListener('mousedown', e => e.stopPropagation());
     });
-}
-
-// Lắng nghe phím Tab để bật/tắt chế độ kéo
-window.addEventListener('keydown', e => {
-    if (e.key === 'Tab') isTabPressed = true;
-});
-window.addEventListener('keyup', e => {
-    if (e.key === 'Tab') isTabPressed = false;
-});
-
-function calculatePopupPosition(selectionRect) {
-    const popupWidth = 300;
-    const popupHeight = 400;
-    const padding = 15;
-
-    let top = selectionRect.bottom + padding;
-    let left = selectionRect.left;
-
-    if (left + popupWidth > window.innerWidth) left = window.innerWidth - popupWidth - padding;
-    if (left < padding) left = padding;
-    if (top + popupHeight > window.innerHeight) {
-        top = selectionRect.top - popupHeight - padding;
-        if (top < padding) top = Math.max(padding, (window.innerHeight - popupHeight) / 2);
-    }
-
-    return { top: Math.max(padding, top), left: Math.max(padding, left) };
 }
 
 // Trigger Icon
@@ -492,6 +468,28 @@ function createTriggerIcon(selectionRect) {
     });
 }
 
+// Utility function to calculate popup position
+function calculatePopupPosition(selectionRect) {
+    const popupWidth = 400;
+    const popupHeight = 350;
+    const padding = 15;
+    let left = selectionRect.left;
+    let top = selectionRect.bottom + padding;
+
+    // Adjust if popup would go off-screen
+    if (left + popupWidth > window.innerWidth - padding) {
+        left = window.innerWidth - popupWidth - padding;
+    }
+    if (top + popupHeight > window.innerHeight - padding) {
+        top = selectionRect.top - popupHeight - padding;
+        if (top < padding) top = padding;
+    }
+    if (left < padding) left = padding;
+    if (top < padding) top = padding;
+
+    return { left, top };
+}
+
 // Main Event Handler
 document.addEventListener("mouseup", e => {
     const selected = window.getSelection().toString().trim();
@@ -508,7 +506,8 @@ document.addEventListener("mouseup", e => {
 
         const popup = createPopup();
         popup.innerHTML = `
-            <div class="xt-translator-header">
+            <div class="xt-translator-header" style="position: relative;">
+                <div class="xt-header-drag-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: move; z-index: 2; background: rgba(0,0,0,0);"></div>
                 <div class="xt-translator-title">
                     <span class="xt-translator-icon">🔍</span>
                     <span class="xt-translator-word">${displayText}</span>
@@ -598,7 +597,7 @@ document.addEventListener("mouseup", e => {
                     </div>
                     <div class="xt-description">
                         <h3>Giải thích</h3>
-                        <p>${escapeSpecialChars(result.description)}</p>
+                        <p>${escapeSpecialChars(result.description.charAt(0).toUpperCase() + result.description.slice(1))}</p>
                     </div>
                 </div>
                 <div class="xt-translator-secondary">

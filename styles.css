@@ -69,6 +69,7 @@
     display: flex;
     align-items: center;
     gap: 6px;
+    z-index: 999999;
 }
 
 .xt-translator-minimize,
@@ -501,7 +502,7 @@
     position: fixed;
     width: 32px;
     height: 32px;
-    background: #4f46e5;
+    background: #F5F6F5;
     border-radius: 8px;
     display: flex;
     align-items: center;
@@ -512,7 +513,7 @@
 }
 
 .xt-trigger-icon:hover {
-    background: #4338ca;
+    background: #d1d1d1;
     transform: scale(1.1);
 }
 
