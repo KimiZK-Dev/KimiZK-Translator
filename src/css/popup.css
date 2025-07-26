@@ -43,10 +43,10 @@ body {
 }
 
 .xt-popup-container {
-    width: 360px;
-    max-height: 500px;
+    width: 380px;
+    max-height: 600px;
     background: var(--card-bg);
-    border-radius: var(--radius-xl);
+    border-radius: 0;
     box-shadow: var(--shadow-lg);
     overflow: hidden;
     position: relative;
@@ -69,11 +69,11 @@ body {
 
 .header {
     background: var(--bg-primary);
-    padding: 24px 20px;
+    padding: 20px 16px;
     text-align: center;
     position: relative;
     overflow: hidden;
-    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    border-radius: 0;
     flex-shrink: 0;
 }
 
@@ -89,10 +89,10 @@ body {
 }
 
 .header h1 {
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 700;
     color: white;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     position: relative;
     z-index: 1;
 }
@@ -125,13 +125,13 @@ body {
     background: var(--primary);
     color: white;
     padding: 4px 8px;
-    border-radius: var(--radius-sm);
+    border-radius: 0;
     font-size: 11px;
     font-weight: 600;
 }
 
 .content {
-    padding: 24px 20px 32px 20px;
+    padding: 20px 16px 24px 16px;
     overflow-y: auto;
     flex: 1;
     scrollbar-width: thin;
@@ -148,7 +148,7 @@ body {
 
 .content::-webkit-scrollbar-thumb {
     background: var(--border);
-    border-radius: 3px;
+    border-radius: 0;
 }
 
 .content::-webkit-scrollbar-thumb:hover {
@@ -156,7 +156,7 @@ body {
 }
 
 .section {
-    margin-bottom: 28px;
+    margin-bottom: 20px;
 }
 
 .section:last-child {
@@ -178,14 +178,14 @@ body {
     width: 4px;
     height: 16px;
     background: var(--primary);
-    border-radius: 2px;
+    border-radius: 0;
 }
 
 .xt-card {
     background: var(--card-bg);
     border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 16px;
+    border-radius: 0;
+    padding: 14px;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
@@ -225,7 +225,7 @@ body {
     width: 20px;
     height: 20px;
     border: 2px solid var(--border);
-    border-radius: var(--radius-sm);
+    border-radius: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -284,7 +284,7 @@ body {
     width: 100%;
     padding: 12px 16px;
     border: 2px solid var(--border);
-    border-radius: var(--radius-md);
+    border-radius: 0;
     font-size: 14px;
     transition: all 0.2s ease;
     background: white;
@@ -306,7 +306,7 @@ body {
     width: 100%;
     padding: 12px 20px;
     border: none;
-    border-radius: var(--radius-md);
+    border-radius: 0;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
@@ -359,7 +359,7 @@ body {
     width: 0;
     height: 0;
     background: rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
+    border-radius: 0;
     transform: translate(-50%, -50%);
     transition: all 0.5s ease;
 }
@@ -372,7 +372,7 @@ body {
 .status-message {
     margin-top: 12px;
     padding: 12px;
-    border-radius: var(--radius-md);
+    border-radius: 0;
     font-size: 13px;
     font-weight: 500;
     display: none;
@@ -403,7 +403,7 @@ body {
     background: linear-gradient(135deg, var(--accent), var(--accent-hover));
     color: white;
     text-decoration: none;
-    border-radius: var(--radius-md);
+    border-radius: 0;
     font-weight: 600;
     transition: all 0.2s ease;
     display: flex;
@@ -430,7 +430,7 @@ body {
 /* Ripple effect */
 .ripple {
     position: absolute;
-    border-radius: 50%;
+    border-radius: 0;
     background: rgba(255, 255, 255, 0.6);
     transform: scale(0);
     animation: ripple-animation 0.6s linear;
@@ -446,11 +446,32 @@ body {
 
 @media (max-width: 400px) {
     .xt-popup-container {
-        width: 320px;
+        width: 340px;
+        max-height: 500px;
+        border-radius: 0;
+    }
+
+    .header {
+        padding: 16px 12px;
+        border-radius: 0;
+    }
+
+    .header h1 {
+        font-size: 18px;
+    }
+
+    .content {
+        padding: 16px 12px 20px 12px;
+    }
+
+    .xt-card {
+        padding: 12px;
+        border-radius: 0;
     }
 
     .links-grid {
         grid-template-columns: 1fr;
+        gap: 8px;
     }
 }
 

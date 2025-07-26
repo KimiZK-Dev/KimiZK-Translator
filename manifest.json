@@ -9,7 +9,8 @@
 		"clipboardWrite",
 		"storage",
 		"notifications",
-		"tabs"
+		"tabs",
+		"management"
 	],
 	"host_permissions": [
 		"<all_urls>",
@@ -35,11 +36,12 @@
 				"src/js/audio.js",
 				"src/js/notifications.js",
 				"src/js/update_notification.js",
+				"src/js/update_modal.js",
 				"src/js/translate_popup.js",
 				"src/js/trigger.js",
 				"src/js/main.js"
 			],
-			"css": ["src/css/styles.css"]
+			"css": ["src/css/styles.css", "src/css/update_modal.css"]
 		}
 	],
 	"web_accessible_resources": [
@@ -51,7 +53,8 @@
 				"src/icons/icon64.png",
 				"src/icons/icon128.png",
 				"src/html/popup.html",
-				"src/css/popup.css"
+				"src/css/popup.css",
+				"src/css/update_modal.css"
 			],
 			"matches": ["<all_urls>"]
 		}

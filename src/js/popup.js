@@ -225,8 +225,47 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // Check for updates (background script handles this automatically)
-    // No need to show update notification in popup anymore
+    // Thay thế nút kiểm tra phiên bản mới bằng nút tải bản mới nhất
+    const downloadBtn = document.getElementById('download-latest-btn');
+    const downloadStatus = document.getElementById('download-status');
+
+    // Tải bản mới nhất từ GitHub
+    function downloadLatestRelease() {
+        downloadBtn.classList.add('loading');
+        downloadBtn.textContent = 'Đang tải...';
+        downloadBtn.disabled = true;
+        downloadStatus.style.display = 'none';
+
+        fetch('https://api.github.com/repos/KimiZK-Dev/KimiZK-Translator/releases/latest')
+            .then(response => response.json())
+            .then(data => {
+                const asset = data.assets && data.assets.find(a => a.name.endsWith('.zip'));
+                if (asset && asset.browser_download_url) {
+                    window.open(asset.browser_download_url, '_blank');
+                    downloadStatus.textContent = 'Đã mở tab tải về bản mới nhất. Vui lòng làm theo hướng dẫn bên dưới để cập nhật.';
+                    downloadStatus.className = 'status-message success';
+                    downloadStatus.style.display = 'block';
+                } else {
+                    downloadStatus.textContent = 'Không tìm thấy file .zip trong bản phát hành mới nhất.';
+                    downloadStatus.className = 'status-message error';
+                    downloadStatus.style.display = 'block';
+                }
+            })
+            .catch(() => {
+                downloadStatus.textContent = 'Không thể kết nối tới GitHub. Vui lòng thử lại sau.';
+                downloadStatus.className = 'status-message error';
+                downloadStatus.style.display = 'block';
+            })
+            .finally(() => {
+                downloadBtn.classList.remove('loading');
+                downloadBtn.textContent = '⬇️ Tải bản mới nhất';
+                downloadBtn.disabled = false;
+            });
+    }
+
+    if (downloadBtn) {
+        downloadBtn.addEventListener('click', downloadLatestRelease);
+    }
 
     // Add ripple effect to buttons
     document.querySelectorAll('.btn, .btn-link').forEach(button => {

@@ -28,6 +28,12 @@
                         </div>
                         <label for="update-notifications">Bật thông báo cập nhật phiên bản mới</label>
                     </div>
+                    <div style="margin-top: 16px;">
+                        <button id="download-latest-btn" class="btn btn-secondary">
+                            ⬇️ Tải bản mới nhất
+                        </button>
+                        <div id="download-status" class="status-message" style="display: none; margin-top: 8px;"></div>
+                    </div>
                 </div>
             </div>
 
@@ -97,6 +103,24 @@
                         <p style="margin: 8px 0 0 0; font-size: 12px; color: var(--text-secondary);">
                             Extension tự động kiểm tra cập nhật mỗi 6 giờ. Khi có bản mới, thông báo sẽ hiển thị ở giữa màn hình.
                         </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">📝 Hướng dẫn cập nhật thủ công</h2>
+                <div class="xt-card">
+                    <ol style="font-size: 13px; color: var(--text-secondary); padding-left: 18px;">
+                        <li>Nhấn nút <b>"Tải bản mới nhất"</b> ở trên để tải file .zip từ GitHub.</li>
+                        <li>Giải nén file .zip vừa tải về.</li>
+                        <li>Mở <b>chrome://extensions/</b> trên trình duyệt.</li>
+                        <li>Bật <b>Chế độ nhà phát triển (Developer mode)</b>.</li>
+                        <li>Nhấn <b>"Tải tiện ích đã giải nén"</b> (Load unpacked).</li>
+                        <li>Chọn thư mục vừa giải nén để cập nhật tiện ích.</li>
+                        <li>Xong! Tiện ích sẽ được cập nhật lên phiên bản mới nhất.</li>
+                    </ol>
+                    <div style="margin-top: 8px; font-size: 12px; color: var(--error);">
+                        * Nếu gặp lỗi, hãy xóa bản cũ trước rồi thêm lại bản mới.
                     </div>
                 </div>
             </div>
