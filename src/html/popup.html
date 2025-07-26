@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KimiZK-Translator - Cài đặt</title>
+    <link rel="stylesheet" href="../css/popup.css">
+</head>
+<body>
+    <div class="xt-popup-container">
+        <h1>KimiZK-Translator 🌐</h1>
+        <p>Phiên bản: <span id="version"></span></p>
+        <p>Thời gian: <span id="current-time"></span></p>
+        
+        <h2>Cài đặt</h2>
+        <div class="xt-setting-item">
+            <label>
+                <input type="checkbox" id="update-notifications">
+                Bật thông báo cập nhật phiên bản mới
+            </label>
+        </div>
+        
+        <h2>Quản lý API Key</h2>
+        <div class="xt-setting-item">
+            <input type="text" id="api-key-input" placeholder="Nhập API Key mới..." disabled>
+            <button id="save-api-key" disabled>Lưu API Key</button>
+            <p id="api-key-status" class="xt-error"></p>
+        </div>
+        
+        <h2>Liên kết</h2>
+        <div class="xt-setting-item">
+            <button id="github-link">Trang GitHub</button>
+            <button id="facebook-link">Trang Facebook</button>
+        </div>
+    </div>
+    <script src="../js/popup.js"></script>
+</body>
+</html>
