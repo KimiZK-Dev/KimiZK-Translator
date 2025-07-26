@@ -1,126 +1,148 @@
+// Service Worker cho KimiZK-Translator (Manifest V3)
+const CURRENT_VERSION = '1.0.2';
+const GITHUB_RELEASES_URL = 'https://api.github.com/repos/KimiZK-Dev/KimiZK-Translator/releases/latest';
+
+// Check for updates every 6 hours
+const UPDATE_CHECK_INTERVAL = 6 * 60 * 60 * 1000; // 6 hours in milliseconds
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.action === "saveAudio") {
-        const audioBlob = request.audioBlob;
-        const fileName = `audio_${Date.now()}.wav`;
-
-        try {
-            if (!(audioBlob instanceof Blob) || audioBlob.size === 0) {
-                sendResponse({ error: "Dữ liệu âm thanh không hợp lệ." });
-                return true;
+    if (request.action === "saveApiKey") {
+        chrome.storage.local.set({ API_KEY: request.key }, () => {
+            if (chrome.runtime.lastError) {
+                sendResponse({ success: false, error: chrome.runtime.lastError.message });
+            } else {
+                sendResponse({ success: true });
             }
-
-            chrome.runtime.getPackageDirectoryEntry(directory => {
-                directory.getDirectory('src/audio', { create: true }, audioDir => {
-                    audioDir.getFile(fileName, { create: true, exclusive: true }, fileEntry => {
-                        fileEntry.createWriter(writer => {
-                            writer.onwriteend = () => {
-                                const fileUrl = chrome.runtime.getURL(`src/audio/${fileName}`);
-                                sendResponse({ fileUrl });
-                                // Xóa file sau 5 phút
-                                setTimeout(() => {
-                                    fileEntry.remove(() => console.log(`Đã xóa ${fileName}`), err => console.error(`Lỗi xóa ${fileName}:`, err));
-                                }, 5 * 60 * 1000);
-                            };
-                            writer.onerror = err => {
-                                console.error("Lỗi khi ghi file:", err);
-                                sendResponse({ error: "Không thể ghi file âm thanh." });
-                            };
-                            writer.write(audioBlob);
-                        }, err => {
-                            console.error("Lỗi khi tạo writer:", err);
-                            sendResponse({ error: "Không thể tạo writer." });
-                        });
-                    }, err => {
-                        console.error("Lỗi khi tạo file:", err);
-                        sendResponse({ error: "Không thể tạo file." });
-                    });
-                }, err => {
-                    console.error("Lỗi khi tạo thư mục:", err);
-                    sendResponse({ error: "Không thể tạo thư mục src/audio." });
-                });
-            });
-        } catch (err) {
-            console.error("Lỗi trong background:", err);
-            sendResponse({ error: "Lỗi xử lý trong background." });
-        }
-        return true; // Bật xử lý bất đồng bộ
+        });
+        return true; // Giữ kết nối cho async response
     }
-    sendResponse({ error: "Hành động không được hỗ trợ." });
-    return true;
+    
+    if (request.action === "checkForUpdates") {
+        checkForUpdates().then(updateInfo => {
+            sendResponse(updateInfo);
+        });
+        return true;
+    }
+    
+    if (request.action === "performUpdate") {
+        performUpdate().then(result => {
+            sendResponse(result);
+        });
+        return true;
+    }
 });
 
-// Phát hiện cài đặt hoặc cập nhật tiện ích
+// Xử lý cài đặt và cập nhật extension
 chrome.runtime.onInstalled.addListener((details) => {
-    try {
-        const thisVersion = chrome.runtime.getManifest().version;
-        if (details.reason === "install") {
-            console.info("Tiện ích được cài lần đầu: " + thisVersion);
-            chrome.notifications.create({
-                type: "basic",
-                iconUrl: "src/icons/icon128.png",
-                title: "Chào mừng bạn đến với KimiZK-Translator!",
-                message: "Tiện ích đã được cài đặt. Bôi đen văn bản tiếng Anh và nhấn biểu tượng để dịch!",
-                priority: 0
-            });
-        } else if (details.reason === "update") {
-            console.info("Tiện ích đã cập nhật lên phiên bản: " + thisVersion);
-            chrome.notifications.create({
-                type: "basic",
-                iconUrl: "src/icons/icon128.png",
-                title: `KimiZK-Translator đã cập nhật lên v${thisVersion}!`,
-                message: "Cải thiện phát âm, dịch nhanh hơn, giao diện đẹp hơn. Tải phiên bản mới nhất từ GitHub nếu cần!",
-                buttons: [{ title: "Xem chi tiết" }],
-                priority: 2
+    console.log('KimiZK-Translator Service Worker installed/updated:', details.reason);
+    
+    if (details.reason === 'install') {
+        // Mở trang hướng dẫn khi cài đặt lần đầu
+        chrome.tabs.create({
+            url: 'https://github.com/KimiZK-Dev/KimiZK-Translator#readme'
+        });
+        
+        // Lưu thời gian cài đặt
+        chrome.storage.local.set({ 
+            installTime: Date.now(),
+            lastUpdateCheck: Date.now(),
+            currentVersion: CURRENT_VERSION
+        });
+    }
+    
+    if (details.reason === 'update') {
+        // Hiển thị thông báo cập nhật thành công
+        showUpdateNotification('Cập nhật thành công!', `Đã cập nhật lên phiên bản ${CURRENT_VERSION}`);
+        
+        // Lưu thời gian cập nhật
+        chrome.storage.local.set({ 
+            lastUpdateTime: Date.now(),
+            currentVersion: CURRENT_VERSION
+        });
+    }
+});
+
+// Xử lý khi service worker được kích hoạt
+chrome.runtime.onStartup.addListener(() => {
+    console.log('KimiZK-Translator Service Worker started');
+    scheduleUpdateCheck();
+});
+
+// Kiểm tra cập nhật định kỳ
+function scheduleUpdateCheck() {
+    chrome.storage.local.get(['lastUpdateCheck', 'updateNotifications'], (result) => {
+        const now = Date.now();
+        const lastCheck = result.lastUpdateCheck || 0;
+        const notificationsEnabled = result.updateNotifications !== false; // Mặc định bật
+        
+        // Kiểm tra nếu đã qua 6 giờ kể từ lần check cuối
+        if (now - lastCheck > UPDATE_CHECK_INTERVAL && notificationsEnabled) {
+            // Lưu thời gian check
+            chrome.storage.local.set({ lastUpdateCheck: now });
+            
+            checkForUpdates().then(updateInfo => {
+                if (updateInfo.hasUpdate) {
+                    // Gửi thông báo đến tất cả tabs
+                    chrome.tabs.query({}, (tabs) => {
+                        tabs.forEach(tab => {
+                            chrome.tabs.sendMessage(tab.id, {
+                                action: "showUpdateNotification",
+                                updateInfo: updateInfo
+                            }).catch(() => {
+                                // Tab có thể không load content script
+                            });
+                        });
+                    });
+                }
             });
         }
-        // Lưu phiên bản hiện tại
-        chrome.storage.local.set({ previousVersion: thisVersion });
-    } catch (e) {
-        console.error("Lỗi khi xử lý onInstalled:", e);
-    }
-});
+    });
+}
 
-// Xử lý nút nhấn trên thông báo
-chrome.notifications.onButtonClicked.addListener((notificationId, buttonIndex) => {
-    if (buttonIndex === 0) {
-        chrome.tabs.create({ url: "https://github.com/KimiZK-Dev/KimiZK-Translator/releases" });
-    }
-});
-
-// Kiểm tra phiên bản mới từ GitHub
+// Kiểm tra cập nhật từ GitHub
 async function checkForUpdates() {
     try {
-        const response = await fetch("https://api.github.com/repos/KimiZK-Dev/KimiZK-Translator/releases/latest", {
-            headers: { "Accept": "application/vnd.github.v3+json" }
-        });
-        if (!response.ok) {
-            console.error("Lỗi khi kiểm tra cập nhật:", response.statusText);
-            return;
+        const response = await fetch(GITHUB_RELEASES_URL);
+        if (!response.ok) throw new Error('Failed to fetch release info');
+        
+        const releaseData = await response.json();
+        const latestVersion = releaseData.tag_name.replace('v', '');
+        
+        if (latestVersion !== CURRENT_VERSION) {
+            return {
+                hasUpdate: true,
+                currentVersion: CURRENT_VERSION,
+                latestVersion: latestVersion,
+                releaseNotes: releaseData.body,
+                downloadUrl: releaseData.html_url
+            };
         }
-        const data = await response.json();
-        const latestVersion = data.tag_name.replace(/^v/, ""); // Loại bỏ tiền tố "v" nếu có
-        const currentVersion = chrome.runtime.getManifest().version;
-
-        if (latestVersion !== currentVersion) {
-            console.info(`Có phiên bản mới: ${latestVersion} (hiện tại: ${currentVersion})`);
-            chrome.notifications.create({
-                type: "basic",
-                iconUrl: "src/icons/icon128.png",
-                title: `Có bản cập nhật KimiZK-Translator v${latestVersion}!`,
-                message: "Tải phiên bản mới từ GitHub để trải nghiệm các tính năng cải tiến!",
-                buttons: [{ title: "Tải ngay" }],
-                priority: 2
-            });
-        } else {
-            console.info("Đang dùng phiên bản mới nhất:", currentVersion);
-        }
-    } catch (e) {
-        console.error("Lỗi khi kiểm tra cập nhật:", e);
+        
+        return { hasUpdate: false };
+    } catch (error) {
+        console.error('Error checking for updates:', error);
+        return { hasUpdate: false, error: error.message };
     }
 }
 
-// Kiểm tra cập nhật khi khởi động và mỗi 24 giờ
-chrome.runtime.onStartup.addListener(() => {
-    checkForUpdates();
-});
-setInterval(checkForUpdates, 24 * 60 * 60 * 1000); // 24 giờ
+// Thực hiện cập nhật
+async function performUpdate() {
+    try {
+        // Reload extension để áp dụng cập nhật
+        chrome.runtime.reload();
+        return { success: true };
+    } catch (error) {
+        console.error('Error performing update:', error);
+        return { success: false, error: error.message };
+    }
+}
+
+// Hiển thị thông báo cập nhật
+function showUpdateNotification(title, message) {
+    chrome.notifications.create({
+        type: 'basic',
+        iconUrl: 'src/icons/icon128.png',
+        title: title,
+        message: message
+    });
+} 

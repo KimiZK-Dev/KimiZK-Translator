@@ -105,7 +105,7 @@ function setupAudioControls(audio, controlsId, popup) {
             code: audio.error?.code,
             message: audio.error?.message
         });
-        showNotification(`Lỗi phát âm thanh: ${audio.error?.message || 'Nguồn không hợp lệ'}`, "error");
+        showAudioErrorNotification(audio.error?.message || 'Nguồn không hợp lệ');
     });
 
     let isDraggingProgress = false;
@@ -157,87 +157,101 @@ function setupAudioButton(button, text, isSingleWord) {
     const audioId = Date.now();
 
     const toggleAudio = async () => {
-        if (currentAudio && !currentAudio.paused && !currentAudio.ended) {
-            currentAudio.pause();
-            icon.textContent = "▶️";
-            textSpan.textContent = "Tiếp tục";
-            return;
-        }
+        try {
+            if (currentAudio && !currentAudio.paused && !currentAudio.ended) {
+                currentAudio.pause();
+                icon.textContent = "▶️";
+                textSpan.textContent = "Tiếp tục";
+                return;
+            }
 
-        if (!currentAudio || currentAudio.ended) {
-            stopCurrentAudio();
-            button.disabled = true;
-            icon.textContent = "⏳";
-            textSpan.textContent = "Đang tải...";
+            if (!currentAudio || currentAudio.ended) {
+                stopCurrentAudio();
+                button.disabled = true;
+                icon.textContent = "⏳";
+                textSpan.textContent = "Đang tải...";
 
-            const audioUrl = await textToSpeech(text);
-            if (audioUrl) {
-                console.log("Audio URL received:", audioUrl);
-                currentAudioUrl = audioUrl;
-                currentAudio = new Audio(audioUrl);
-                currentAudio.addEventListener('ended', () => {
-                    icon.textContent = "🔊";
-                    textSpan.textContent = "Nghe";
-                });
-                currentAudio.addEventListener('error', (e) => {
+                const audioUrl = await textToSpeech(text);
+                if (audioUrl) {
+                    console.log("Audio URL received:", audioUrl);
+                    currentAudioUrl = audioUrl;
+                    currentAudio = new Audio(audioUrl);
+                    
+                    // Error handling
+                                    currentAudio.addEventListener('error', (e) => {
                     console.error("Audio playback error:", {
                         error: e,
                         code: currentAudio.error?.code,
                         message: currentAudio.error?.message
                     });
-                    showNotification(`Lỗi phát âm thanh: ${currentAudio.error?.message || 'Nguồn không hợp lệ'}`, "error");
+                    showAudioErrorNotification(currentAudio.error?.message || 'Nguồn không hợp lệ');
                     icon.textContent = "🔊";
                     textSpan.textContent = "Nghe";
                     button.disabled = false;
                 });
-                currentAudio.addEventListener('loadedmetadata', () => {
-                    console.log("Audio metadata loaded:", {
-                        duration: currentAudio.duration,
-                        src: currentAudio.src,
-                        readyState: currentAudio.readyState
+                    
+                    currentAudio.addEventListener('ended', () => {
+                        icon.textContent = "🔊";
+                        textSpan.textContent = "Nghe";
                     });
-                });
-                document.body.insertAdjacentHTML('beforeend', createAudioControls(audioId));
-                setupAudioControls(currentAudio, audioId, popup);
-                try {
-                    console.log("Attempting to play audio:", audioUrl);
-                    await currentAudio.play();
-                    console.log("Audio playing:", audioUrl);
-                    icon.textContent = "⏸️";
-                    textSpan.textContent = "Dừng";
-                    button.disabled = false;
-                } catch (err) {
+                    
+                    currentAudio.addEventListener('loadedmetadata', () => {
+                        console.log("Audio metadata loaded:", {
+                            duration: currentAudio.duration,
+                            src: currentAudio.src,
+                            readyState: currentAudio.readyState
+                        });
+                    });
+                    
+                    document.body.insertAdjacentHTML('beforeend', createAudioControls(audioId));
+                    setupAudioControls(currentAudio, audioId, popup);
+                    
+                    try {
+                        console.log("Attempting to play audio:", audioUrl);
+                        await currentAudio.play();
+                        console.log("Audio playing:", audioUrl);
+                        icon.textContent = "⏸️";
+                        textSpan.textContent = "Dừng";
+                        button.disabled = false;
+                                    } catch (err) {
                     console.error("Playback failed:", {
                         error: err,
                         message: err.message
                     });
-                    showNotification(`Không thể phát âm thanh: ${err.message || 'Lỗi không xác định'}`, "error");
+                    showAudioErrorNotification(err.message || 'Lỗi không xác định');
+                    icon.textContent = "🔊";
+                    textSpan.textContent = "Nghe";
+                    button.disabled = false;
+                    return;
+                }
+                } else {
                     icon.textContent = "🔊";
                     textSpan.textContent = "Nghe";
                     button.disabled = false;
                     return;
                 }
             } else {
-                icon.textContent = "🔊";
-                textSpan.textContent = "Nghe";
-                button.disabled = false;
-                return;
-            }
-        } else {
-            try {
-                console.log("Resuming audio:", currentAudio.src);
-                await currentAudio.play();
-                icon.textContent = "⏸️";
-                textSpan.textContent = "Dừng";
-                button.disabled = false;
-            } catch (err) {
+                try {
+                    console.log("Resuming audio:", currentAudio.src);
+                    await currentAudio.play();
+                    icon.textContent = "⏸️";
+                    textSpan.textContent = "Dừng";
+                    button.disabled = false;
+                            } catch (err) {
                 console.error("Resume playback failed:", {
                     error: err,
                     message: err.message
                 });
-                showNotification(`Không thể tiếp tục âm thanh: ${err.message || 'Lỗi không xác định'}`, "error");
+                showAudioErrorNotification(err.message || 'Lỗi không xác định');
                 return;
             }
+            }
+        } catch (error) {
+            console.error("Audio setup error:", error);
+            showAudioErrorNotification("Lỗi khi thiết lập âm thanh");
+            icon.textContent = "🔊";
+            textSpan.textContent = "Nghe";
+            button.disabled = false;
         }
     };
 

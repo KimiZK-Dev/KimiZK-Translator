@@ -1,6 +1,10 @@
+// Khởi tạo extension cho Manifest V3
+console.log('KimiZK-Translator Content Script loaded');
+
 document.addEventListener("mouseup", e => {
-    const selected = window.getSelection().toString().trim();
-    if (!selected || e.target.closest('.xt-translator-popup') || e.target.closest('.xt-audio-controls') || e.target.closest('.xt-trigger-icon')) return;
+    try {
+        const selected = window.getSelection().toString().trim();
+        if (!selected || e.target.closest('.xt-translator-popup') || e.target.closest('.xt-audio-controls') || e.target.closest('.xt-trigger-icon')) return;
 
     triggerIcon?.remove();
     const selectionRect = window.getSelection().getRangeAt(0).getBoundingClientRect();
@@ -89,6 +93,9 @@ document.addEventListener("mouseup", e => {
                 <div class="xt-translator-main">
                     <div class="xt-main-info">
                         <h2 class="xt-word-title-single">${escapeSpecialChars(displayText)}</h2>
+                        <div class="xt-language-info">
+                            <span class="xt-language-badge">${escapeSpecialChars(result.detectedLanguage || 'tiếng Anh')} → tiếng Việt</span>
+                        </div>
                         <div class="xt-action-buttons">
                             <button class="xt-action-btn xt-listen-btn" title="Nghe phát âm">
                                 <span class="xt-btn-icon">🔊</span>
@@ -138,6 +145,9 @@ document.addEventListener("mouseup", e => {
                 <div class="xt-translator-main">
                     <div class="xt-main-info">
                         <h2 class="xt-word-title-text">${escapeSpecialChars(displayText)}</h2>
+                        <div class="xt-language-info">
+                            <span class="xt-language-badge">${escapeSpecialChars(result.detectedLanguage || 'tiếng Anh')} → tiếng Việt</span>
+                        </div>
                         <div class="xt-action-buttons">
                             <button class="xt-action-btn xt-listen-btn" title="Nghe văn bản gốc">
                                 <span class="xt-btn-icon">🔊</span>
@@ -177,59 +187,75 @@ document.addEventListener("mouseup", e => {
                             copyText.textContent = "Copy";
                         }, 2000);
                     })
-                    .catch(() => showNotification("Không thể sao chép văn bản."));
+                    .catch(() => showNotification("Không thể sao chép văn bản.", "error", 4000));
             });
         }
     });
-});
-
-document.addEventListener('click', e => {
-    if (popup && !popup.contains(e.target) && !e.target.closest('.xt-audio-controls') && !e.target.closest('.xt-trigger-icon') && !window.getSelection().toString().trim()) {
-        stopCurrentAudio();
-        popup.remove();
-        triggerIcon?.remove();
+    } catch (error) {
+        console.error('Error in translation process:', error);
+        showNotification('Có lỗi xảy ra khi dịch. Vui lòng thử lại.', 'error');
     }
 });
 
 document.addEventListener('click', e => {
-    if (triggerIcon && !triggerIcon.contains(e.target) && !e.target.closest('.xt-trigger-icon') && !justCreatedTriggerIcon && e.button === 0) {
-        triggerIcon.remove();
+    try {
+        if (popup && !popup.contains(e.target) && !e.target.closest('.xt-audio-controls') && !e.target.closest('.xt-trigger-icon') && !window.getSelection().toString().trim()) {
+            stopCurrentAudio();
+            popup.remove();
+            triggerIcon?.remove();
+        }
+    } catch (error) {
+        console.error('Error in click handler:', error);
+    }
+});
+
+document.addEventListener('click', e => {
+    try {
+        if (triggerIcon && !triggerIcon.contains(e.target) && !e.target.closest('.xt-trigger-icon') && !justCreatedTriggerIcon && e.button === 0) {
+            triggerIcon.remove();
+        }
+    } catch (error) {
+        console.error('Error in trigger icon click handler:', error);
     }
 });
 
 document.addEventListener('scroll', () => {
-    if (!popup || isDragging) return;
+    try {
+        if (!popup || isDragging) return;
 
-    const rect = popup.getBoundingClientRect();
-    const padding = 15;
-    let needsAdjustment = false;
-    let newTop = parseInt(popup.style.top);
-    let newLeft = parseInt(popup.style.left);
+        const rect = popup.getBoundingClientRect();
+        const padding = 15;
+        let needsAdjustment = false;
+        let newTop = parseInt(popup.style.top);
+        let newLeft = parseInt(popup.style.left);
 
-    if (rect.top < padding) {
-        newTop = padding;
-        needsAdjustment = true;
-    }
-    if (rect.bottom > window.innerHeight - padding) {
-        newTop = window.innerHeight - rect.height - padding;
-        needsAdjustment = true;
-    }
-    if (rect.left < padding) {
-        newLeft = padding;
-        needsAdjustment = true;
-    }
-    if (rect.right > window.innerWidth - padding) {
-        newLeft = window.innerWidth - rect.width - padding;
-        needsAdjustment = true;
-    }
-
-    if (needsAdjustment) {
-        popup.style.top = `${Math.max(padding, newTop)}px`;
-        popup.style.left = `${Math.max(padding, newLeft)}px`;
-        const audioControls = document.querySelector('.xt-audio-controls');
-        if (audioControls) {
-            audioControls.style.left = `${Math.max(padding, newLeft) + popup.offsetWidth + 10}px`;
-            audioControls.style.top = `${Math.max(padding, newTop)}px`;
+        if (rect.top < padding) {
+            newTop = padding;
+            needsAdjustment = true;
         }
+        if (rect.bottom > window.innerHeight - padding) {
+            newTop = window.innerHeight - rect.height - padding;
+            needsAdjustment = true;
+        }
+        if (rect.left < padding) {
+            newLeft = padding;
+            needsAdjustment = true;
+        }
+        if (rect.right > window.innerWidth - padding) {
+            newLeft = window.innerWidth - rect.width - padding;
+            needsAdjustment = true;
+        }
+
+        if (needsAdjustment) {
+            popup.style.top = `${Math.max(padding, newTop)}px`;
+            popup.style.left = `${Math.max(padding, newLeft)}px`;
+            const audioControls = document.querySelector('.xt-audio-controls');
+            if (audioControls) {
+                audioControls.style.left = `${Math.max(padding, newLeft) + popup.offsetWidth + 10}px`;
+                audioControls.style.top = `${Math.max(padding, newTop)}px`;
+            }
+        }
+    } catch (error) {
+        console.error('Error in scroll handler:', error);
     }
 });

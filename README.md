@@ -1,11 +1,12 @@
 # **KimiZK-Translator 🌐**
 
-Tiện ích dịch Anh-Việt nhanh, chính xác, popup hiện đại, hỗ trợ phát âm và tra cứu chi tiết. Chỉ cần bôi đen văn bản tiếng Anh trên web, kết quả sẽ hiện ngay lập tức. Và nó hoàn toàn **MIỄN PHÍ**
+Tiện ích dịch đa ngôn ngữ sang tiếng Việt nhanh, chính xác, popup hiện đại, hỗ trợ phát âm và tra cứu chi tiết. Hỗ trợ dịch từ tiếng Anh, Pháp, Đức, Tây Ban Nha, Ý, Nhật, Hàn, Trung, Nga và nhiều ngôn ngữ khác sang tiếng Việt. Chỉ cần bôi đen văn bản trên web, kết quả sẽ hiện ngay lập tức. Và nó hoàn toàn **MIỄN PHÍ**
 
 ---
 
 ## ⚡ Tính năng
-- Dịch từ/đoạn văn Anh-Việt tức thì
+- Dịch từ/đoạn văn đa ngôn ngữ sang tiếng Việt tức thì
+- Nhận diện tự động ngôn ngữ gốc (Anh, Pháp, Đức, Tây Ban Nha, Ý, Nhật, Hàn, Trung, Nga, v.v.)
 - Popup kéo thả, tự căn chỉnh
 - Phát âm chuẩn IPA, nghe trực tiếp
 - Sao chép nhanh bản dịch
@@ -31,9 +32,10 @@ Tiện ích dịch Anh-Việt nhanh, chính xác, popup hiện đại, hỗ tr�
 
 **Cách dùng dịch:**
 * **LƯU Ý**: Khi mới nhập tiện ích vào thì nhớ load lại những trang hiện tại đang dùng để tiện ích hoạt động
-1. Bôi đen từ hoặc đoạn văn tiếng Anh trên bất kỳ website nào.
+1. Bôi đen từ hoặc đoạn văn bất kỳ ngôn ngữ nào trên web (Anh, Pháp, Đức, Tây Ban Nha, Ý, Nhật, Hàn, Trung, Nga, v.v.).
 2. Nhấn vào biểu tượng dịch xuất hiện gần vùng bôi đen để xem popup kết quả.
-3. Tuỳ chỉnh popup, nghe phát âm, sao chép bản dịch nếu cần.
+3. Tiện ích sẽ tự động nhận diện ngôn ngữ gốc và hiển thị kết quả dịch sang tiếng Việt.
+4. Tuỳ chỉnh popup, nghe phát âm, sao chép bản dịch nếu cần.
 
 ---
 
@@ -52,15 +54,13 @@ Gửi phản hồi hoặc ý tưởng qua [GitHub](https://github.com/KimiZK-Dev
 ---
 
 ## ⚠️ Lưu ý
-- Chỉ hỗ trợ dịch Anh-Việt
+- Hỗ trợ dịch đa ngôn ngữ sang tiếng Việt (Anh, Pháp, Đức, Tây Ban Nha, Ý, Nhật, Hàn, Trung, Nga, Ả Rập, Thái, v.v.)
 - Yêu cầu kết nối internet
 - Tối ưu cho văn bản ngắn (<10.000 ký tự)
 - Một số website có thể hạn chế chọn văn bản
 - Có giới hạn API
 - **Về tính năng phát âm thanh**:
   - Tính năng phát âm có thể không hoạt động trên một số website có chính sách bảo mật nghiêm ngặt (Content Security Policy - CSP), ví dụ như `github.com`. Điều này là do các website này chặn các nguồn âm thanh không được phép, bao gồm cả URL dạng `blob:`.
-  - Để khắc phục, tiện ích tự động lưu file âm thanh vào bộ nhớ tạm của tiện ích và sử dụng URL dạng `chrome-extension://` để phát âm thanh, giúp tránh hạn chế CSP trên hầu hết các trang.
-  - Nếu vẫn không nghe được âm thanh, hãy thử trên các trang khác (như `google.com`) hoặc kiểm tra kết nối internet và API key. Báo lỗi chi tiết qua GitHub nếu cần hỗ trợ.
 
 ---
 

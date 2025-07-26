@@ -8,31 +8,117 @@
 </head>
 <body>
     <div class="xt-popup-container">
-        <h1>KimiZK-Translator 🌐</h1>
-        <p>Phiên bản: <span id="version"></span></p>
-        <p>Thời gian: <span id="current-time"></span></p>
-        
-        <h2>Cài đặt</h2>
-        <div class="xt-setting-item">
-            <label>
-                <input type="checkbox" id="update-notifications">
-                Bật thông báo cập nhật phiên bản mới
-            </label>
+        <div class="header">
+            <h1>🌐 KimiZK-Translator</h1>
+            <div class="subtitle">Trình dịch đa ngôn ngữ thông minh & nhanh chóng</div>
         </div>
         
-        <h2>Quản lý API Key</h2>
-        <div class="xt-setting-item">
-            <input type="text" id="api-key-input" placeholder="Nhập API Key mới..." disabled>
-            <button id="save-api-key" disabled>Lưu API Key</button>
-            <p id="api-key-status" class="xt-error"></p>
+        <div class="version-info">
+            <span>Phiên bản: <span class="version" id="version">1.2.0</span></span>
+            <span id="current-time">--:--:--</span>
         </div>
-        
-        <h2>Liên kết</h2>
-        <div class="xt-setting-item">
-            <button id="github-link">Trang GitHub</button>
-            <button id="facebook-link">Trang Facebook</button>
+
+        <div class="content">
+            <div class="section">
+                <h2 class="section-title">⚙️ Cài đặt</h2>
+                <div class="xt-card">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-custom">
+                            <input type="checkbox" id="update-notifications">
+                        </div>
+                        <label for="update-notifications">Bật thông báo cập nhật phiên bản mới</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">🔑 Quản lý API Key</h2>
+                <div class="xt-card">
+                    <div class="form-group">
+                        <label class="form-label" for="api-key-input">API Key</label>
+                        <input 
+                            type="password" 
+                            id="api-key-input" 
+                            class="form-input"
+                            placeholder="Nhập API Key mới..." 
+                            disabled
+                        >
+                        <button id="save-api-key" class="btn btn-primary" disabled>
+                            💾 Lưu API Key
+                        </button>
+                        <div id="api-key-status" class="status-message error">
+                            Vui lòng nhập API Key hợp lệ
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">🔗 Liên kết</h2>
+                <div class="xt-card">
+                    <div class="links-grid">
+                        <button id="github-link" class="btn-link github">
+                            <span>🌐</span>
+                            GitHub
+                        </button>
+                        <button id="facebook-link" class="btn-link facebook">
+                            <span>📘</span>
+                            Facebook
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Test section để kiểm tra scroll -->
+            <div class="section">
+                <h2 class="section-title">📝 Thông tin thêm</h2>
+                <div class="xt-card">
+                    <p style="margin-bottom: 16px; color: var(--text-secondary); font-size: 13px;">
+                        Tiện ích KimiZK-Translator hỗ trợ dịch đa ngôn ngữ sang tiếng Việt nhanh chóng và chính xác.
+                    </p>
+                    <div style="background: var(--primary-light); padding: 12px; border-radius: var(--radius-md); margin-bottom: 12px;">
+                        <strong>✨ Tính năng chính:</strong>
+                        <ul style="margin: 8px 0 0 16px; font-size: 12px; color: var(--text-secondary);">
+                            <li>Dịch đa ngôn ngữ sang tiếng Việt</li>
+                            <li>Nhận diện tự động ngôn ngữ gốc</li>
+                            <li>Phát âm chuẩn IPA</li>
+                            <li>Tra cứu chi tiết từ đơn</li>
+                            <li>Popup kéo thả tự do</li>
+                        </ul>
+                    </div>
+                    <div style="background: var(--border-light); padding: 12px; border-radius: var(--radius-md);">
+                        <strong>🔧 Hướng dẫn:</strong>
+                        <p style="margin: 8px 0 0 0; font-size: 12px; color: var(--text-secondary);">
+                            Bôi đen văn bản bất kỳ ngôn ngữ nào trên web, nhấn vào biểu tượng dịch xuất hiện để xem kết quả.
+                        </p>
+                    </div>
+                    <div style="background: linear-gradient(135deg, #e0f7fa, #b2ebf2); padding: 12px; border-radius: var(--radius-md); margin-top: 12px;">
+                        <strong>🔄 Auto-Update:</strong>
+                        <p style="margin: 8px 0 0 0; font-size: 12px; color: var(--text-secondary);">
+                            Extension tự động kiểm tra cập nhật mỗi 6 giờ. Khi có bản mới, thông báo sẽ hiển thị ở giữa màn hình.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">💡 Lưu ý</h2>
+                <div class="xt-card">
+                                            <p style="margin-bottom: 12px; font-size: 13px; color: var(--text-secondary);">
+                            • Hỗ trợ dịch đa ngôn ngữ sang tiếng Việt<br>
+                            • Nhận diện tự động ngôn ngữ gốc<br>
+                            • Yêu cầu kết nối internet<br>
+                            • Cần API Key để sử dụng<br>
+                            • Tối ưu cho văn bản ngắn
+                        </p>
+                    <div style="text-align: center; padding: 8px; background: linear-gradient(135deg, var(--primary-light), var(--accent-light)); border-radius: var(--radius-md);">
+                        <span style="font-size: 11px; color: var(--primary); font-weight: 600;">Made with ❤️ by KimiZK</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+
     <script src="../js/popup.js"></script>
 </body>
 </html>

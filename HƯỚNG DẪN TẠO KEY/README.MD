@@ -6,7 +6,6 @@
 -   Chọn đăng nhập bằng Google, GitHub hoặc Email.
 
 <img src="1.png" alt="Giao diện đăng nhập GroqCloud" width="400"/>
-s
 
 ## 2. Tạo API Key
 
@@ -41,4 +40,4 @@ s
 
 -   Không chia sẻ API Key công khai.
 -   Nếu quên key, hãy tạo lại key mới.
--   Cần hỗ trợ thì inbox tới [Facebook](https://https://www.facebook.com/nhb.xyz).
+-   Cần hỗ trợ thì inbox tới [Facebook](https://www.facebook.com/nhb.xyz).
