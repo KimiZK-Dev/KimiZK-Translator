@@ -157,7 +157,7 @@ async function textToSpeech(text) {
                 model: "playai-tts",
                 input: text.slice(0, 10000),
                 voice: "Arista-PlayAI",
-                response_format: "mp3"
+                response_format: "wav"
             })
         });
 

@@ -1,7 +1,7 @@
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === "saveAudio") {
         const audioBlob = request.audioBlob;
-        const fileName = `audio_${Date.now()}.mp3`;
+        const fileName = `audio_${Date.now()}.wav`;
 
         try {
             if (!(audioBlob instanceof Blob) || audioBlob.size === 0) {
