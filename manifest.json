@@ -41,7 +41,7 @@
 				"src/js/trigger.js",
 				"src/js/main.js"
 			],
-			"css": ["src/css/styles.css", "src/css/update_modal.css"]
+			"css": ["src/css/fonts.css", "src/css/styles.css", "src/css/update_modal.css"]
 		}
 	],
 	"web_accessible_resources": [
@@ -54,6 +54,7 @@
 				"src/icons/icon128.png",
 				"src/html/popup.html",
 				"src/css/popup.css",
+				"src/css/fonts.css",
 				"src/css/update_modal.css"
 			],
 			"matches": ["<all_urls>"]

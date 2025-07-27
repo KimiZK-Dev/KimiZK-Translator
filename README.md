@@ -1,19 +1,29 @@
 # **KimiZK-Translator 🌐**
 
-Tiện ích dịch Anh-Việt nhanh, chính xác, popup hiện đại, hỗ trợ phát âm và tra cứu chi tiết. Chỉ cần bôi đen văn bản tiếng Anh trên web, kết quả sẽ hiện ngay lập tức. Và nó hoàn toàn **MIỄN PHÍ**
-
----
+Tiện ích dịch đa ngôn ngữ sang tiếng Việt nhanh, chính xác, popup hiện đại, hỗ trợ phát âm và tra cứu chi tiết. Chỉ cần bôi đen văn bản trên web, kết quả sẽ hiện ngay lập tức. Tích hợp AI Groq cho kết quả dịch tự nhiên, chính xác nhất.
 
 ## ⚡ Tính năng
-- Dịch từ/đoạn văn Anh-Việt tức thì
-- Popup kéo thả, tự căn chỉnh
-- Phát âm chuẩn IPA, nghe trực tiếp
-- Sao chép nhanh bản dịch
-- Tra cứu chi tiết từ đơn: nghĩa, loại từ, ví dụ, đồng nghĩa, biến thể
-- Tích hợp AI cho kết quả dịch tự nhiên, chính xác nhất
-- Tương thích mọi website
+- **Dịch đa ngôn ngữ**: Hỗ trợ 13+ ngôn ngữ sang tiếng Việt
+- **Nhận diện tự động**: Tự động phát hiện ngôn ngữ gốc
+- **Popup hiện đại**: Kéo thả, tự căn chỉnh, responsive
+- **Phát âm chuẩn IPA**: Nghe trực tiếp với AI voice
+- **Tra cứu chi tiết**: Nghĩa, loại từ, ví dụ, đồng nghĩa, biến thể
+- **Sao chép nhanh**: Copy bản dịch với một click
+- **Auto-update**: Tự động kiểm tra cập nhật mỗi 6 giờ
+- **Manifest V3**: Tương thích với tiêu chuẩn mới nhất
+- **Tương thích mọi website**
 
----
+
+## 🔑 Yêu cầu API Key
+
+Tiện ích sử dụng **Groq AI API** để dịch và phát âm. Bạn cần:
+
+1. **Đăng ký tài khoản** tại [GroqCloud Console](https://console.groq.com/home)
+2. **Tạo API Key** tại [API Keys](https://console.groq.com/keys)
+3. **Nhập API Key** vào tiện ích khi sử dụng lần đầu
+
+📖 **Xem hướng dẫn chi tiết**: [HƯỚNG DẪN TẠO KEY](./HƯỚNG%20DẪN%20TẠO%20KEY/README.MD)
+
 
 ## 🛠️ Hướng dẫn cài đặt & sử dụng
 
@@ -31,11 +41,11 @@ Tiện ích dịch Anh-Việt nhanh, chính xác, popup hiện đại, hỗ tr�
 
 **Cách dùng dịch:**
 * **LƯU Ý**: Khi mới nhập tiện ích vào thì nhớ load lại những trang hiện tại đang dùng để tiện ích hoạt động
-1. Bôi đen từ hoặc đoạn văn tiếng Anh trên bất kỳ website nào.
-2. Nhấn vào biểu tượng dịch xuất hiện gần vùng bôi đen để xem popup kết quả.
-3. Tuỳ chỉnh popup, nghe phát âm, sao chép bản dịch nếu cần.
+1. **Cấu hình API Key**: Nhấn vào icon tiện ích → Nhập Groq API Key
+2. **Bôi đen văn bản**: Chọn từ hoặc đoạn văn trên bất kỳ website nào
+3. **Xem kết quả**: Nhấn vào biểu tượng dịch xuất hiện gần vùng bôi đen
+4. **Tương tác**: Nghe phát âm, sao chép, tra cứu chi tiết
 
----
 
 ## 💖 Donate
 Ủng hộ tác giả phát triển tiện ích qua mã QR bên dưới. Xin cảm ơn!
@@ -44,19 +54,17 @@ Tiện ích dịch Anh-Việt nhanh, chính xác, popup hiện đại, hỗ tr�
   <img src="./TÔI_NGHÈO_RỒI_CẦN_AI_ĐÓ_ĐÚT_TIỀN_VÀO_MỒM_HUHU.png" alt="Donate QR" width="220" />
 </p>
 
----
 
 ## 🐛 Báo lỗi & Góp ý
 Gửi phản hồi hoặc ý tưởng qua [GitHub](https://github.com/KimiZK-Dev/KimiZK-Translator/issues)
 
----
 
 ## ⚠️ Lưu ý
-- Chỉ hỗ trợ dịch Anh-Việt
-- Yêu cầu kết nối internet
-- Tối ưu cho văn bản ngắn (<10.000 ký tự)
-- Một số website có thể hạn chế chọn văn bản
-- Có giới hạn API
+- **Hỗ trợ đa ngôn ngữ**: 13+ ngôn ngữ sang tiếng Việt
+- **Yêu cầu kết nối internet** và Groq API Key
+- **Tối ưu cho văn bản ngắn** (<10.000 ký tự)
+- **Một số website** có thể hạn chế chọn văn bản
+- **Giới hạn API**: Tuân theo quota của Groq
 - **Về tính năng phát âm thanh**:
   - Tính năng phát âm có thể không hoạt động trên một số website có chính sách bảo mật nghiêm ngặt (Content Security Policy - CSP), ví dụ như `github.com`. Điều này là do các website này chặn các nguồn âm thanh không được phép, bao gồm cả URL dạng `blob:`.
 

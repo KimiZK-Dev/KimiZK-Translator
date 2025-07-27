@@ -1,0 +1,112 @@
+/* Import Google Fonts cho tiện ích đa ngôn ngữ */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&family=Source+Sans+Pro:wght@300;400;600;700&family=Noto+Sans+Mono:wght@400;500;600&display=swap');
+
+/* Font variables cho tiện ích đa ngôn ngữ */
+:root {
+    --xt-font-primary: 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif !important;
+    --xt-font-secondary: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif !important;
+    --xt-font-mono: 'Noto Sans Mono', 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace !important;
+}
+
+/* Áp dụng font cho tất cả elements của tiện ích */
+.xt-translator-popup,
+.xt-translator-popup *,
+.xt-notification,
+.xt-notification *,
+.xt-apikey-overlay,
+.xt-apikey-overlay *,
+.xt-update-modal,
+.xt-update-modal * {
+    font-family: var(--xt-font-primary) !important;
+}
+
+/* Font cho code/mono text */
+.xt-phonetic,
+.xt-transcription {
+    font-family: var(--xt-font-mono) !important;
+}
+
+/* Font cho buttons và interactive elements */
+.xt-action-btn,
+.xt-apikey-save,
+.xt-apikey-close,
+.xt-notification-close {
+    font-family: var(--xt-font-secondary) !important;
+}
+
+/* Đảm bảo font không bị ghi đè bởi trang web */
+.xt-translator-popup,
+.xt-notification,
+.xt-apikey-overlay,
+.xt-update-modal {
+    font-family: var(--xt-font-primary) !important;
+    font-synthesis: none !important;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    text-rendering: optimizeLegibility !important;
+}
+
+/* Reset font cho các elements cụ thể */
+.xt-translator-title,
+.xt-translator-word,
+.xt-meaning h3,
+.xt-section h3,
+.xt-notification-title,
+.xt-apikey-title {
+    font-family: var(--xt-font-primary) !important;
+    font-weight: 600 !important;
+}
+
+.xt-translator-desc,
+.xt-meaning p,
+.xt-example-en,
+.xt-example-vi,
+.xt-notification-message,
+.xt-apikey-desc {
+    font-family: var(--xt-font-primary) !important;
+    font-weight: 400 !important;
+}
+
+/* Font cho input fields */
+.xt-apikey-input,
+.xt-translator-popup input,
+.xt-translator-popup textarea {
+    font-family: var(--xt-font-primary) !important;
+    font-size: 14px !important;
+}
+
+/* Font cho buttons */
+.xt-action-btn,
+.xt-apikey-save,
+.xt-apikey-close {
+    font-family: var(--xt-font-secondary) !important;
+    font-weight: 500 !important;
+}
+
+/* Font cho tags và badges */
+.xt-tag,
+.xt-language-badge,
+.xt-part-of-speech {
+    font-family: var(--xt-font-secondary) !important;
+    font-weight: 500 !important;
+}
+
+/* Đặc biệt cho text đa ngôn ngữ */
+.xt-translator-word,
+.xt-example-en,
+.xt-example-vi,
+.xt-meaning p,
+.xt-synonyms,
+.xt-other-word-forms {
+    font-family: var(--xt-font-primary) !important;
+    font-weight: 400 !important;
+    line-height: 1.6 !important;
+}
+
+/* Font cho phonetic và transcription */
+.xt-phonetic,
+.xt-transcription {
+    font-family: var(--xt-font-mono) !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.5px !important;
+} 

@@ -711,6 +711,7 @@
     justify-content: center;
 }
 .xt-apikey-box {
+    position: relative;
     background: linear-gradient(135deg, #f9fafb 0%, #e0e7ff 100%);
     border-radius: 18px;
     box-shadow: 0 8px 32px rgba(79,70,229,0.18);
@@ -771,6 +772,37 @@
     color: #4f46e5;
     font-weight: 600;
     text-decoration: underline;
+}
+
+/* Nút đóng bảng API Key */
+.xt-apikey-close {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: rgba(107, 114, 128, 0.1);
+    color: #6b7280;
+    border-radius: 50%;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    z-index: 1;
+}
+
+.xt-apikey-close:hover {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    transform: scale(1.1);
+}
+
+.xt-apikey-close:active {
+    transform: scale(0.95);
 }
 
 @media (max-width: 480px) {

@@ -23,6 +23,7 @@ function showApiKeyPrompt() {
     const box = document.createElement('div');
     box.className = 'xt-apikey-box';
     box.innerHTML = `
+        <button class="xt-apikey-close" id="xt-apikey-close">×</button>
         <div class="xt-apikey-title">
             <span>🔑</span> Nhập API KEY để sử dụng dịch
         </div>
@@ -33,6 +34,19 @@ function showApiKeyPrompt() {
     `;
     overlay.appendChild(box);
     document.body.appendChild(overlay);
+    
+    // Thêm event listener để đóng khi click ngoài vùng bảng
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+            overlay.remove();
+        }
+    });
+    
+    // Thêm event listener cho nút đóng
+    const closeBtn = box.querySelector('#xt-apikey-close');
+    closeBtn.addEventListener('click', () => {
+        overlay.remove();
+    });
     const input = box.querySelector('#xt-apikey-input');
     const saveBtn = box.querySelector('#xt-apikey-save');
     const errorDiv = box.querySelector('#xt-apikey-error');

@@ -1,3 +1,13 @@
+/* Import fonts cho đa ngôn ngữ */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&family=Source+Sans+Pro:wght@300;400;600;700&family=Noto+Sans+Mono:wght@400;500;600&display=swap');
+
+/* Font variables cho đa ngôn ngữ */
+:root {
+    --xt-font-primary: 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif !important;
+    --xt-font-secondary: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif !important;
+    --xt-font-mono: 'Noto Sans Mono', 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace !important;
+}
+
 /* Update Modal Styles */
 .update-modal-overlay {
     position: fixed;
@@ -11,7 +21,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: var(--xt-font-primary);
 }
 
 .update-modal {
@@ -159,7 +169,7 @@
     color: #4f46e5;
     padding: 2px 7px;
     border-radius: 4px;
-    font-family: 'JetBrains Mono', 'Fira Mono', 'Consolas', monospace;
+    font-family: var(--xt-font-mono);
     font-size: 13px;
 }
 
