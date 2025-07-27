@@ -28,7 +28,7 @@ Tiện ích sử dụng **Groq AI API** để dịch và phát âm. Bạn cần:
 ## 🛠️ Hướng dẫn cài đặt & sử dụng
 
 **Cài đặt tiện ích:**
-1. [Nhấp vào đây để tải](https://github.com/KimiZK-Dev/KimiZK-Translator/releases/download/Extention/KimiZK-Translator.zip)
+1. [Nhấp vào đây để tải](https://github.com/KimiZK-Dev/KimiZK-Translator/releases/download/1.0.3/KimiZK-Translator.zip)
 2. Sau khi tải xong, hãy giải nén file vừa tải.
 3. Mở trình duyệt, truy cập trang quản lý tiện ích thông qua thanh tìm kiếm:
    - Chrome: `chrome://extensions/`
