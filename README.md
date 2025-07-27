@@ -51,7 +51,7 @@ Tiện ích sử dụng **Groq AI API** để dịch và phát âm. Bạn cần:
 Ủng hộ tác giả phát triển tiện ích qua mã QR bên dưới. Xin cảm ơn!
 
 <p align="center">
-  <img src="./TÔI_NGHÈO_RỒI_CẦN_AI_ĐÓ_ĐÚT_TIỀN_VÀO_MỒM_HUHU.png" alt="Donate QR" width="220" />
+  <img src="./CUỘC SỐNG KHÓ KHĂN QUÁ.png" alt="Donate QR" width="220" />
 </p>
 
 
