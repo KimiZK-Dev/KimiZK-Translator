@@ -1,4 +1,4 @@
-# **KimiZK-Translator 🌐**
+# **KimiZK-Translator 🌐** 
 
 Tiện ích dịch đa ngôn ngữ sang tiếng Việt nhanh, chính xác, popup hiện đại, hỗ trợ phát âm và tra cứu chi tiết. Chỉ cần bôi đen văn bản trên web, kết quả sẽ hiện ngay lập tức. Tích hợp AI cho kết quả dịch tự nhiên, chính xác nhất.
 
