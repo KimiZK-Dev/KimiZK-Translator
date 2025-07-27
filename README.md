@@ -1,6 +1,6 @@
 # **KimiZK-Translator 🌐**
 
-Tiện ích dịch đa ngôn ngữ sang tiếng Việt nhanh, chính xác, popup hiện đại, hỗ trợ phát âm và tra cứu chi tiết. Chỉ cần bôi đen văn bản trên web, kết quả sẽ hiện ngay lập tức. Tích hợp AI Groq cho kết quả dịch tự nhiên, chính xác nhất.
+Tiện ích dịch đa ngôn ngữ sang tiếng Việt nhanh, chính xác, popup hiện đại, hỗ trợ phát âm và tra cứu chi tiết. Chỉ cần bôi đen văn bản trên web, kết quả sẽ hiện ngay lập tức. Tích hợp AI cho kết quả dịch tự nhiên, chính xác nhất.
 
 ## ⚡ Tính năng
 - **Dịch đa ngôn ngữ**: Hỗ trợ 13+ ngôn ngữ sang tiếng Việt
@@ -55,9 +55,17 @@ Tiện ích sử dụng **Groq AI API** để dịch và phát âm. Bạn cần:
 </p>
 
 
+## 📋 Changelog
+### 🚀 Phiên bản mới nhất
+- **Auto-update**: Tự động kiểm tra cập nhật mỗi 6 giờ
+- **Font đa ngôn ngữ**: Noto Sans & Source Sans Pro
+- **UI hiện đại**: Popup bo tròn, gradient, shadow đẹp mắt
+- **Manifest V3**: Tương thích với tiêu chuẩn mới nhất
+
+📖 **Xem chi tiết**: [CHANGELOG.md](./CHANGELOG.md)
+
 ## 🐛 Báo lỗi & Góp ý
 Gửi phản hồi hoặc ý tưởng qua [GitHub](https://github.com/KimiZK-Dev/KimiZK-Translator/issues)
-
 
 ## ⚠️ Lưu ý
 - **Hỗ trợ đa ngôn ngữ**: 13+ ngôn ngữ sang tiếng Việt

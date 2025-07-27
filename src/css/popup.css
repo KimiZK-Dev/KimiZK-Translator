@@ -503,3 +503,60 @@ body {
         transform: translate(-50%, -50%) rotate(360deg);
     }
 }
+
+/* Popup Update Modal Animations */
+@keyframes xt-fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes xt-slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Popup Update Modal Styles */
+.xt-popup-update-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    animation: xt-fadeIn 0.3s ease;
+}
+
+.xt-popup-update-modal {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    max-width: 400px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    animation: xt-slideUp 0.3s ease;
+}
+
+.xt-popup-update-modal button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.xt-popup-update-modal button:active {
+    transform: translateY(0);
+}

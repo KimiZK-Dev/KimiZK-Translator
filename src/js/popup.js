@@ -8,6 +8,8 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("version").textContent = "1.2.0";
     }
 
+    // Tự động kiểm tra cập nhật khi mở popup (sẽ được gọi sau khi định nghĩa hàm)
+
     // Hiển thị thời gian (UTC+07:00)
     const updateTime = () => {
         const now = new Date();
@@ -225,46 +227,70 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // Thay thế nút kiểm tra phiên bản mới bằng nút tải bản mới nhất
-    const downloadBtn = document.getElementById('download-latest-btn');
-    const downloadStatus = document.getElementById('download-status');
+    // Nút kiểm tra cập nhật
+    const checkUpdateBtn = document.getElementById('check-update-btn');
 
-    // Tải bản mới nhất từ GitHub
-    function downloadLatestRelease() {
-        downloadBtn.classList.add('loading');
-        downloadBtn.textContent = 'Đang tải...';
-        downloadBtn.disabled = true;
-        downloadStatus.style.display = 'none';
+    // Kiểm tra cập nhật và hiện bảng ở giữa màn hình
+    function checkForUpdatesAndShowModal() {
+        checkUpdateBtn.classList.add('loading');
+        checkUpdateBtn.textContent = 'Đang kiểm tra...';
+        checkUpdateBtn.disabled = true;
 
-        fetch('https://api.github.com/repos/KimiZK-Dev/KimiZK-Translator/releases/latest')
-            .then(response => response.json())
-            .then(data => {
-                const asset = data.assets && data.assets.find(a => a.name.endsWith('.zip'));
-                if (asset && asset.browser_download_url) {
-                    window.open(asset.browser_download_url, '_blank');
-                    downloadStatus.textContent = 'Đã mở tab tải về bản mới nhất. Vui lòng làm theo hướng dẫn bên dưới để cập nhật.';
-                    downloadStatus.className = 'status-message success';
-                    downloadStatus.style.display = 'block';
-                } else {
-                    downloadStatus.textContent = 'Không tìm thấy file .zip trong bản phát hành mới nhất.';
-                    downloadStatus.className = 'status-message error';
-                    downloadStatus.style.display = 'block';
+        // Delay 1.5s để tạo cảm giác loading
+        setTimeout(() => {
+            // Gọi background script để kiểm tra cập nhật
+            chrome.runtime.sendMessage({action: "getLatestVersion"}, (response) => {
+                if (chrome.runtime.lastError) {
+                    console.log('Error checking updates:', chrome.runtime.lastError);
+                    showNotification('Không thể kiểm tra cập nhật', 'error');
+                    resetCheckUpdateBtn();
+                    return;
                 }
-            })
-            .catch(() => {
-                downloadStatus.textContent = 'Không thể kết nối tới GitHub. Vui lòng thử lại sau.';
-                downloadStatus.className = 'status-message error';
-                downloadStatus.style.display = 'block';
-            })
-            .finally(() => {
-                downloadBtn.classList.remove('loading');
-                downloadBtn.textContent = '⬇️ Tải bản mới nhất';
-                downloadBtn.disabled = false;
+                
+                console.log('Update check response:', response);
+                
+                if (response && response.hasUpdate) {
+                    // Hiện modal cập nhật ở giữa màn hình
+                    showUpdateModalInPage(response);
+                } else if (response && response.latestVersion) {
+                    showNotification('Đang sử dụng phiên bản mới nhất', 'success');
+                } else {
+                    showNotification('Không thể kiểm tra cập nhật', 'error');
+                }
+                
+                resetCheckUpdateBtn();
             });
+        }, 1500); // Loading 1.5 giây
     }
 
-    if (downloadBtn) {
-        downloadBtn.addEventListener('click', downloadLatestRelease);
+    function resetCheckUpdateBtn() {
+        checkUpdateBtn.classList.remove('loading');
+        checkUpdateBtn.textContent = '🔍 Kiểm tra bản cập nhật';
+        checkUpdateBtn.disabled = false;
+    }
+
+    // Hiện modal cập nhật ở giữa màn hình (không phải trong popup)
+    function showUpdateModalInPage(updateInfo) {
+        // Gửi message đến content script để hiện modal
+        chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+            if (tabs[0]) {
+                chrome.tabs.sendMessage(tabs[0].id, {
+                    action: "showUpdateModal",
+                    updateInfo: updateInfo
+                }).catch((error) => {
+                    console.log('Failed to send update modal to tab:', error);
+                    // Fallback: hiện thông báo trong popup
+                    showUpdateNotificationInPopup(updateInfo);
+                });
+            } else {
+                // Fallback: hiện thông báo trong popup
+                showUpdateNotificationInPopup(updateInfo);
+            }
+        });
+    }
+
+    if (checkUpdateBtn) {
+        checkUpdateBtn.addEventListener('click', checkForUpdatesAndShowModal);
     }
 
     // Add ripple effect to buttons
@@ -320,5 +346,146 @@ document.addEventListener("DOMContentLoaded", () => {
             setTimeout(() => notification.remove(), 300);
         }, duration);
     }
+
+    // Hàm kiểm tra cập nhật khi mở popup
+    function checkForUpdatesOnPopupLoad() {
+        console.log('Checking for updates on popup load...');
+        
+        // Gọi background script để kiểm tra cập nhật
+        chrome.runtime.sendMessage({action: "getLatestVersion"}, (response) => {
+            if (chrome.runtime.lastError) {
+                console.log('Error checking updates:', chrome.runtime.lastError);
+                return;
+            }
+            
+            console.log('Update check response:', response);
+            
+            if (response && response.hasUpdate) {
+                // Hiện thông báo cập nhật trong popup
+                showUpdateNotificationInPopup(response);
+            } else if (response && response.latestVersion) {
+                // Hiện thông tin phiên bản mới nhất
+                showVersionInfoInPopup(response);
+            }
+        });
+    }
+
+    // Hiện thông báo cập nhật trong popup
+    function showUpdateNotificationInPopup(updateInfo) {
+        // Tạo overlay cho popup
+        const overlay = document.createElement('div');
+        overlay.className = 'xt-popup-update-overlay';
+        overlay.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            animation: xt-fadeIn 0.3s ease;
+        `;
+
+        // Tạo modal cập nhật
+        const modal = document.createElement('div');
+        modal.className = 'xt-popup-update-modal';
+        modal.style.cssText = `
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 400px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            animation: xt-slideUp 0.3s ease;
+        `;
+
+        // Nội dung modal
+        modal.innerHTML = `
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div style="font-size: 48px; margin-bottom: 16px;">🚀</div>
+                <h2 style="margin: 0 0 8px 0; color: #1f2937; font-size: 20px;">Có phiên bản mới!</h2>
+                <p style="margin: 0; color: #6b7280; font-size: 14px;">${updateInfo.releaseName}</p>
+            </div>
+            
+            <div style="margin-bottom: 20px; padding: 16px; background: #f8fafc; border-radius: 8px; border-left: 4px solid #10b981;">
+                <h4 style="margin: 0 0 12px 0; color: #374151; font-size: 14px;">📋 Thông tin cập nhật:</h4>
+                <div style="font-size: 13px; color: #6b7280; line-height: 1.5;">
+                    ${updateInfo.releaseNotes ? updateInfo.releaseNotes.substring(0, 200) + '...' : 'Không có thông tin chi tiết.'}
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 12px;">
+                <button id="xt-popup-update-btn" style="
+                    flex: 1;
+                    background: linear-gradient(135deg, #10b981, #059669);
+                    color: white;
+                    border: none;
+                    padding: 12px 20px;
+                    border-radius: 8px;
+                    font-size: 14px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                ">📦 Cập nhật ngay</button>
+                <button id="xt-popup-later-btn" style="
+                    flex: 1;
+                    background: transparent;
+                    color: #6b7280;
+                    border: 2px solid #e5e7eb;
+                    padding: 12px 20px;
+                    border-radius: 8px;
+                    font-size: 14px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                ">Sau</button>
+            </div>
+        `;
+
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+
+        // Event handlers
+        document.getElementById('xt-popup-update-btn').addEventListener('click', () => {
+            // Gọi background script để thực hiện cập nhật
+            chrome.runtime.sendMessage({action: "performUpdate"}, (response) => {
+                if (response && response.success) {
+                    showNotification('Đang tải về phiên bản mới...', 'success');
+                    overlay.remove();
+                } else {
+                    showNotification('Không thể cập nhật. Vui lòng thử lại.', 'error');
+                }
+            });
+        });
+
+        document.getElementById('xt-popup-later-btn').addEventListener('click', () => {
+            overlay.remove();
+        });
+
+        // Đóng khi click ngoài modal
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                overlay.remove();
+            }
+        });
+    }
+
+    // Hiện thông tin phiên bản trong popup
+    function showVersionInfoInPopup(versionInfo) {
+        // Cập nhật thông tin phiên bản trong popup
+        const versionElement = document.getElementById('version');
+        if (versionElement && versionInfo.latestVersion) {
+            versionElement.textContent = versionInfo.latestVersion;
+            versionElement.style.color = '#10b981';
+        }
+    }
+
+    // Không tự động kiểm tra cập nhật nữa, user sẽ nhấn nút để kiểm tra
+    console.log('Popup loaded - ready for manual update check');
 });
 });

@@ -1,0 +1,254 @@
+/* Dynamic Styles - Các styles được thay đổi bằng JavaScript */
+
+/* Animation classes */
+.xt-fade-out {
+    animation: xt-fadeOut 0.3s ease !important;
+}
+
+.xt-slide-down {
+    animation: xt-slideDown 0.3s ease !important;
+}
+
+.xt-fade-in {
+    animation: xt-fadeIn 0.3s ease !important;
+}
+
+.xt-slide-up {
+    animation: xt-slideUp 0.3s ease !important;
+}
+
+/* Display states */
+.xt-hidden {
+    display: none !important;
+}
+
+.xt-visible {
+    display: block !important;
+}
+
+.xt-flex {
+    display: flex !important;
+}
+
+/* Opacity states */
+.xt-opacity-0 {
+    opacity: 0 !important;
+}
+
+.xt-opacity-1 {
+    opacity: 1 !important;
+}
+
+/* Transform states */
+.xt-transform-none {
+    transform: none !important;
+}
+
+.xt-transform-up {
+    transform: translateY(-2px) !important;
+}
+
+.xt-transform-down {
+    transform: translateY(2px) !important;
+}
+
+/* Color states */
+.xt-color-success {
+    color: #10b981 !important;
+}
+
+.xt-color-error {
+    color: #ef4444 !important;
+}
+
+.xt-color-warning {
+    color: #f59e0b !important;
+}
+
+/* Background states */
+.xt-bg-success {
+    background: #f0fdf4 !important;
+}
+
+.xt-bg-error {
+    background: #fef2f2 !important;
+}
+
+.xt-bg-warning {
+    background: #fef3c7 !important;
+}
+
+/* Shadow states */
+.xt-shadow-none {
+    box-shadow: none !important;
+}
+
+.xt-shadow-lg {
+    box-shadow: var(--shadow-lg) !important;
+}
+
+/* User select */
+.xt-user-select-none {
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+}
+
+.xt-user-select-auto {
+    user-select: auto !important;
+    -webkit-user-select: auto !important;
+    -moz-user-select: auto !important;
+    -ms-user-select: auto !important;
+}
+
+/* Transition states */
+.xt-transition-none {
+    transition: none !important;
+}
+
+.xt-transition-all {
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+}
+
+/* Position states */
+.xt-position-fixed {
+    position: fixed !important;
+}
+
+.xt-position-absolute {
+    position: absolute !important;
+}
+
+.xt-position-relative {
+    position: relative !important;
+}
+
+/* Z-index states */
+.xt-z-max {
+    z-index: 2147483647 !important;
+}
+
+.xt-z-high {
+    z-index: 999999 !important;
+}
+
+.xt-z-normal {
+    z-index: 1 !important;
+}
+
+/* Width/Height states */
+.xt-w-full {
+    width: 100% !important;
+}
+
+.xt-h-full {
+    height: 100% !important;
+}
+
+.xt-w-screen {
+    width: 100vw !important;
+}
+
+.xt-h-screen {
+    height: 100vh !important;
+}
+
+/* Progress bar states */
+.xt-progress-0 {
+    width: 0% !important;
+}
+
+.xt-progress-25 {
+    width: 25% !important;
+}
+
+.xt-progress-50 {
+    width: 50% !important;
+}
+
+.xt-progress-75 {
+    width: 75% !important;
+}
+
+.xt-progress-100 {
+    width: 100% !important;
+}
+
+/* Notification states */
+.xt-notification-show {
+    opacity: 1 !important;
+    transform: translateY(0) scale(1) !important;
+}
+
+.xt-notification-hide {
+    opacity: 0 !important;
+    transform: translateY(-10px) scale(0.95) !important;
+}
+
+.xt-notification-slide-in {
+    transform: translateX(0) !important;
+}
+
+.xt-notification-slide-out {
+    transform: translateX(100%) !important;
+}
+
+/* Popup states */
+.xt-popup-show {
+    opacity: 1 !important;
+    transform: translateY(0) scale(1) !important;
+}
+
+.xt-popup-hide {
+    opacity: 0 !important;
+    transform: translateY(-10px) scale(0.95) !important;
+}
+
+/* Modal states */
+.xt-modal-show {
+    display: flex !important;
+    opacity: 1 !important;
+}
+
+.xt-modal-hide {
+    display: none !important;
+    opacity: 0 !important;
+}
+
+/* Button states */
+.xt-btn-disabled {
+    opacity: 0.7 !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+}
+
+.xt-btn-enabled {
+    opacity: 1 !important;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+}
+
+/* Error message states */
+.xt-error-show {
+    display: block !important;
+}
+
+.xt-error-hide {
+    display: none !important;
+}
+
+/* Loading states */
+.xt-loading {
+    opacity: 0.7 !important;
+    pointer-events: none !important;
+}
+
+.xt-loading-spinner {
+    animation: xt-spin 1s linear infinite !important;
+}
+
+@keyframes xt-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+} 

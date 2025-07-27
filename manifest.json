@@ -10,7 +10,8 @@
 		"storage",
 		"notifications",
 		"tabs",
-		"management"
+		"management",
+		"downloads"
 	],
 	"host_permissions": [
 		"<all_urls>",
@@ -41,7 +42,7 @@
 				"src/js/trigger.js",
 				"src/js/main.js"
 			],
-			"css": ["src/css/fonts.css", "src/css/styles.css", "src/css/update_modal.css"]
+			"css": ["src/css/fonts.css", "src/css/styles.css", "src/css/update_modal.css", "src/css/update_notification.css", "src/css/dynamic.css"]
 		}
 	],
 	"web_accessible_resources": [
@@ -55,7 +56,9 @@
 				"src/html/popup.html",
 				"src/css/popup.css",
 				"src/css/fonts.css",
-				"src/css/update_modal.css"
+				"src/css/update_modal.css",
+				"src/css/update_notification.css",
+				"src/css/dynamic.css"
 			],
 			"matches": ["<all_urls>"]
 		}

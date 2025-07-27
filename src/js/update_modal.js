@@ -102,6 +102,17 @@ class UpdateModal {
         document.getElementById('helpBtn').addEventListener('click', () => this.showHelp());
         document.getElementById('closeHelpBtn').addEventListener('click', () => this.hideHelp());
         
+        // Close help modal when clicking outside
+        this.helpModal.addEventListener('click', (e) => {
+            if (e.target === this.helpModal) {
+                this.hideHelp();
+            }
+        });
+        
+        // Help modal events
+        document.getElementById('helpBtn').addEventListener('click', () => this.showHelp());
+        document.getElementById('closeHelpBtn').addEventListener('click', () => this.hideHelp());
+        
         // Close modal when clicking overlay
         this.modal.addEventListener('click', (e) => {
             if (e.target === this.modal) {
@@ -498,7 +509,9 @@ class UpdateModal {
             console.log('Update response:', response);
             
             if (response.success) {
-                this.showUpdateSuccess();
+                // Hiện hướng dẫn cài đặt thủ công
+                const releaseName = this.updateInfo.releaseName || `KimiZK-Translator-v${this.updateInfo.latestVersion}`;
+                this.showInstallationGuide(releaseName);
             } else {
                 this.showUpdateError(response.error || 'Không thể cập nhật');
             }
@@ -513,30 +526,7 @@ class UpdateModal {
         }
     }
 
-    showUpdateSuccess() {
-        // Update modal content to show success
-        const title = document.querySelector('.update-modal-title');
-        const content = document.querySelector('.update-modal-content');
-        const buttons = document.querySelector('.update-modal-buttons');
-        
-        title.textContent = '🎉 Cập nhật thành công!';
-        title.style.color = '#4ade80';
-        
-        content.innerHTML = `
-            <div class="update-version-info">
-                <div class="new-version">✅ ${this.updateInfo.releaseName || `KimiZK-Translator v${this.updateInfo.latestVersion}`} đã được cài đặt!</div>
-            </div>
-            <div style="text-align: center; margin-top: 20px;">
-                <p>Extension sẽ tự động khởi động lại trong vài giây...</p>
-            </div>
-        `;
-        
-        buttons.innerHTML = `
-            <button class="update-btn remind-later-btn" onclick="location.reload()">
-                <span>🔄 Khởi động lại ngay</span>
-            </button>
-        `;
-    }
+
 
     showUpdateError(error) {
         const title = document.querySelector('.update-modal-title');
@@ -583,6 +573,64 @@ class UpdateModal {
             });
         }
     }
+
+    getExtensionsUrl() {
+        // Trả về URL an toàn cho mọi trình duyệt
+        return 'chrome://extensions/';
+    }
+
+    showInstallationGuide(releaseName) {
+        // Hiện help modal với hướng dẫn cài đặt thủ công
+        this.showHelp();
+        
+        // Cập nhật nội dung help modal
+        const helpContent = document.querySelector('.help-content');
+        helpContent.innerHTML = `
+            <h4>📦 ${releaseName} đã được tải về!</h4>
+            <p style="color: #10b981; margin-bottom: 20px; font-weight: 600;">
+                ✅ Vui lòng làm theo hướng dẫn bên dưới để cài đặt.
+            </p>
+            
+            <h4>🔧 Hướng dẫn cài đặt thủ công:</h4>
+            <ol style="margin: 16px 0; padding-left: 20px;">
+                <li><strong>Giải nén file:</strong> Tìm file <code>${releaseName}.zip</code> trong thư mục bạn vừa tải về và giải nén</li>
+                <li><strong>Mở trang quản lý tiện ích:</strong> 
+                    <button id="openExtensionsBtn" style="background: #3b82f6; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; margin: 4px 0;">
+                        🔗 Mở trang quản lý tiện ích
+                    </button>
+                    <br><small style="color: #6b7280;">Hoặc gõ <code>chrome://extensions/</code> vào thanh địa chỉ</small>
+                </li>
+                <li><strong>Bật Developer mode:</strong> Tìm và bật công tắc "Developer mode" (thường ở góc phải trên)</li>
+                <li><strong>Tải extension mới:</strong> Nhấn "Load unpacked" (Tải tệp đã giải nén) và chọn thư mục đã giải nén</li>
+                <li><strong>Khởi động lại:</strong> Nhấn nút Refresh (🔄) trên extension và refresh trang web, hoặc khởi động lại trình duyệt</li>
+            </ol>
+            
+            <div style="background: #1f2937; border: 1px solid #374151; border-radius: 8px; padding: 12px; margin-top: 16px; color: #f9fafb;">
+                <strong>💡 Lưu ý quan trọng:</strong>
+                <ul style="margin: 8px 0 0 16px;">
+                    <li>Extension này không update qua Chrome Web Store</li>
+                    <li>Chỉ update qua GitHub releases</li>
+                    <li>Sau khi cài đặt, hãy cấu hình lại API Key nếu cần</li>
+                </ul>
+            </div>
+        `;
+        
+        // Thêm event listener cho button
+        setTimeout(() => {
+            const openExtensionsBtn = document.getElementById('openExtensionsBtn');
+            if (openExtensionsBtn) {
+                // Xóa event listener cũ nếu có
+                openExtensionsBtn.replaceWith(openExtensionsBtn.cloneNode(true));
+                const newBtn = document.getElementById('openExtensionsBtn');
+                
+                newBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    chrome.runtime.sendMessage({action: 'openExtensionsPage'});
+                });
+            }
+        }, 100);
+    }
 }
 
 // Initialize update modal
@@ -595,6 +643,14 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             updateModal = new UpdateModal();
         }
         updateModal.show(request.updateInfo);
+        sendResponse({ success: true });
+    }
+    
+    if (request.action === 'showInstallationGuide') {
+        if (!updateModal) {
+            updateModal = new UpdateModal();
+        }
+        updateModal.showInstallationGuide(request.releaseName);
         sendResponse({ success: true });
     }
 });

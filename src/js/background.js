@@ -84,24 +84,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         console.log('Getting latest version info from GitHub');
         checkForUpdates().then(updateInfo => {
             console.log('Latest version info:', updateInfo);
-            // Hiển thị modal nếu có cập nhật, thông báo nếu không
-            if (updateInfo.hasUpdate) {
-                chrome.tabs.query({}, (tabs) => {
-                    tabs.forEach(tab => {
-                        chrome.tabs.sendMessage(tab.id, {
-                            action: "showUpdateModal",
-                            updateInfo: updateInfo
-                        }).catch((error) => {
-                            console.log('Failed to send update modal to tab', tab.id, ':', error);
-                        });
-                    });
-                });
-            } else if (updateInfo.latestVersion) {
-                showUpdateNotification(
-                    '📋 Phiên bản mới nhất trên GitHub', 
-                    `${updateInfo.releaseName || `KimiZK-Translator v${updateInfo.latestVersion}`} - Đang sử dụng phiên bản mới nhất`
-                );
-            }
             sendResponse(updateInfo);
         }).catch(error => {
             console.error('Error getting latest version:', error);
@@ -114,6 +96,43 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         return true;
     }
     
+    if (request.action === "openExtensionsPage") {
+        console.log('Opening extensions page');
+        chrome.tabs.create({ url: 'chrome://extensions/' }, (tab) => {
+            if (chrome.runtime.lastError) {
+                console.error('Error opening extensions page:', chrome.runtime.lastError);
+                sendResponse({ success: false, error: chrome.runtime.lastError.message });
+            } else {
+                console.log('Extensions page opened successfully');
+                sendResponse({ success: true });
+            }
+        });
+        return true;
+    }
+    
+    if (request.action === "showUpdateModal") {
+        console.log('Showing update modal from popup');
+        checkForUpdates().then(updateInfo => {
+            if (updateInfo.hasUpdate) {
+                chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+                    if (tabs[0]) {
+                        chrome.tabs.sendMessage(tabs[0].id, {
+                            action: "showUpdateModal",
+                            updateInfo: updateInfo
+                        }).catch((error) => {
+                            console.log('Failed to send update modal to active tab:', error);
+                        });
+                    }
+                });
+            }
+            sendResponse(updateInfo);
+        }).catch(error => {
+            console.error('Error showing update modal:', error);
+            sendResponse({ error: error.message });
+        });
+        return true;
+    }
+    
     // Default response for unknown actions
     console.log('Unknown action:', request.action);
     sendResponse({ error: 'Unknown action' });
@@ -122,47 +141,18 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 // Xử lý cài đặt và cập nhật extension - Đã được di chuyển lên trên
 
-// Xử lý khi service worker được kích hoạt
+// Xử lý khi service worker được kích hoạt (chỉ khi khởi động trình duyệt)
 chrome.runtime.onStartup.addListener(() => {
-    console.log('KimiZK-Translator Service Worker started');
-    // Check update ngay khi khởi động
+    console.log('KimiZK-Translator Service Worker started - Browser startup');
+    // Check update ngay khi khởi động trình duyệt
     setTimeout(() => {
         checkForUpdatesOnStartup();
         scheduleUpdateCheck();
     }, 2000); // Delay 2 giây để đảm bảo browser đã sẵn sàng
 });
 
-// Thêm listener cho khi tab được tạo mới
-chrome.tabs.onCreated.addListener((tab) => {
-    // Kiểm tra cập nhật khi tab mới được tạo (ngầm)
-    setTimeout(() => {
-        chrome.storage.local.get(['lastUpdateCheck', 'updateReminderTime'], (result) => {
-            const now = Date.now();
-            const lastCheck = result.lastUpdateCheck || 0;
-            const reminderTime = result.updateReminderTime || 0;
-            
-            // Kiểm tra nếu đã qua 6 giờ hoặc reminder time đã đến
-            if ((now - lastCheck > UPDATE_CHECK_INTERVAL) || (now > reminderTime)) {
-                console.log('Checking for updates on new tab creation...');
-                checkForUpdates().then(updateInfo => {
-                    if (updateInfo.hasUpdate) {
-                        // Gửi modal cập nhật đến tab mới
-                        setTimeout(() => {
-                            chrome.tabs.sendMessage(tab.id, {
-                                action: "showUpdateModal",
-                                updateInfo: updateInfo
-                            }).catch((error) => {
-                                console.log('Failed to send update modal to new tab:', error);
-                            });
-                        }, 3000); // Delay 3 giây để tab load xong
-                    }
-                }).catch(error => {
-                    console.error('Error checking updates on new tab:', error);
-                });
-            }
-        });
-    }, 1000);
-});
+// Không kiểm tra cập nhật khi tab mới được tạo để tránh spam
+// Chỉ kiểm tra khi khởi động trình duyệt
 
 // Thêm listener cho khi extension được cài đặt/cập nhật
 chrome.runtime.onInstalled.addListener((details) => {
@@ -233,20 +223,13 @@ function checkForUpdatesOnStartup() {
                 // Lưu thời gian check
                 chrome.storage.local.set({ lastUpdateCheck: now });
                 
-                // Hiển thị modal cập nhật nếu có phiên bản mới
+                // Chỉ hiện thông báo khi khởi động trình duyệt, không gửi modal đến tabs
                 if (updateInfo.hasUpdate) {
-                    chrome.tabs.query({}, (tabs) => {
-                        console.log('Found tabs:', tabs.length);
-                        tabs.forEach(tab => {
-                            console.log('Sending update modal to tab:', tab.id);
-                            chrome.tabs.sendMessage(tab.id, {
-                                action: "showUpdateModal",
-                                updateInfo: updateInfo
-                            }).catch((error) => {
-                                console.log('Failed to send update modal to tab', tab.id, ':', error);
-                            });
-                        });
-                    });
+                    // Hiển thị thông báo cập nhật khi khởi động trình duyệt
+                    showUpdateNotification(
+                        '🚀 Có phiên bản mới!', 
+                        `${updateInfo.releaseName} sẵn sàng cập nhật. Nhấn vào icon tiện ích để cập nhật ngay!`
+                    );
                 } else {
                     // Hiển thị thông báo về phiên bản mới nhất nếu không có cập nhật
                     if (updateInfo.latestVersion) {
@@ -290,18 +273,11 @@ function scheduleUpdateCheck() {
                 
                 if (updateInfo.hasUpdate) {
                     console.log('Update available in periodic check:', updateInfo);
-                    // Gửi modal cập nhật đến tất cả tabs
-                    chrome.tabs.query({}, (tabs) => {
-                        console.log('Found tabs for periodic check:', tabs.length);
-                        tabs.forEach(tab => {
-                            chrome.tabs.sendMessage(tab.id, {
-                                action: "showUpdateModal",
-                                updateInfo: updateInfo
-                            }).catch((error) => {
-                                console.log('Failed to send update modal to tab', tab.id, ':', error);
-                            });
-                        });
-                    });
+                    // Chỉ hiện thông báo, không gửi modal đến tabs
+                    showUpdateNotification(
+                        '🚀 Có phiên bản mới!', 
+                        `${updateInfo.releaseName} sẵn sàng cập nhật. Nhấn vào icon tiện ích để cập nhật ngay!`
+                    );
                 }
             }).catch(error => {
                 console.error('Error in periodic update check:', error);
@@ -316,16 +292,29 @@ function scheduleUpdateCheck() {
 async function checkForUpdates() {
     try {
         console.log('Checking for updates... Current version:', CURRENT_VERSION);
+        
+        // Fetch latest release từ GitHub API
         const response = await fetch(GITHUB_RELEASES_URL);
-        if (!response.ok) throw new Error('Failed to fetch release info');
+        if (!response.ok) {
+            throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
+        }
         
         const releaseData = await response.json();
-        const latestVersion = releaseData.tag_name.replace('v', '');
+        const latestVersion = releaseData.tag_name.replace('v', ''); // Remove 'v' prefix
+        const releaseName = releaseData.name || `KimiZK-Translator v${latestVersion}`;
+        const releaseBody = releaseData.body || 'Không có thông tin chi tiết cho phiên bản này.';
         
-        console.log('Latest version from GitHub:', latestVersion);
+        // Tìm file .zip trong assets để lấy browser_download_url
+        const zipAsset = releaseData.assets?.find(asset => 
+            asset.name && asset.name.toLowerCase().includes('.zip')
+        );
         
-        // Luôn trả về thông tin phiên bản mới nhất từ GitHub
-        console.log('Latest version from GitHub:', latestVersion);
+        const downloadUrl = zipAsset ? zipAsset.browser_download_url : releaseData.html_url;
+        const directDownloadUrl = zipAsset ? zipAsset.browser_download_url : null;
+        
+        console.log('Latest version from GitHub API:', latestVersion);
+        console.log('Release name:', releaseName);
+        console.log('Direct download URL:', directDownloadUrl);
         
         if (latestVersion !== CURRENT_VERSION) {
             console.log('Update available!');
@@ -333,10 +322,11 @@ async function checkForUpdates() {
                 hasUpdate: true,
                 currentVersion: CURRENT_VERSION,
                 latestVersion: latestVersion,
-                releaseNotes: releaseData.body,
-                downloadUrl: releaseData.html_url,
-                releaseName: releaseData.name || `KimiZK-Translator v${latestVersion}`,
-                message: `🚀 Có phiên bản mới ${latestVersion} sẵn sàng cập nhật! ${releaseData.name || `KimiZK-Translator v${latestVersion}`} với Auto-update, hỗ trợ 13+ ngôn ngữ, UI hiện đại, Manifest V3!`
+                releaseNotes: releaseBody,
+                downloadUrl: downloadUrl,
+                directDownloadUrl: directDownloadUrl,
+                releaseName: releaseName,
+                message: `🚀 Có phiên bản mới ${latestVersion} sẵn sàng cập nhật! ${releaseName} với Auto-update, hỗ trợ 13+ ngôn ngữ, UI hiện đại, Manifest V3!`
             };
         } else {
             console.log('No update available - using latest version');
@@ -344,8 +334,8 @@ async function checkForUpdates() {
                 hasUpdate: false,
                 currentVersion: CURRENT_VERSION,
                 latestVersion: latestVersion,
-                releaseName: releaseData.name || `KimiZK-Translator v${latestVersion}`,
-                message: `✅ Đang sử dụng ${releaseData.name || `KimiZK-Translator v${latestVersion}`} - phiên bản mới nhất với Auto-update, hỗ trợ 13+ ngôn ngữ, UI hiện đại, Manifest V3`
+                releaseName: releaseName,
+                message: `✅ Đang sử dụng ${releaseName} - phiên bản mới nhất với Auto-update, hỗ trợ 13+ ngôn ngữ, UI hiện đại, Manifest V3`
             };
         }
     } catch (error) {
@@ -362,140 +352,87 @@ async function checkForUpdates() {
 // Thực hiện cập nhật tự động
 async function performUpdate() {
     try {
-        // Lấy thông tin release mới nhất
+        // Fetch latest release từ GitHub API để lấy thông tin version mới nhất
         const response = await fetch(GITHUB_RELEASES_URL);
-        if (!response.ok) throw new Error('Failed to fetch release info');
-        
-        const releaseData = await response.json();
-        const downloadUrl = releaseData.assets?.[0]?.browser_download_url;
-        
-        if (!downloadUrl) {
-            throw new Error('No download URL found in release');
+        if (!response.ok) {
+            throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
         }
         
-        console.log('Downloading update from:', downloadUrl);
+        const releaseData = await response.json();
+        const latestVersion = releaseData.tag_name.replace('v', ''); // Remove 'v' prefix
+        const releaseName = releaseData.name || `KimiZK-Translator v${latestVersion}`;
         
-        // Download file extension mới
-        const downloadResponse = await fetch(downloadUrl);
-        if (!downloadResponse.ok) throw new Error('Failed to download update');
+        // Tìm file .zip trong assets để lấy browser_download_url
+        const zipAsset = releaseData.assets?.find(asset => 
+            asset.name && asset.name.toLowerCase().includes('.zip')
+        );
         
-        const blob = await downloadResponse.blob();
-        
-        // Tạo URL cho blob
-        const blobUrl = URL.createObjectURL(blob);
-        
-        // Tự động cài đặt extension mới
-        try {
-            // Sử dụng chrome.management API để cài đặt extension
-            const installResult = await installExtensionFromBlob(blob);
+        if (zipAsset && zipAsset.browser_download_url) {
+            console.log('Direct download URL found:', zipAsset.browser_download_url);
             
-            if (installResult.success) {
-                            showUpdateNotification(
-                '🎉 Cập nhật thành công!', 
-                `${releaseData.name || `KimiZK-Translator v${releaseData.tag_name}`} đã được cập nhật thành công!`
-            );
-                
-                // Reload extension sau khi cài đặt
-                setTimeout(() => {
-                    chrome.runtime.reload();
-                }, 2000);
-                
-                return { 
-                    success: true, 
-                    message: 'Update installed successfully',
-                    newVersion: releaseData.tag_name
-                };
-            } else {
-                throw new Error(installResult.error);
-            }
-            
-        } catch (installError) {
-            console.error('Installation failed:', installError);
-            
-            // Fallback: Mở tab download để user cài đặt thủ công
-            chrome.tabs.create({
-                url: downloadUrl,
-                active: true
+            // Tải trực tiếp từ browser_download_url
+            chrome.downloads.download({
+                url: zipAsset.browser_download_url,
+                filename: zipAsset.name || `KimiZK-Translator-v${latestVersion}.zip`,
+                saveAs: false
+            }, (downloadId) => {
+                if (chrome.runtime.lastError) {
+                    console.error('Download error:', chrome.runtime.lastError);
+                    // Fallback: mở trang releases
+                    chrome.tabs.create({
+                        url: releaseData.html_url,
+                        active: true
+                    });
+                } else {
+                    console.log('Download started with ID:', downloadId);
+                }
             });
             
-                    showUpdateNotification(
-            '📦 Tải về thành công!', 
-            `${releaseData.name || `KimiZK-Translator v${releaseData.tag_name}`} đã được tải về. Vui lòng làm theo hướng dẫn trong tab vừa mở để cài đặt phiên bản mới với Auto-update, hỗ trợ 13+ ngôn ngữ, UI hiện đại, Manifest V3!`
-        );
+            // Hiện bảng hướng dẫn cài đặt thủ công
+            showInstallationGuide(releaseName);
             
             return { 
                 success: true, 
                 message: 'Update downloaded successfully',
-                downloadUrl: downloadUrl
+                downloadUrl: zipAsset.browser_download_url,
+                newVersion: latestVersion,
+                releaseName: releaseName
+            };
+        } else {
+            // Fallback: mở trang releases nếu không tìm thấy file zip
+            console.log('No zip file found, opening releases page:', releaseData.html_url);
+            
+            chrome.tabs.create({
+                url: releaseData.html_url,
+                active: true
+            });
+            
+            showUpdateNotification(
+                '📦 Tải về thủ công!', 
+                `${releaseName} - Vui lòng tải về từ trang GitHub Releases trong tab vừa mở!`
+            );
+            
+            return { 
+                success: true, 
+                message: 'Update download page opened successfully',
+                downloadUrl: releaseData.html_url,
+                newVersion: latestVersion,
+                releaseName: releaseName
             };
         }
         
     } catch (error) {
         console.error('Error performing update:', error);
-        
-        // Fallback: Mở trang releases để user download thủ công
-        chrome.tabs.create({
-            url: 'https://github.com/KimiZK-Dev/KimiZK-Translator/releases',
-            active: true
-        });
-        
-        showUpdateNotification(
-            '⚠️ Không thể tải tự động', 
-            'Đã mở trang GitHub Releases để bạn tải về và cài đặt thủ công. Phiên bản mới có Auto-update, hỗ trợ 13+ ngôn ngữ, UI hiện đại, Manifest V3!'
-        );
-        
         return { 
             success: false, 
             error: error.message,
-            fallbackUrl: 'https://github.com/KimiZK-Dev/KimiZK-Translator/releases'
+            message: 'Không thể thực hiện cập nhật: ' + error.message
         };
     }
 }
 
-// Hàm cài đặt extension từ blob
-async function installExtensionFromBlob(blob) {
-    return new Promise((resolve) => {
-        try {
-            // Tạo file reader để đọc blob
-            const reader = new FileReader();
-            reader.onload = async function(e) {
-                try {
-                    // Chuyển đổi blob thành base64
-                    const base64Data = e.target.result.split(',')[1];
-                    
-                    // Sử dụng chrome.management API để cài đặt
-                    chrome.management.install({
-                        data: base64Data,
-                        callback: (result) => {
-                            if (chrome.runtime.lastError) {
-                                resolve({
-                                    success: false,
-                                    error: chrome.runtime.lastError.message
-                                });
-                            } else {
-                                resolve({
-                                    success: true,
-                                    result: result
-                                });
-                            }
-                        }
-                    });
-                } catch (error) {
-                    resolve({
-                        success: false,
-                        error: error.message
-                    });
-                }
-            };
-            reader.readAsDataURL(blob);
-        } catch (error) {
-            resolve({
-                success: false,
-                error: error.message
-            });
-        }
-    });
-}
+// Hàm cài đặt extension từ blob đã được loại bỏ vì không cần thiết
+// Giờ sử dụng chrome.downloads.download trực tiếp từ browser_download_url
 
 // Hiển thị thông báo cập nhật
 function showUpdateNotification(title, message) {
@@ -538,4 +475,30 @@ function showUpdateNotification(title, message) {
             console.error('Final fallback notification failed:', finalError);
         }
     }
-} 
+}
+
+// Hiển thị bảng hướng dẫn cài đặt thủ công
+function showInstallationGuide(releaseName) {
+    // Gửi message đến content script để hiện bảng hướng dẫn
+    chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+        if (tabs[0]) {
+            chrome.tabs.sendMessage(tabs[0].id, {
+                action: "showInstallationGuide",
+                releaseName: releaseName
+            }).catch((error) => {
+                console.log('Failed to send installation guide to tab:', error);
+                // Fallback: hiện thông báo đơn giản
+                showUpdateNotification(
+                    '📦 Tải về thành công!', 
+                    `${releaseName} đã được tải về. Vui lòng làm theo hướng dẫn cài đặt thủ công!`
+                );
+            });
+        } else {
+            // Fallback: hiện thông báo đơn giản
+            showUpdateNotification(
+                '📦 Tải về thành công!', 
+                `${releaseName} đã được tải về. Vui lòng làm theo hướng dẫn cài đặt thủ công!`
+            );
+        }
+    });
+}
