@@ -4,8 +4,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const version = chrome.runtime.getManifest().version;
         document.getElementById("version").textContent = version;
     } catch (error) {
-        // Fallback for demo
-        document.getElementById("version").textContent = "1.2.0";
+        console.error('Không thể lấy phiên bản từ manifest:', error);
+        document.getElementById("version").textContent = "N/A";
     }
 
     // Tự động kiểm tra cập nhật khi mở popup (sẽ được gọi sau khi định nghĩa hàm)

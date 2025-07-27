@@ -4,7 +4,7 @@
 	"version": "1.0.3",
 	"description": "Dịch đa ngôn ngữ sang tiếng Việt khi bôi đen, hiển thị popup hiện đại, phát âm, copy, thông báo đẹp, kéo popup tự do. Tích hợp AI, hỗ trợ nhận diện tự động ngôn ngữ gốc, dịch nghĩa, ví dụ, đồng nghĩa, biến thể, phát âm chuẩn IPA, copy nhanh, thông báo thân thiện.",
 	"permissions": [
-		"scripting",
+		"scripting",	
 		"activeTab",
 		"clipboardWrite",
 		"storage",
