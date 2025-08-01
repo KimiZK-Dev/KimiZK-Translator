@@ -3,7 +3,7 @@
 ## 🚀 **Version 1.0.4 (Latest)**
 
 ### ✨ **Tính năng & Cải tiến nổi bật**
-
+ 
 #### 🎵 **Hệ thống âm thanh nâng cao**
 - **Cache âm thanh thông minh** - tái sử dụng nhanh chóng, tránh lãng phí lượt gửi yêu cầu API
 - **Điều khiển audio** - cải tiến hoàn thiện chức năng một cách mượt mà
