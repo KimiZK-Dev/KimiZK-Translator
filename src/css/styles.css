@@ -1,0 +1,851 @@
+/* Import font Inter từ Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+/* Reset và namespace */
+.xt-translator-popup {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    width: 300px;
+    max-height: 70vh;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.1);
+    font-size: 13px;
+    line-height: 1.4;
+    color: #1f2a44;
+    z-index: 2147483647 !important;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-sizing: border-box;
+    pointer-events: auto;
+}
+
+.xt-translator-header {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    color: white;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 12px 12px 0 0;
+    position: relative;
+    cursor: move;
+    pointer-events: auto;
+}
+
+.xt-translator-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(255,255,255,0.15) 0%, transparent 100%);
+    pointer-events: none;
+}
+
+.xt-translator-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.xt-translator-icon {
+    font-size: 16px;
+    opacity: 0.85;
+}
+
+.xt-translator-word {
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.xt-translator-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    z-index: 999999;
+}
+
+.xt-translator-minimize,
+.xt-translator-close {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.xt-translator-minimize:hover,
+.xt-translator-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+}
+
+.xt-translator-close:hover {
+    background: rgba(239, 68, 68, 0.9);
+}
+
+.xt-translator-content {
+    max-height: 60vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #d1d5db transparent;
+}
+
+.xt-translator-content::-webkit-scrollbar {
+    width: 5px;
+}
+
+.xt-translator-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.xt-translator-content::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 3px;
+}
+
+.xt-translator-content::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+}
+
+.xt-translator-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 16px;
+    gap: 12px;
+    color: #6b7280;
+}
+
+.xt-loading-spinner {
+    width: 26px;
+    height: 26px;
+    border: 3px solid #e5e7eb;
+    border-top: 3px solid #4f46e5;
+    border-radius: 50%;
+    animation: xt-spin 1s linear infinite;
+}
+
+@keyframes xt-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.xt-translator-error {
+    text-align: center;
+    padding: 30px 16px;
+    color: #ef4444;
+}
+
+.xt-error-icon {
+    font-size: 40px;
+    margin-bottom: 12px;
+}
+
+.xt-error-subtitle {
+    font-size: 11px;
+    color: #9ca3af;
+    display: block;
+    margin-top: 6px;
+}
+
+.xt-translator-main {
+    padding: 16px;
+    background: linear-gradient(180deg, #f9fafb 0%, #ffffff 100%);
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.xt-main-info {
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.xt-word-title {
+    font-size: 14px;
+    font-weight: 700 !important;
+    color: #111827;
+    margin: 6px 0;
+}
+
+.xt-word-title-single {
+    font-size: 18px;
+    font-weight: 700 !important;
+    color: #111827;
+    margin: 6px 0;
+}
+
+.xt-word-title-text {
+    font-size: 14px;
+    font-weight: 700 !important;
+    color: #111827;
+    margin: 6px 0;
+}
+
+.xt-language-info {
+    text-align: center;
+    margin: 8px 0;
+}
+
+.xt-language-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #06b6d4, #0891b2);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    box-shadow: 0 2px 4px rgba(6, 182, 212, 0.3);
+}
+
+.xt-phonetic {
+    font-size: 13px;
+    color: #4f46e5;
+    font-style: italic;
+    margin-bottom: 4px;
+}
+
+.xt-part-of-speech {
+    display: inline-block !important;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed) !important;
+    color: white !important;
+    padding: 4px 12px !important;
+    border-radius: 16px !important;
+    font-size: 11px !important;
+    font-weight: 500 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.3px !important;
+    min-width: 50px !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    box-shadow: 0 2px 5px rgba(79, 70, 229, 0.3) !important;
+}
+
+.xt-meaning,
+.xt-description,
+.xt-translation {
+    margin-bottom: 14px;
+}
+
+.xt-meaning h3,
+.xt-description h3,
+.xt-translation h3 {
+    font-size: 12px;
+    font-weight: 600;
+    color: #1f2a44;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.xt-meaning p,
+.xt-description p,
+.xt-translation p {
+    font-size: 13px;
+    color: #374151;
+    line-height: 1.5;
+    margin: 0 0 10px
+}
+
+.xt-translator-secondary {
+    padding: 16px;
+}
+
+.xt-section {
+    margin-bottom: 16px;
+}
+
+.xt-section:last-child {
+    margin-bottom: 0;
+}
+
+.xt-section h3 {
+    font-size: 12px;
+    font-weight: 600;
+    color: #1f2a44;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.xt-section-icon {
+    font-size: 14px;
+}
+
+.xt-examples-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.xt-example-item {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 12px;
+    transition: all 0.2s ease;
+}
+
+.xt-example-item:hover {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+    transform: translateY(-1px);
+}
+
+.xt-example-en {
+    font-style: italic;
+    color: #1f2a44;
+    margin-bottom: 5px;
+    font-size: 12px;
+}
+
+.xt-example-vi {
+    color: #6b7280;
+    font-size: 11px;
+    line-height: 1.3;
+}
+
+.xt-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.xt-tag {
+    background: linear-gradient(135deg, #e5e7eb, #d1d5db) !important;
+    color: #1f2a44 !important;
+    padding: 3px 8px !important;
+    border-radius: 14px !important;
+    font-size: 11px !important;
+    font-weight: 500 !important;
+    border: 1px solid #e5e7eb !important;
+    transition: all 0.2s ease !important;
+    cursor: default !important;
+    display: inline-block !important;
+    box-sizing: border-box !important;
+    white-space: nowrap !important;
+}
+
+.xt-tag:hover {
+    background: linear-gradient(135deg, #d1d5db, #9ca3af);
+    transform: translateY(-1px);
+}
+
+.xt-no-data {
+    color: #9ca3af;
+    font-style: italic;
+    font-size: 11px;
+}
+
+.xt-translator-footer {
+    background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+    border-top: 1px solid #e5e7eb;
+    padding: 10px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10px;
+}
+
+.xt-footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: 600;
+    color: #4f46e5;
+}
+
+.xt-brand-icon {
+    font-size: 11px;
+}
+
+.xt-footer-info {
+    color: #9ca3af;
+    font-size: 9px;
+}
+
+.xt-action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.xt-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(79, 70, 229, 0.2);
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    color: white;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.xt-action-btn:hover {
+    background: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(79, 70, 229, 0.3);
+}
+
+.xt-action-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.xt-btn-icon {
+    font-size: 15px;
+}
+
+.xt-btn-text {
+    font-size: 12px;
+}
+
+.xt-audio-controls {
+    position: fixed;
+    width: 220px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(12px);
+}
+
+.xt-audio-player {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.xt-audio-progress {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.xt-progress-bar {
+    position: relative;
+    height: 8px;
+    background: #e5e7eb;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.xt-progress-fill {
+    height: 100%;
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    border-radius: 4px;
+    transition: width 0.1s ease;
+}
+
+.xt-progress-handle {
+    position: absolute;
+    top: -4px;
+    width: 14px;
+    height: 14px;
+    background: #ffffff;
+    border: 2px solid #4f46e5;
+    border-radius: 50%;
+    transform: translateX(-50%);
+    cursor: grab;
+}
+
+.xt-progress-handle:active {
+    cursor: grabbing;
+}
+
+.xt-time-display {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #374151;
+}
+
+.xt-audio-volume {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.xt-volume-icon {
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.xt-volume-slider {
+    flex: 1;
+}
+
+.xt-volume-input {
+    width: 100%;
+    height: 8px;
+    appearance: none;
+    -webkit-appearance: none;
+    background: #e5e7eb;
+    border-radius: 4px;
+    outline: none;
+}
+
+.xt-volume-input::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    background: #ffffff;
+    border: 2px solid #4f46e5;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.xt-volume-input::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: #ffffff;
+    border: 2px solid #4f46e5;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.xt-trigger-icon {
+    position: fixed;
+    width: 32px;
+    height: 32px;
+    background: #F5F6F5;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
+}
+
+.xt-trigger-icon:hover {
+    background: #d1d1d1;
+    transform: scale(1.1);
+}
+
+.xt-trigger-icon img {
+    width: 20px;
+    height: 20px;
+}
+
+.xt-notification {
+    position: fixed;
+    width: 220px;
+    background: rgba(255,255,255,0.98);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 4px 16px rgba(0,0,0,0.08);
+    border: 1px solid #e5e7eb;
+    backdrop-filter: blur(12px);
+    z-index: 2147483648;
+    animation: xt-fadein 0.3s;
+    font-size: 13px;
+    color: #1f2a44;
+    margin-top: 8px;
+    overflow: hidden;
+}
+
+.xt-notification-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px 6px 12px;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.xt-notification-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.xt-notification-icon {
+    font-size: 14px;
+    flex-shrink: 0;
+    opacity: 0.9;
+}
+
+.xt-notification-close {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    background: rgba(239, 68, 68, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.2s;
+    color: #ef4444;
+    border: none;
+}
+
+.xt-notification-close:hover {
+    background: #ef4444;
+    color: #fff;
+    transform: scale(1.05);
+}
+
+.xt-notification-body {
+    padding: 6px 12px 10px 12px;
+}
+
+.xt-notification-message {
+    font-size: 12px;
+    color: #374151;
+    word-break: break-word;
+    line-height: 1.4;
+    letter-spacing: 0.01em;
+}
+
+.xt-notification-footer {
+    padding: 6px 12px 10px 12px;
+    border-top: 1px solid #f3f4f6;
+    background: #f9fafb;
+}
+
+.xt-notification-timer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    font-size: 10px;
+    color: #6b7280;
+}
+
+.xt-timer-text {
+    font-weight: 500;
+}
+
+.xt-timer-count {
+    background: #e5e7eb;
+    color: #374151;
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-weight: 600;
+    min-width: 16px;
+    text-align: center;
+    font-size: 9px;
+}
+
+.xt-notification-success {
+    border-color: #22c55e;
+    background: linear-gradient(90deg, #f0fdf4 0%, #dcfce7 100%);
+}
+.xt-notification-error {
+    border-color: #ef4444;
+    background: linear-gradient(90deg, #fef2f2 0%, #fee2e2 100%);
+}
+.xt-notification-warning {
+    border-color: #f59e42;
+    background: linear-gradient(90deg, #fff7ed 0%, #fef3c7 100%);
+}
+.xt-notification-info {
+    border-color: #6366f1;
+    background: linear-gradient(90deg, #f3f4f6 0%, #e0e7ff 100%);
+}
+
+.xt-notification-audio-error {
+    border-color: #dc2626;
+    background: linear-gradient(90deg, #fef2f2 0%, #fee2e2 100%);
+}
+
+.xt-notification-audio-error .xt-notification-header {
+    background: linear-gradient(90deg, #dc2626 0%, #b91c1c 100%);
+    color: white;
+}
+
+.xt-notification-audio-error .xt-notification-title {
+    color: white;
+}
+
+.xt-notification-audio-error .xt-notification-close {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.xt-notification-audio-error .xt-notification-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    color: white;
+}
+
+/* Bảng nhập API KEY */
+.xt-apikey-overlay {
+    position: fixed;
+    left: 0; top: 0;
+    width: 100vw; height: 100vh;
+    z-index: 2147483648;
+    background: rgba(60, 60, 90, 0.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.xt-apikey-box {
+    position: relative;
+    background: linear-gradient(135deg, #f9fafb 0%, #e0e7ff 100%);
+    border-radius: 18px;
+    box-shadow: 0 8px 32px rgba(79,70,229,0.18);
+    padding: 32px 28px;
+    min-width: 320px;
+    max-width: 90vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1.5px solid #e5e7eb;
+}
+.xt-apikey-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #4f46e5;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.xt-apikey-desc {
+    font-size: 13px;
+    color: #374151;
+    margin-bottom: 18px;
+    text-align: center;
+}
+.xt-apikey-input {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    font-size: 14px;
+    margin-bottom: 18px;
+    outline: none;
+}
+.xt-apikey-save {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    color: white;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 0;
+    width: 100%;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.xt-apikey-save:hover {
+    background: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%);
+}
+.xt-apikey-error {
+    color: #ef4444;
+    font-size: 12px;
+    margin-top: 10px;
+    display: none;
+}
+.xt-apikey-desc a {
+    color: #4f46e5;
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+/* Nút đóng bảng API Key */
+.xt-apikey-close {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: rgba(107, 114, 128, 0.1);
+    color: #6b7280;
+    border-radius: 50%;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    z-index: 1;
+}
+
+.xt-apikey-close:hover {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    transform: scale(1.1);
+}
+
+.xt-apikey-close:active {
+    transform: scale(0.95);
+}
+
+@media (max-width: 480px) {
+    .xt-translator-popup {
+        width: 280px;
+        max-height: 65vh;
+    }
+    
+    .xt-translator-main {
+        padding: 14px;
+    }
+    
+    .xt-translator-secondary {
+        padding: 14px;
+    }
+    
+    .xt-audio-controls {
+        width: 200px;
+    }
+    
+    .xt-notification {
+        width: 200px;
+        font-size: 11px;
+    }
+    .xt-notification-message {
+        font-size: 11px;
+    }
+}
+
+@keyframes xt-fadein {
+    from {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Đã bỏ font-family cứng, chỉ giữ lại font mặc định cho từng thành phần như ban đầu */
+:root, html, body, #xt-apikey-overlay, .xt-apikey-box, .xt-apikey-title, .xt-apikey-desc, .xt-apikey-input, .xt-apikey-save, .xt-apikey-error,
+.xt-translator-popup, .xt-translator-header, .xt-translator-title, .xt-translator-word, .xt-translator-content, .xt-main-info, .xt-word-title, .xt-phonetic, .xt-part-of-speech, .xt-meaning, .xt-description, .xt-translation, .xt-section, .xt-tags, .xt-tag, .xt-no-data, .xt-translator-footer, .xt-footer-brand, .xt-footer-info, .xt-action-btn, .xt-btn-icon, .xt-btn-text, .xt-audio-controls, .xt-audio-player, .xt-audio-progress, .xt-progress-bar, .xt-progress-fill, .xt-progress-handle, .xt-time-display, .xt-audio-volume, .xt-volume-icon, .xt-volume-slider, .xt-volume-input, .xt-trigger-icon, .xt-notification, .xt-notification-content, .xt-notification-icon, .xt-notification-message, .xt-notification-close, .xt-notification-success, .xt-notification-error, .xt-notification-warning, .xt-notification-info {
+    font-style: normal !important;
+    font-weight: 400 !important;
+}

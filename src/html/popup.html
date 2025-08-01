@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KimiZK-Translator - Cài đặt</title>
+    <link rel="stylesheet" href="../css/fonts.css">
+    <link rel="stylesheet" href="../css/popup.css">
+</head>
+<body>
+    <div class="xt-popup-container">
+        <div class="header">
+            <h1>🌐 KimiZK-Translator</h1>
+            <div class="subtitle">Trình dịch đa ngôn ngữ thông minh & nhanh chóng</div>
+        </div>
+        
+        <div class="version-info">
+            <span>Phiên bản: <span class="version" id="version">--</span></span>
+            <span id="current-time">--:--:--</span>
+        </div>
+
+        <div class="content">
+            <div class="section">
+                <h2 class="section-title">⚙️ Cài đặt</h2>
+                <div class="xt-card">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-custom">
+                            <input type="checkbox" id="update-notifications">
+                        </div>
+                        <label for="update-notifications">Bật thông báo cập nhật phiên bản mới</label>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <button id="check-update-btn" class="btn btn-primary">
+                            🔍 Kiểm tra bản cập nhật
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">🌍 Cài đặt ngôn ngữ</h2>
+                <div class="xt-card">
+                    <div class="form-group">
+                        <label class="form-label" for="target-language-select">Ngôn ngữ dịch đích</label>
+                        <div class="language-selector">
+                            <select id="target-language-select" class="form-select" title="Chuột phải để thêm vào yêu thích">
+                                <option value="Vietnamese">Tiếng Việt</option>
+                                <option value="English">English</option>
+                                <option value="Japanese">日本語</option>
+                                <option value="Korean">한국어</option>
+                                <option value="Chinese">中文</option>
+                                <option value="French">Français</option>
+                                <option value="German">Deutsch</option>
+                                <option value="Spanish">Español</option>
+                                <option value="Italian">Italiano</option>
+                                <option value="Russian">Русский</option>
+                                <option value="Portuguese">Português</option>
+                                <option value="Thai">ไทย</option>
+                                <option value="Indonesian">Bahasa Indonesia</option>
+                                <option value="Malay">Bahasa Melayu</option>
+                                <option value="Arabic">العربية</option>
+                                <option value="Hindi">हिन्दी</option>
+                            </select>
+                            <button id="custom-language-btn" class="btn btn-secondary">Thêm</button>
+                        </div>
+                        <div class="language-info">
+                            <div class="info-icon">!</div>
+                            <div class="current-language-display">
+                                <span class="current-language-label">Ngôn ngữ hiện tại:</span>
+                                <span class="current-language-value" id="current-language-display">Tiếng Việt</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="recent-languages">
+                        <h4>🕒 Ngôn ngữ gần đây</h4>
+                        <div id="recent-languages-list" class="language-tags">
+                            <!-- Recent languages will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <div class="favorite-languages">
+                        <h4>⭐ Ngôn ngữ yêu thích</h4>
+                        <div id="favorite-languages-list" class="language-tags">
+                            <!-- Favorite languages will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">🔑 Quản lý API Key</h2>
+                <div class="xt-card">
+                    <div class="form-group">
+                        <label class="form-label" for="api-key-input">API Key</label>
+                        <input 
+                            type="password" 
+                            id="api-key-input" 
+                            class="form-input"
+                            placeholder="Nhập API Key mới..." 
+                            disabled
+                        >
+                        <button id="save-api-key" class="btn btn-primary" disabled>
+                            💾 Lưu API Key
+                        </button>
+                        <div id="api-key-status" class="status-message error">
+                            Vui lòng nhập API Key hợp lệ
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">🔗 Liên kết</h2>
+                <div class="xt-card">
+                    <div class="links-grid">
+                        <button id="github-link" class="btn-link github">
+                            <span>🌐</span>
+                            GitHub
+                        </button>
+                        <button id="facebook-link" class="btn-link facebook">
+                            <span>📘</span>
+                            Facebook
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Test section để kiểm tra scroll -->
+            <div class="section">
+                <h2 class="section-title">📝 Thông tin thêm</h2>
+                <div class="xt-card">
+                    <p style="margin-bottom: 16px; color: var(--text-secondary); font-size: 13px;">
+                        Tiện ích KimiZK-Translator hỗ trợ dịch đa ngôn ngữ sang tiếng Việt nhanh chóng và chính xác.
+                    </p>
+                    <div style="background: var(--primary-light); padding: 12px; border-radius: var(--radius-md); margin-bottom: 12px;">
+                        <strong>✨ Tính năng chính:</strong>
+                        <ul style="margin: 8px 0 0 16px; font-size: 12px; color: var(--text-secondary);">
+                            <li>Dịch đa ngôn ngữ sang 16+ ngôn ngữ đích</li>
+                            <li>Nhận diện tự động ngôn ngữ gốc</li>
+                            <li>Phát âm chuẩn IPA</li>
+                            <li>Tra cứu chi tiết từ đơn</li>
+                            <li>Popup kéo thả tự do</li>
+                            <li>Quản lý ngôn ngữ yêu thích & gần đây</li>
+                        </ul>
+                    </div>
+                    <div style="background: var(--border-light); padding: 12px; border-radius: var(--radius-md);">
+                        <strong>🔧 Hướng dẫn:</strong>
+                        <p style="margin: 8px 0 0 0; font-size: 12px; color: var(--text-secondary);">
+                            Bôi đen văn bản bất kỳ ngôn ngữ nào trên web, nhấn vào biểu tượng dịch xuất hiện để xem kết quả.
+                        </p>
+                    </div>
+                    <div style="background: linear-gradient(135deg, #e0f7fa, #b2ebf2); padding: 12px; border-radius: var(--radius-md); margin-top: 12px;">
+                        <strong>🔄 Auto-Update:</strong>
+                        <p style="margin: 8px 0 0 0; font-size: 12px; color: var(--text-secondary);">
+                            Extension tự động kiểm tra cập nhật mỗi 6 giờ. Khi có bản mới, thông báo sẽ hiển thị ở giữa màn hình.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">📝 Hướng dẫn cập nhật thủ công</h2>
+                <div class="xt-card">
+                    <ol style="font-size: 13px; color: var(--text-secondary); padding-left: 18px;">
+                        <li>Nhấn nút <b>"Tải bản mới nhất"</b> ở trên để tải file .zip từ GitHub.</li>
+                        <li>Giải nén file .zip vừa tải về.</li>
+                        <li>Mở <b>chrome://extensions/</b> trên trình duyệt.</li>
+                        <li>Bật <b>Chế độ nhà phát triển (Developer mode)</b>.</li>
+                        <li>Nhấn <b>"Tải tiện ích đã giải nén"</b> (Load unpacked).</li>
+                        <li>Chọn thư mục vừa giải nén để cập nhật tiện ích.</li>
+                        <li>Xong! Tiện ích sẽ được cập nhật lên phiên bản mới nhất.</li>
+                    </ol>
+                    <div style="margin-top: 8px; font-size: 12px; color: var(--error);">
+                        * Nếu gặp lỗi, hãy xóa bản cũ trước rồi thêm lại bản mới.
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">💡 Lưu ý</h2>
+                <div class="xt-card">
+                                            <p style="margin-bottom: 12px; font-size: 13px; color: var(--text-secondary);">
+                            • Hỗ trợ dịch đa ngôn ngữ sang 16+ ngôn ngữ đích<br>
+                            • Nhận diện tự động ngôn ngữ gốc<br>
+                            • Yêu cầu kết nối internet<br>
+                            • Cần API Key để sử dụng<br>
+                            • Tối ưu cho văn bản ngắn<br>
+                            • Quản lý ngôn ngữ yêu thích & gần đây
+                        </p>
+                    <div style="text-align: center; padding: 8px; background: linear-gradient(135deg, var(--primary-light), var(--accent-light)); border-radius: var(--radius-md);">
+                        <span style="font-size: 11px; color: var(--primary); font-weight: 600;">Made with ❤️ by KimiZK</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/popup.js"></script>
+</body>
+</html>

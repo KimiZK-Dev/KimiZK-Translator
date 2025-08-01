@@ -1,0 +1,81 @@
+{
+	"manifest_version": 3,
+	"name": "KimiZK-Translator",
+	"version": "1.0.4",
+	"description": "Dịch đa ngôn ngữ sang tiếng Việt khi bôi đen, hiển thị popup hiện đại, phát âm, copy, thông báo đẹp, kéo popup tự do. Tích hợp AI, hỗ trợ nhận diện tự động ngôn ngữ gốc, dịch nghĩa, ví dụ, đồng nghĩa, biến thể, phát âm chuẩn IPA, copy nhanh, thông báo thân thiện.",
+	"permissions": [
+		"scripting",	
+		"activeTab",
+		"clipboardWrite",
+		"storage",
+		"notifications",
+		"tabs",
+		"management",
+		"downloads"
+	],
+	"host_permissions": [
+		"<all_urls>",
+		"https://api.groq.com/openai/v1/chat/completions",
+		"https://api.groq.com/openai/v1/audio/speech",
+		"https://api.github.com/repos/KimiZK-Dev/KimiZK-Translator/releases"
+	],
+	"background": {
+		"service_worker": "src/js/background.js"
+	},
+	"content_security_policy": {
+		"extension_pages": "script-src 'self'; object-src 'self'; media-src 'self' blob: data:;"
+	},
+	"action": {
+		"default_popup": "src/html/popup.html"
+	},
+	"content_scripts": [
+		{
+			"matches": ["<all_urls>"],
+			"js": [
+				"src/js/core/config.js",
+				"src/js/core/storage.js",
+				"src/js/core/utils.js",
+				"src/js/core/api.js",
+				"src/js/core/audio.js",
+				"src/js/core/notifications.js",
+				"src/js/core/ui.js",
+				"src/js/main.js"
+			],
+			"css": [
+				"src/css/fonts.css",
+				"src/css/styles.css",
+				"src/css/update_modal.css",
+				"src/css/update_notification.css",
+				"src/css/dynamic.css"
+			],
+			"run_at": "document_end"
+		}
+	],
+	"web_accessible_resources": [
+		{
+			"resources": [
+				"src/icons/icon16.png",
+				"src/icons/icon32.png",
+				"src/icons/icon24.png",
+				"src/icons/icon64.png",
+				"src/icons/icon128.png",
+				"src/html/popup.html",
+				"src/css/popup.css",
+				"src/css/fonts.css",
+				"src/css/update_modal.css",
+				"src/css/update_notification.css",
+				"src/css/dynamic.css"
+			],
+			"matches": ["<all_urls>"]
+		}
+	],
+	"icons": {
+		"16": "src/icons/icon16.png",
+		"24": "src/icons/icon24.png",
+		"32": "src/icons/icon32.png",
+		"64": "src/icons/icon64.png",
+		"128": "src/icons/icon128.png",
+		"156": "src/icons/icon156.png",
+		"512": "src/icons/icon512.png"
+	}
+}
