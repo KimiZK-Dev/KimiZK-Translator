@@ -17,7 +17,7 @@ const TranslationManager = {
         
         // Debug: Log cache info on startup
         // setTimeout(() => {
-        //     console.log('Audio cache info:', AudioManager.getCacheInfo());
+        //     // console.log('Audio cache info:', AudioManager.getCacheInfo());
         // }, 1000);
     },
     
@@ -48,7 +48,14 @@ const TranslationManager = {
      */
     async _handleTextSelection(e) {
         try {
-            const selected = window.getSelection().toString().trim();
+            const selection = window.getSelection();
+            if (!selection || selection.rangeCount === 0) {
+                return;
+            }
+            
+            const selected = selection.toString().trim();
+            // console.log('Selected text:', selected);
+            
             if (!selected || 
                 e.target.closest('.xt-translator-popup') || 
                 e.target.closest('.xt-audio-controls') || 
@@ -57,10 +64,11 @@ const TranslationManager = {
             }
 
             UIManager.triggerIcon?.remove();
-            const selectionRect = window.getSelection().getRangeAt(0).getBoundingClientRect();
+            const selectionRect = selection.getRangeAt(0).getBoundingClientRect();
             UIManager.createTriggerIcon(selectionRect);
 
             UIManager.triggerIcon.addEventListener('click', async () => {
+                // console.log('Trigger icon clicked, selected text:', selected);
                 await this._handleTranslation(selected, selectionRect);
             });
             
@@ -76,10 +84,20 @@ const TranslationManager = {
      * @param {DOMRect} selectionRect - Selection rectangle
      */
     async _handleTranslation(selected, selectionRect) {
+        // Validate selected text at the beginning
+        if (!selected || typeof selected !== 'string' || selected.trim().length === 0) {
+            console.error('Invalid selected text:', selected);
+            NotificationManager.show('Văn bản được chọn không hợp lệ. Vui lòng thử lại.', 'error');
+            return;
+        }
+
+        let displayText;
+        let content;
+        
         try {
             UIManager.triggerIcon.remove();
             const isSingleWord = selected.split(/\s+/).length === 1 && selected.length <= 50;
-            const displayText = Utils.capitalizeFirstWord(selected);
+            displayText = Utils.capitalizeFirstWord(selected);
             
             // Store the original selected text for audio
             this._lastSelectedText = selected;
@@ -101,7 +119,7 @@ const TranslationManager = {
                 popup.style.transform = 'translateY(0) scale(1)';
             });
 
-            const content = popup.querySelector(".xt-translator-content");
+            content = popup.querySelector(".xt-translator-content");
             this._setupPopupControls(popup);
 
             // Get target language from storage
@@ -127,7 +145,20 @@ const TranslationManager = {
             if (error.message === 'API_KEY_NOT_FOUND') {
                 UIManager.showApiKeyPrompt();
             } else if (error.message === 'INVALID_API_RESPONSE') {
-                content.innerHTML = this._createErrorHTML(displayText);
+                // Use the content variable if available, otherwise find it
+                if (content) {
+                    const errorDisplayText = displayText || selected || 'Văn bản không xác định';
+                    content.innerHTML = this._createErrorHTML(errorDisplayText);
+                } else {
+                    const popup = document.querySelector('.xt-translator-popup');
+                    if (popup) {
+                        const contentElement = popup.querySelector(".xt-translator-content");
+                        if (contentElement) {
+                            const errorDisplayText = displayText || selected || 'Văn bản không xác định';
+                            contentElement.innerHTML = this._createErrorHTML(errorDisplayText);
+                        }
+                    }
+                }
                 NotificationManager.show('API trả về dữ liệu không hợp lệ. Vui lòng thử lại.', 'error');
             } else {
                 NotificationManager.show('Có lỗi xảy ra khi dịch. Vui lòng thử lại.', 'error');
@@ -213,7 +244,9 @@ const TranslationManager = {
 
         const copyBtn = content.querySelector('.xt-copy-btn');
         if (copyBtn) {
-            UIManager.setupCopyButton(copyBtn, result.translated);
+            // For single word, copy the meaning; for text, copy the translation
+            const textToCopy = isSingleWord ? (result.meaning || '') : (result.translated || '');
+            UIManager.setupCopyButton(copyBtn, textToCopy);
         }
     },
     

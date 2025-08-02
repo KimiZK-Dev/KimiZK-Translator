@@ -18,6 +18,7 @@ class UpdateModal {
         const modalHTML = `
             <div class="update-modal-overlay" id="updateModalOverlay" style="display: none;">
                 <div class="update-modal">
+                    <div class="help-btn-overlay" id="helpBtnOverlay" title="Hướng dẫn cập nhật"></div>
                     <button class="help-btn" id="helpBtn" title="Hướng dẫn cập nhật">?</button>
                     
                     <div class="update-modal-header">
@@ -75,7 +76,7 @@ class UpdateModal {
                     <ol>
                         <li>Tải file .zip từ GitHub Releases</li>
                         <li>Giải nén file vào thư mục mới</li>
-                        <li>Mở Chrome, vào chrome://extensions/</li>
+                        <li>Mở Chrome, vào <span class="copyable-url" data-url="chrome://extensions/">chrome://extensions/</span></li>
                         <li>Bật "Developer mode" (góc phải trên)</li>
                         <li>Xóa extension cũ (nếu có)</li>
                         <li>Nhấn "Load unpacked" và chọn thư mục mới</li>
@@ -91,6 +92,13 @@ class UpdateModal {
         
         document.body.insertAdjacentHTML('beforeend', helpModalHTML);
         this.helpModal = document.getElementById('helpModal');
+        
+        // Ensure help modal is properly initialized
+        if (!this.helpModal) {
+            console.error('Help modal not found after creation');
+        } else {
+            // console.log('Help modal initialized successfully');
+        }
     }
 
     bindEvents() {
@@ -98,8 +106,30 @@ class UpdateModal {
         document.getElementById('updateNowBtn').addEventListener('click', () => this.performUpdate());
         document.getElementById('remindLaterBtn').addEventListener('click', () => this.remindLater());
         
-        // Help modal events
-        document.getElementById('helpBtn').addEventListener('click', () => this.showHelp());
+        // Help modal events - bind to both overlay and button
+        const helpBtnOverlay = document.getElementById('helpBtnOverlay');
+        const helpBtn = document.getElementById('helpBtn');
+        
+        // console.log('Help button elements found:', { helpBtnOverlay: !!helpBtnOverlay, helpBtn: !!helpBtn });
+        
+        if (helpBtnOverlay) {
+            helpBtnOverlay.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                // console.log('Help overlay clicked');
+                this.showHelp();
+            });
+        }
+        
+        if (helpBtn) {
+            helpBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                // console.log('Help button clicked');
+                this.showHelp();
+            });
+        }
+        
         document.getElementById('closeHelpBtn').addEventListener('click', () => this.hideHelp());
         
         // Close help modal when clicking outside
@@ -108,10 +138,6 @@ class UpdateModal {
                 this.hideHelp();
             }
         });
-        
-        // Help modal events
-        document.getElementById('helpBtn').addEventListener('click', () => this.showHelp());
-        document.getElementById('closeHelpBtn').addEventListener('click', () => this.hideHelp());
         
         // Close modal when clicking overlay
         this.modal.addEventListener('click', (e) => {
@@ -135,6 +161,13 @@ class UpdateModal {
                 } else if (this.isVisible) {
                     this.hide();
                 }
+            }
+        });
+        
+        // Copyable URL functionality
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('copyable-url')) {
+                this.copyToClipboard(e.target.dataset.url, e.target);
             }
         });
     }
@@ -173,11 +206,51 @@ class UpdateModal {
     }
 
     showHelp() {
+        // console.log('Help button clicked - showing help modal');
         this.helpModal.classList.add('show');
     }
 
     hideHelp() {
         this.helpModal.classList.remove('show');
+    }
+
+    async copyToClipboard(text, element) {
+        try {
+            await navigator.clipboard.writeText(text);
+            
+            // Show success feedback
+            const originalText = element.textContent;
+            element.textContent = 'Đã copy!';
+            element.style.background = 'linear-gradient(135deg, var(--success), var(--success-light))';
+            
+            // Reset after 2 seconds
+            setTimeout(() => {
+                element.textContent = originalText;
+                element.style.background = 'linear-gradient(135deg, var(--pastel-blue), var(--pastel-purple))';
+            }, 2000);
+            
+            // console.log('URL copied to clipboard:', text);
+        } catch (err) {
+            console.error('Failed to copy URL:', err);
+            
+            // Fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            
+            // Show success feedback
+            const originalText = element.textContent;
+            element.textContent = 'Đã copy!';
+            element.style.background = 'linear-gradient(135deg, var(--success), var(--success-light))';
+            
+            setTimeout(() => {
+                element.textContent = originalText;
+                element.style.background = 'linear-gradient(135deg, var(--pastel-blue), var(--pastel-purple))';
+            }, 2000);
+        }
     }
 
     updateFeaturesList(releaseNotes) {
@@ -638,7 +711,10 @@ let updateModal;
 
 // Listen for messages from background script
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    // console.log('Update modal received message:', request.action);
+    
     if (request.action === 'showUpdateModal') {
+        // console.log('Showing update modal with info:', request.updateInfo);
         if (!updateModal) {
             updateModal = new UpdateModal();
         }
@@ -647,6 +723,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }
     
     if (request.action === 'showInstallationGuide') {
+        // console.log('Showing installation guide for:', request.releaseName);
         if (!updateModal) {
             updateModal = new UpdateModal();
         }

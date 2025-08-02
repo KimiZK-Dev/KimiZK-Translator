@@ -1,11 +1,12 @@
+/* KimiZK Translator - Fonts Configuration with Inter Font */
 /* Import Google Fonts cho tiện ích đa ngôn ngữ */
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&family=Source+Sans+Pro:wght@300;400;600;700&family=Noto+Sans+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 /* Font variables cho tiện ích đa ngôn ngữ */
 :root {
-    --xt-font-primary: 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif !important;
-    --xt-font-secondary: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif !important;
-    --xt-font-mono: 'Noto Sans Mono', 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace !important;
+    --xt-font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif !important;
+    --xt-font-secondary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif !important;
+    --xt-font-mono: 'Inter', 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace !important;
 }
 
 /* Áp dụng font cho tất cả elements của tiện ích */
@@ -16,7 +17,11 @@
 .xt-apikey-overlay,
 .xt-apikey-overlay *,
 .xt-update-modal,
-.xt-update-modal * {
+.xt-update-modal *,
+.update-modal-overlay,
+.update-modal-overlay *,
+.xt-update-overlay,
+.xt-update-overlay * {
     font-family: var(--xt-font-primary) !important;
 }
 
@@ -38,7 +43,9 @@
 .xt-translator-popup,
 .xt-notification,
 .xt-apikey-overlay,
-.xt-update-modal {
+.xt-update-modal,
+.update-modal-overlay,
+.xt-update-overlay {
     font-family: var(--xt-font-primary) !important;
     font-synthesis: none !important;
     -webkit-font-smoothing: antialiased !important;
@@ -52,7 +59,9 @@
 .xt-meaning h3,
 .xt-section h3,
 .xt-notification-title,
-.xt-apikey-title {
+.xt-apikey-title,
+.update-modal-title,
+.xt-update-title {
     font-family: var(--xt-font-primary) !important;
     font-weight: 600 !important;
 }
@@ -62,7 +71,9 @@
 .xt-example-en,
 .xt-example-vi,
 .xt-notification-message,
-.xt-apikey-desc {
+.xt-apikey-desc,
+.update-modal-subtitle,
+.xt-update-subtitle {
     font-family: var(--xt-font-primary) !important;
     font-weight: 400 !important;
 }
@@ -70,7 +81,9 @@
 /* Font cho input fields */
 .xt-apikey-input,
 .xt-translator-popup input,
-.xt-translator-popup textarea {
+.xt-translator-popup textarea,
+.xt-popup-container input,
+.xt-popup-container textarea {
     font-family: var(--xt-font-primary) !important;
     font-size: 14px !important;
 }
@@ -78,7 +91,10 @@
 /* Font cho buttons */
 .xt-action-btn,
 .xt-apikey-save,
-.xt-apikey-close {
+.xt-apikey-close,
+.update-btn,
+.xt-update-btn,
+.xt-update-later-btn {
     font-family: var(--xt-font-secondary) !important;
     font-weight: 500 !important;
 }
@@ -86,7 +102,8 @@
 /* Font cho tags và badges */
 .xt-tag,
 .xt-language-badge,
-.xt-part-of-speech {
+.xt-part-of-speech,
+.language-tag {
     font-family: var(--xt-font-secondary) !important;
     font-weight: 500 !important;
 }
@@ -109,4 +126,40 @@
     font-family: var(--xt-font-mono) !important;
     font-weight: 500 !important;
     letter-spacing: 0.5px !important;
+}
+
+/* Font cho popup container */
+.xt-popup-container,
+.xt-popup-container * {
+    font-family: var(--xt-font-primary) !important;
+}
+
+/* Font cho section titles */
+.section-title,
+.xt-section h3 {
+    font-family: var(--xt-font-primary) !important;
+    font-weight: 600 !important;
+}
+
+/* Font cho form elements */
+.form-label,
+.form-input,
+.form-select,
+.btn {
+    font-family: var(--xt-font-primary) !important;
+}
+
+/* Font cho changelog content */
+.xt-changelog-h2,
+.xt-changelog-h3,
+.xt-changelog-h4,
+.xt-changelog-p,
+.xt-changelog-li {
+    font-family: var(--xt-font-primary) !important;
+}
+
+.xt-changelog-code,
+.xt-changelog-code-block,
+.xt-changelog-pre {
+    font-family: var(--xt-font-mono) !important;
 } 

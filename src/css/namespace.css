@@ -1,0 +1,242 @@
+/* KimiZK Translator - Namespace Protection */
+/* Đảm bảo tất cả styles chỉ áp dụng cho extension và không ảnh hưởng đến trang web */
+
+/* Namespace cho tất cả elements của extension */
+.xt-translator-popup,
+.xt-translator-popup *,
+.xt-notification,
+.xt-notification *,
+.xt-apikey-overlay,
+.xt-apikey-overlay *,
+.xt-update-modal,
+.xt-update-modal *,
+.update-modal-overlay,
+.update-modal-overlay *,
+.xt-update-overlay,
+.xt-update-overlay *,
+.xt-popup-container,
+.xt-popup-container * {
+    /* Reset tất cả styles từ trang web */
+    all: unset;
+    box-sizing: border-box !important;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    font-synthesis: none !important;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    text-rendering: optimizeLegibility !important;
+}
+
+/* Đảm bảo font cho các elements cụ thể */
+.xt-translator-popup,
+.xt-notification,
+.xt-apikey-overlay,
+.xt-update-modal,
+.update-modal-overlay,
+.xt-update-overlay,
+.xt-popup-container {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+/* Reset cho các elements có thể bị ảnh hưởng bởi trang web */
+.xt-translator-popup h1,
+.xt-translator-popup h2,
+.xt-translator-popup h3,
+.xt-translator-popup h4,
+.xt-translator-popup h5,
+.xt-translator-popup h6,
+.xt-translator-popup p,
+.xt-translator-popup span,
+.xt-translator-popup div,
+.xt-translator-popup button,
+.xt-translator-popup input,
+.xt-translator-popup select,
+.xt-translator-popup textarea,
+.xt-notification h1,
+.xt-notification h2,
+.xt-notification h3,
+.xt-notification h4,
+.xt-notification h5,
+.xt-notification h6,
+.xt-notification p,
+.xt-notification span,
+.xt-notification div,
+.xt-notification button,
+.xt-apikey-overlay h1,
+.xt-apikey-overlay h2,
+.xt-apikey-overlay h3,
+.xt-apikey-overlay h4,
+.xt-apikey-overlay h5,
+.xt-apikey-overlay h6,
+.xt-apikey-overlay p,
+.xt-apikey-overlay span,
+.xt-apikey-overlay div,
+.xt-apikey-overlay button,
+.xt-apikey-overlay input,
+.xt-update-modal h1,
+.xt-update-modal h2,
+.xt-update-modal h3,
+.xt-update-modal h4,
+.xt-update-modal h5,
+.xt-update-modal h6,
+.xt-update-modal p,
+.xt-update-modal span,
+.xt-update-modal div,
+.xt-update-modal button,
+.update-modal-overlay h1,
+.update-modal-overlay h2,
+.update-modal-overlay h3,
+.update-modal-overlay h4,
+.update-modal-overlay h5,
+.update-modal-overlay h6,
+.update-modal-overlay p,
+.update-modal-overlay span,
+.update-modal-overlay div,
+.update-modal-overlay button,
+.xt-update-overlay h1,
+.xt-update-overlay h2,
+.xt-update-overlay h3,
+.xt-update-overlay h4,
+.xt-update-overlay h5,
+.xt-update-overlay h6,
+.xt-update-overlay p,
+.xt-update-overlay span,
+.xt-update-overlay div,
+.xt-update-overlay button,
+.xt-popup-container h1,
+.xt-popup-container h2,
+.xt-popup-container h3,
+.xt-popup-container h4,
+.xt-popup-container h5,
+.xt-popup-container h6,
+.xt-popup-container p,
+.xt-popup-container span,
+.xt-popup-container div,
+.xt-popup-container button,
+.xt-popup-container input,
+.xt-popup-container select,
+.xt-popup-container textarea {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    font-style: normal !important;
+    font-weight: 400 !important;
+    line-height: 1.5 !important;
+    color: inherit !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    background: none !important;
+    text-decoration: none !important;
+    list-style: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
+    position: static !important;
+    z-index: auto !important;
+    overflow: visible !important;
+    white-space: normal !important;
+    word-wrap: normal !important;
+    text-align: left !important;
+    vertical-align: baseline !important;
+    direction: ltr !important;
+    unicode-bidi: normal !important;
+    text-transform: none !important;
+    text-indent: 0 !important;
+    letter-spacing: normal !important;
+    word-spacing: normal !important;
+    text-shadow: none !important;
+    font-variant: normal !important;
+    font-stretch: normal !important;
+    font-size-adjust: none !important;
+    font-kerning: auto !important;
+    font-feature-settings: normal !important;
+    font-variant-ligatures: normal !important;
+    font-variant-caps: normal !important;
+    font-variant-numeric: normal !important;
+    font-variant-east-asian: normal !important;
+    font-variant-alternates: normal !important;
+    font-variant-position: normal !important;
+    font-variant-emoji: normal !important;
+    font-synthesis-weight: auto !important;
+    font-synthesis-style: auto !important;
+    font-synthesis-small-caps: auto !important;
+    font-optical-sizing: auto !important;
+    font-palette: normal !important;
+    font-variation-settings: normal !important;
+    font-display: auto !important;
+    font-language-override: normal !important;
+    font-size: inherit !important;
+    font-weight: inherit !important;
+    font-style: inherit !important;
+    font-variant: inherit !important;
+    font-stretch: inherit !important;
+    line-height: inherit !important;
+    font-family: inherit !important;
+    color: inherit !important;
+    background: inherit !important;
+    border: inherit !important;
+    margin: inherit !important;
+    padding: inherit !important;
+    text-decoration: inherit !important;
+    text-transform: inherit !important;
+    text-align: inherit !important;
+    vertical-align: inherit !important;
+    white-space: inherit !important;
+    word-spacing: inherit !important;
+    letter-spacing: inherit !important;
+    text-indent: inherit !important;
+    text-shadow: inherit !important;
+    font-variant-ligatures: inherit !important;
+    font-variant-caps: inherit !important;
+    font-variant-numeric: inherit !important;
+    font-variant-east-asian: inherit !important;
+    font-variant-alternates: inherit !important;
+    font-variant-position: inherit !important;
+    font-variant-emoji: inherit !important;
+    font-synthesis-weight: inherit !important;
+    font-synthesis-style: inherit !important;
+    font-synthesis-small-caps: inherit !important;
+    font-optical-sizing: inherit !important;
+    font-palette: inherit !important;
+    font-variation-settings: inherit !important;
+    font-display: inherit !important;
+    font-language-override: inherit !important;
+}
+
+/* Đảm bảo z-index cao cho extension */
+.xt-translator-popup,
+.xt-notification,
+.xt-apikey-overlay,
+.xt-update-modal,
+.update-modal-overlay,
+.xt-update-overlay {
+    z-index: 2147483647 !important;
+}
+
+/* Đảm bảo pointer events hoạt động đúng */
+.xt-translator-popup,
+.xt-notification,
+.xt-apikey-overlay,
+.xt-update-modal,
+.update-modal-overlay,
+.xt-update-overlay,
+.xt-popup-container {
+    pointer-events: auto !important;
+}
+
+/* Ẩn extension khi cần thiết */
+.xt-translator-popup.xt-hidden,
+.xt-notification.xt-hidden,
+.xt-apikey-overlay.xt-hidden,
+.xt-update-modal.xt-hidden,
+.update-modal-overlay.xt-hidden,
+.xt-update-overlay.xt-hidden,
+.xt-popup-container.xt-hidden {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+} 

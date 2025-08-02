@@ -34,6 +34,53 @@ const BackgroundNotifications = {
     }
 };
 
+/**
+ * Compare two version strings
+ * @param {string} version1 - First version string (e.g., "1.0.3")
+ * @param {string} version2 - Second version string (e.g., "1.0.4")
+ * @returns {number} -1 if version1 < version2, 0 if equal, 1 if version1 > version2
+ */
+function compareVersions(version1, version2) {
+    const v1Parts = version1.split('.').map(part => parseInt(part, 10) || 0);
+    const v2Parts = version2.split('.').map(part => parseInt(part, 10) || 0);
+    
+    // Pad with zeros to make arrays same length
+    const maxLength = Math.max(v1Parts.length, v2Parts.length);
+    while (v1Parts.length < maxLength) v1Parts.push(0);
+    while (v2Parts.length < maxLength) v2Parts.push(0);
+    
+    for (let i = 0; i < maxLength; i++) {
+        if (v1Parts[i] < v2Parts[i]) return -1;
+        if (v1Parts[i] > v2Parts[i]) return 1;
+    }
+    
+    return 0;
+}
+
+// Test function for version comparison (for debugging)
+function testVersionComparison() {
+    const testCases = [
+        { v1: "1.0.3", v2: "1.0.4", expected: -1 },
+        { v1: "1.0.4", v2: "1.0.3", expected: 1 },
+        { v1: "1.0.4", v2: "1.0.4", expected: 0 },
+        { v1: "1.0.3", v2: "1.0.10", expected: -1 },
+        { v1: "1.0.10", v2: "1.0.3", expected: 1 },
+        { v1: "1.0.0", v2: "1.0.0", expected: 0 },
+        { v1: "2.0.0", v2: "1.9.9", expected: 1 },
+        { v1: "1.9.9", v2: "2.0.0", expected: -1 }
+    ];
+    
+    // console.log('Testing version comparison logic:');
+    testCases.forEach((test, index) => {
+        const result = compareVersions(test.v1, test.v2);
+        const passed = result === test.expected;
+        // console.log(`Test ${index + 1}: ${test.v1} vs ${test.v2} = ${result} (expected: ${test.expected}) - ${passed ? 'PASS' : 'FAIL'}`);
+    });
+}
+
+// Run test on startup
+testVersionComparison();
+
 // Service Worker lifecycle events
 self.addEventListener('install', (event) => {
     // console.log('Service Worker installed');
@@ -49,7 +96,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     
     switch (request.action) {
         case "saveApiKey":
-            this._handleSaveApiKey(request.key, sendResponse);
+            BackgroundService._handleSaveApiKey(request.key, sendResponse);
             return true;
             
         case "test":
@@ -57,39 +104,39 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             return false;
             
         case "checkForUpdates":
-            this._handleCheckForUpdates(sendResponse);
+            BackgroundService._handleCheckForUpdates(sendResponse);
             return true;
             
         case "performUpdate":
-            this._handlePerformUpdate(sendResponse);
+            BackgroundService._handlePerformUpdate(sendResponse);
             return true;
             
         case "getLatestVersion":
-            this._handleGetLatestVersion(sendResponse);
+            BackgroundService._handleGetLatestVersion(sendResponse);
             return true;
             
         case "openExtensionsPage":
-            this._handleOpenExtensionsPage(sendResponse);
+            BackgroundService._handleOpenExtensionsPage(sendResponse);
             return true;
             
         case "showUpdateModal":
-            this._handleShowUpdateModal(sendResponse);
+            BackgroundService._handleShowUpdateModal(sendResponse);
             return true;
             
         case "saveTargetLanguage":
-            this._handleSaveTargetLanguage(request.language, sendResponse);
+            BackgroundService._handleSaveTargetLanguage(request.language, sendResponse);
             return true;
             
         case "getTargetLanguage":
-            this._handleGetTargetLanguage(sendResponse);
+            BackgroundService._handleGetTargetLanguage(sendResponse);
             return true;
             
         case "saveLanguagePreferences":
-            this._handleSaveLanguagePreferences(request.preferences, sendResponse);
+            BackgroundService._handleSaveLanguagePreferences(request.preferences, sendResponse);
             return true;
             
         case "getLanguagePreferences":
-            this._handleGetLanguagePreferences(sendResponse);
+            BackgroundService._handleGetLanguagePreferences(sendResponse);
             return true;
             
         default:
@@ -103,8 +150,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 chrome.runtime.onStartup.addListener(() => {
     // console.log('KimiZK-Translator Service Worker started - Browser startup');
     setTimeout(() => {
-        this._checkForUpdatesOnStartup();
-        this._scheduleUpdateCheck();
+        BackgroundService._checkForUpdatesOnStartup();
+        BackgroundService._scheduleUpdateCheck();
     }, 2000); // Use direct value instead of CONFIG
 });
 
@@ -112,13 +159,13 @@ chrome.runtime.onInstalled.addListener((details) => {
     // console.log('KimiZK-Translator Service Worker installed/updated:', details.reason);
     
     if (details.reason === 'install') {
-        this._handleFirstInstall();
+        BackgroundService._handleFirstInstall();
     } else if (details.reason === 'update') {
-        this._handleUpdate();
+        BackgroundService._handleUpdate();
     }
     
     setTimeout(() => {
-        this._checkForUpdatesOnStartup();
+        BackgroundService._checkForUpdatesOnStartup();
     }, 3000); // Use direct value instead of CONFIG
 });
 
@@ -179,7 +226,7 @@ const BackgroundService = {
      */
     async _handlePerformUpdate(sendResponse) {
         try {
-            const result = await this._performUpdate();
+            const result = await BackgroundService._performUpdate();
             sendResponse(result);
         } catch (error) {
             console.error('Error performing update:', error);
@@ -198,7 +245,7 @@ const BackgroundService = {
     async _handleGetLatestVersion(sendResponse) {
         try {
             // console.log('Getting latest version info from GitHub');
-            const updateInfo = await this._checkForUpdates();
+            const updateInfo = await BackgroundService._checkForUpdates();
             // console.log('Latest version info:', updateInfo);
             sendResponse(updateInfo);
         } catch (error) {
@@ -235,9 +282,9 @@ const BackgroundService = {
     async _handleShowUpdateModal(sendResponse) {
         try {
             // console.log('Showing update modal from popup');
-            const updateInfo = await this._checkForUpdates();
+            const updateInfo = await BackgroundService._checkForUpdates();
             if (updateInfo.hasUpdate) {
-                this._notifyActiveTab({ action: "showUpdateModal", updateInfo });
+                BackgroundService._notifyActiveTab({ action: "showUpdateModal", updateInfo });
             }
             sendResponse(updateInfo);
         } catch (error) {
@@ -308,7 +355,7 @@ const BackgroundService = {
                 
                 if (notificationsEnabled) {
                     // console.log('Checking for updates on startup...');
-                    this._checkForUpdates().then(updateInfo => {
+                    BackgroundService._checkForUpdates().then(updateInfo => {
                         // console.log('Update check result:', updateInfo);
                         
                         // Save check time
@@ -360,7 +407,7 @@ const BackgroundService = {
                     // console.log('Time to check for updates...');
                     chrome.storage.local.set({ lastUpdateCheck: now });
                     
-                    this._checkForUpdates().then(updateInfo => {
+                    BackgroundService._checkForUpdates().then(updateInfo => {
                         // console.log('Periodic update check result:', updateInfo);
                         
                         if (updateInfo.hasUpdate) {
@@ -399,6 +446,12 @@ const BackgroundService = {
             }
             
             const releaseData = await response.json();
+            
+            // Validate release data
+            if (!releaseData || !releaseData.tag_name) {
+                throw new Error('Invalid release data from GitHub API');
+            }
+            
             const latestVersion = releaseData.tag_name.replace('v', '');
             const releaseName = releaseData.name || `KimiZK-Translator v${latestVersion}`;
             const releaseBody = releaseData.body || 'Không có thông tin chi tiết cho phiên bản này.';
@@ -414,8 +467,14 @@ const BackgroundService = {
             // console.log('Release name:', releaseName);
             // console.log('Direct download URL:', directDownloadUrl);
             
-            if (latestVersion !== CURRENT_VERSION) {
-                // console.log('Update available!');
+            // So sánh phiên bản chính xác
+            const versionComparison = compareVersions(CURRENT_VERSION, latestVersion);
+            // console.log('Version comparison result:', versionComparison);
+            // console.log('Current version:', CURRENT_VERSION, 'vs Latest version:', latestVersion);
+            
+            if (versionComparison < 0) {
+                // Phiên bản hiện tại < phiên bản mới nhất -> Có cập nhật
+                // console.log('Update available! Current version is older than latest');
                 return {
                     hasUpdate: true,
                     currentVersion: CURRENT_VERSION,
@@ -424,16 +483,27 @@ const BackgroundService = {
                     downloadUrl: downloadUrl,
                     directDownloadUrl: directDownloadUrl,
                     releaseName: releaseName,
-                    message: `🚀 Có phiên bản mới ${latestVersion} sẵn sàng cập nhật!`
+                    message: `🚀 Có bản mới v${latestVersion}!`
+                };
+            } else if (versionComparison > 0) {
+                // Phiên bản hiện tại > phiên bản mới nhất -> Đang dùng bản mới hơn
+                // console.log('Current version is newer than latest on GitHub');
+                return { 
+                    hasUpdate: false,
+                    currentVersion: CURRENT_VERSION,
+                    latestVersion: latestVersion,
+                    releaseName: releaseName,
+                    message: `Phiên bản ${CURRENT_VERSION} - mới nhất!`
                 };
             } else {
+                // Phiên bản hiện tại = phiên bản mới nhất -> Đang dùng bản mới nhất
                 // console.log('No update available - using latest version');
                 return { 
                     hasUpdate: false,
                     currentVersion: CURRENT_VERSION,
                     latestVersion: latestVersion,
                     releaseName: releaseName,
-                    message: `✅ Đang sử dụng ${releaseName} - phiên bản mới nhất`
+                    message: `Phiên bản ${CURRENT_VERSION} - mới nhất!`
                 };
             }
         } catch (error) {
@@ -453,7 +523,7 @@ const BackgroundService = {
      */
     async _performUpdate() {
         try {
-            const updateInfo = await this._checkForUpdates();
+            const updateInfo = await BackgroundService._checkForUpdates();
             
             if (updateInfo.directDownloadUrl) {
                 // console.log('Direct download URL found:', updateInfo.directDownloadUrl);
@@ -517,7 +587,7 @@ const BackgroundService = {
      * @private
      */
     _showInstallationGuide(releaseName) {
-        this._notifyActiveTab({
+        BackgroundService._notifyActiveTab({
             action: "showInstallationGuide",
             releaseName: releaseName
         });

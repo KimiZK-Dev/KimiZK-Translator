@@ -1,5 +1,5 @@
 // Khởi tạo extension cho Manifest V3
-console.log('KimiZK-Translator Content Script loaded');
+// console.log('KimiZK-Translator Content Script loaded');
 
 document.addEventListener("mouseup", e => {
     try {

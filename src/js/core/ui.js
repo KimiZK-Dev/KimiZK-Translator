@@ -248,12 +248,25 @@ const UIManager = {
      */
     _renderSingleWordResult(result, displayText) {
         const renderExamples = (examples, translations) => {
-            return (examples || []).map((ex, i) => `
+            if (!Array.isArray(examples) || !Array.isArray(translations)) {
+                return '<span class="xt-no-data">Không có dữ liệu</span>';
+            }
+            
+            if (examples.length === 0) {
+                return '<span class="xt-no-data">Không có dữ liệu</span>';
+            }
+            
+            return examples.map((ex, i) => `
                 <div class="xt-example-item">
-                    <div class="xt-example-en">${Utils.escapeSpecialChars(ex)}</div>
+                    <div class="xt-example-en">${Utils.escapeSpecialChars(ex || '')}</div>
                     <div class="xt-example-vi">${Utils.escapeSpecialChars(translations?.[i] || '–')}</div>
                 </div>
             `).join('');
+        };
+
+        const safeCapitalize = (text) => {
+            if (!text || typeof text !== 'string') return '';
+            return text.charAt(0).toUpperCase() + text.slice(1);
         };
 
         return `
@@ -269,17 +282,21 @@ const UIManager = {
                             <span class="xt-btn-text">Nghe</span>
                         </button>
                     </div>
-                    <div class="xt-phonetic">${Utils.escapeSpecialChars(result.transcription || '')}</div>
-                    <div class="xt-part-of-speech">${Utils.escapeSpecialChars(result.partOfSpeech)}</div>
+                    ${result.transcription ? `<div class="xt-phonetic">${Utils.escapeSpecialChars(result.transcription)}</div>` : ''}
+                    ${result.partOfSpeech ? `<div class="xt-part-of-speech">${Utils.escapeSpecialChars(result.partOfSpeech)}</div>` : ''}
                 </div>
+                ${result.meaning ? `
                 <div class="xt-meaning">
                     <h3>Nghĩa</h3>
-                    <p>${Utils.escapeSpecialChars(result.meaning.charAt(0).toUpperCase() + result.meaning.slice(1))}</p>
+                    <p>${Utils.escapeSpecialChars(safeCapitalize(result.meaning))}</p>
                 </div>
+                ` : ''}
+                ${result.description ? `
                 <div class="xt-description">
                     <h3>Giải thích</h3>
-                    <p>${Utils.escapeSpecialChars(result.description.charAt(0).toUpperCase() + result.description.slice(1))}</p>
+                    <p>${Utils.escapeSpecialChars(safeCapitalize(result.description))}</p>
                 </div>
+                ` : ''}
             </div>
             <div class="xt-translator-secondary">
                 <div class="xt-section xt-examples">
@@ -291,13 +308,17 @@ const UIManager = {
                 <div class="xt-section xt-synonyms">
                     <h3><span class="xt-section-icon">🔗</span>Từ đồng nghĩa</h3>
                     <div class="xt-tags">
-                        ${(result.synonyms || []).map(s => `<span class="xt-tag">${Utils.escapeSpecialChars(s)}</span>`).join('') || '<span class="xt-no-data">Không có dữ liệu</span>'}
+                        ${Array.isArray(result.synonyms) && result.synonyms.length > 0 ? 
+                            result.synonyms.map(s => `<span class="xt-tag">${Utils.escapeSpecialChars(s)}</span>`).join('') : 
+                            '<span class="xt-no-data">Không có dữ liệu</span>'}
                     </div>
                 </div>
                 <div class="xt-section xt-word-forms">
                     <h3><span class="xt-section-icon">📝</span>Biến thể khác</h3>
                     <div class="xt-tags">
-                        ${(result.otherWordForms || []).map(f => `<span class="xt-tag">${Utils.escapeSpecialChars(f)}</span>`).join('') || '<span class="xt-no-data">Không có dữ liệu</span>'}
+                        ${Array.isArray(result.otherWordForms) && result.otherWordForms.length > 0 ? 
+                            result.otherWordForms.map(f => `<span class="xt-tag">${Utils.escapeSpecialChars(f)}</span>`).join('') : 
+                            '<span class="xt-no-data">Không có dữ liệu</span>'}
                     </div>
                 </div>
             </div>
@@ -332,10 +353,12 @@ const UIManager = {
                     </div>
                     ${result.transcription ? `<div class="xt-phonetic">${Utils.escapeSpecialChars(result.transcription)}</div>` : ''}
                 </div>
+                ${result.translated ? `
                 <div class="xt-translation">
                     <h3>Dịch</h3>
                     <p>${Utils.escapeSpecialChars(result.translated)}</p>
                 </div>
+                ` : ''}
             </div>
             <div class="xt-translator-footer">
                 <div class="xt-footer-brand"><span class="xt-brand-icon">✨</span>KimiZK Translator</div>
@@ -350,11 +373,23 @@ const UIManager = {
      * @param {string} text - Text to copy
      */
     setupCopyButton(button, text) {
+        if (!button || !text) {
+            console.error('Invalid parameters for setupCopyButton:', { button, text });
+            return;
+        }
+
         const copyIcon = button.querySelector(".xt-btn-icon");
         const copyText = button.querySelector(".xt-btn-text");
 
+        if (!copyIcon || !copyText) {
+            console.error('Copy button elements not found');
+            return;
+        }
+
         button.addEventListener('click', () => {
-            navigator.clipboard.writeText(text)
+            const textToCopy = typeof text === 'string' ? text : String(text || '');
+            
+            navigator.clipboard.writeText(textToCopy)
                 .then(() => {
                     copyIcon.textContent = "✅";
                     copyText.textContent = "Đã sao chép";

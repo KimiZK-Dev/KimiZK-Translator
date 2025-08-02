@@ -18,7 +18,10 @@ const Utils = {
      * @returns {string} Text with first word capitalized
      */
     capitalizeFirstWord(text) {
-        return text ? text.replace(/^\w/, c => c.toUpperCase()) : text;
+        if (!text || typeof text !== 'string') {
+            return '';
+        }
+        return text.replace(/^\w/, c => c.toUpperCase());
     },
     
     /**

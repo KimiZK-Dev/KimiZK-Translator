@@ -1,107 +1,233 @@
-/* Update Notification Styles */
+/* KimiZK Translator - Update Notification Styles with Enhanced Color Scheme */
+/* Import fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+/* Enhanced Color Palette */
+:root {
+    /* Enhanced Pastel Color Palette */
+    --pastel-pink: #FCD8CD;
+    --pastel-lavender: #FEEBF6;
+    --pastel-purple: #EBD6FB;
+    --pastel-blue: #687FE5;
+    
+    /* Enhanced Pastel Palette - Group 2 */
+    --pastel-rose: #FFDCDC;
+    --pastel-peach: #FFF2EB;
+    --pastel-orange: #FFE8CD;
+    --pastel-coral: #FFD6BA;
+    
+    /* Extended Enhanced Palette */
+    --pastel-mint: #E8F5E8;
+    --pastel-sky: #E0F2FE;
+    --pastel-yellow: #FEF9E7;
+    --pastel-lime: #F0F9FF;
+    
+    /* Enhanced Background Colors */
+    --bg-primary: linear-gradient(135deg, var(--pastel-blue) 0%, var(--pastel-purple) 100%);
+    --bg-secondary: var(--pastel-lavender);
+    --card-bg: #ffffff;
+    --card-bg-hover: var(--pastel-lime);
+    
+    /* Enhanced Primary Colors */
+    --primary: var(--pastel-blue);
+    --primary-hover: #5A6FD8;
+    --primary-light: var(--pastel-sky);
+    --primary-ultra-light: var(--pastel-lime);
+    
+    /* Enhanced Accent Colors */
+    --accent: var(--pastel-purple);
+    --accent-hover: #D4B8F0;
+    --accent-light: var(--pastel-lavender);
+    
+    /* Enhanced Text Colors - Better Contrast */
+    --text-primary: #1A202C;
+    --text-secondary: #2D3748;
+    --text-muted: #4A5568;
+    --text-light: #718096;
+    
+    /* Enhanced Status Colors - Better Visibility */
+    --success: #38A169;
+    --success-light: #C6F6D5;
+    --error: #E53E3E;
+    --error-light: #FED7D7;
+    --warning: #DD6B20;
+    --warning-light: #FEEBC8;
+    --info: var(--pastel-blue);
+    --info-light: var(--pastel-sky);
+    
+    /* Enhanced Border Colors */
+    --border: #E2E8F0;
+    --border-light: var(--pastel-lavender);
+    --border-hover: var(--pastel-blue);
+    
+    /* Enhanced Shadow Colors */
+    --shadow-sm: 0 2px 4px rgba(104, 127, 229, 0.15);
+    --shadow-md: 0 6px 12px rgba(104, 127, 229, 0.2);
+    --shadow-lg: 0 12px 24px rgba(104, 127, 229, 0.25);
+    --shadow-xl: 0 24px 48px rgba(104, 127, 229, 0.3);
+    
+    /* Border Radius */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --radius-2xl: 24px;
+    
+    /* Enhanced Animation Durations */
+    --duration-fast: 0.2s;
+    --duration-normal: 0.3s;
+    --duration-slow: 0.5s;
+    --duration-slower: 0.8s;
+    
+    /* Enhanced Animation Easing */
+    --ease-out: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-in: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Enhanced Update Notification Styles */
 .xt-update-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.6);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 999999;
-    font-family: var(--xt-font-primary);
-    animation: xt-fadeIn 0.3s ease;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    animation: xt-fadeIn var(--duration-normal) var(--ease-out);
+    backdrop-filter: blur(12px);
 }
 
 .xt-update-modal {
-    background: white;
-    border-radius: 16px;
+    background: var(--card-bg);
+    border-radius: var(--radius-lg);
     padding: 32px;
-    max-width: 400px;
+    max-width: 420px;
     width: 90%;
     text-align: center;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    animation: xt-slideUp 0.4s ease;
+    box-shadow: var(--shadow-xl);
+    animation: xt-slideUp var(--duration-slow) var(--ease-spring);
     position: relative;
-    font-family: var(--xt-font-primary);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    border: 2px solid var(--border-light);
+    backdrop-filter: blur(16px);
 }
 
 .xt-update-icon {
-    font-size: 48px;
-    margin-bottom: 16px;
+    font-size: 52px;
+    margin-bottom: 20px;
+    color: var(--primary);
+    animation: xt-iconBounce var(--duration-slow) var(--ease-bounce) 0.3s both;
 }
 
 .xt-update-title {
-    margin: 0 0 8px 0;
-    font-size: 24px;
+    margin: 0 0 12px 0;
+    font-size: 26px;
     font-weight: 700;
-    color: #1f2937;
-    font-family: var(--xt-font-primary);
+    color: var(--text-primary);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .xt-update-subtitle {
-    margin: 0 0 24px 0;
+    margin: 0 0 28px 0;
     font-size: 16px;
-    color: #6b7280;
-    line-height: 1.5;
-    font-family: var(--xt-font-primary);
+    color: var(--text-secondary);
+    line-height: 1.6;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
 }
 
 .xt-update-version-info {
-    background: #f3f4f6;
-    padding: 12px 16px;
-    border-radius: 8px;
-    margin-bottom: 24px;
+    background: linear-gradient(135deg, var(--primary-ultra-light), var(--accent-light));
+    padding: 16px 20px;
+    border-radius: var(--radius-md);
+    margin-bottom: 28px;
     font-size: 14px;
-    color: #374151;
-    font-family: var(--xt-font-primary);
+    color: var(--text-primary);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    border: 2px solid var(--primary-light);
+    box-shadow: var(--shadow-sm);
+    font-weight: 600;
 }
 
 .xt-update-changelog {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    padding: 16px;
-    margin-bottom: 24px;
-    max-height: 200px;
+    background: linear-gradient(135deg, var(--pastel-lime), var(--pastel-sky));
+    border: 2px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    margin-bottom: 28px;
+    max-height: 220px;
     overflow-y: auto;
     font-size: 13px;
-    line-height: 1.4;
-    color: #374151;
-    font-family: var(--xt-font-primary);
+    line-height: 1.5;
+    color: var(--text-primary);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    box-shadow: var(--shadow-sm);
 }
 
 .xt-update-changelog-title {
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: #1f2937;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+    font-size: 15px;
 }
 
 .xt-update-buttons {
     display: flex;
-    gap: 12px;
+    gap: 16px;
     justify-content: center;
 }
 
 .xt-update-btn {
-    background: linear-gradient(135deg, #10b981, #059669);
+    background: linear-gradient(135deg, var(--success), #2F855A);
     color: white;
     border: none;
-    padding: 12px 24px;
-    border-radius: 8px;
+    padding: 14px 28px;
+    border-radius: var(--radius-md);
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all var(--duration-normal) var(--ease-out);
     flex: 1;
-    max-width: 140px;
-    font-family: var(--xt-font-secondary);
+    max-width: 150px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    box-shadow: var(--shadow-md);
+    position: relative;
+    overflow: hidden;
+}
+
+.xt-update-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left var(--duration-slow) var(--ease-out);
+}
+
+.xt-update-btn:hover::before {
+    left: 100%;
 }
 
 .xt-update-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+
+.xt-update-btn:active {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
 }
 
 .xt-update-btn:disabled {
@@ -112,189 +238,273 @@
 }
 
 .xt-update-later-btn {
-    background: transparent;
-    color: #6b7280;
-    border: 2px solid #e5e7eb;
-    padding: 12px 24px;
-    border-radius: 8px;
+    background: linear-gradient(135deg, var(--text-light), var(--text-muted));
+    color: white;
+    border: 2px solid var(--border);
+    padding: 14px 28px;
+    border-radius: var(--radius-md);
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all var(--duration-normal) var(--ease-out);
     flex: 1;
-    max-width: 140px;
-    font-family: var(--xt-font-secondary);
+    max-width: 150px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    box-shadow: var(--shadow-sm);
 }
 
 .xt-update-later-btn:hover {
-    border-color: #d1d5db;
-    color: #374151;
+    border-color: var(--primary);
+    color: white;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+.xt-update-later-btn:active {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
 }
 
 .xt-update-close-btn {
     position: absolute;
-    top: 16px;
-    right: 16px;
-    background: none;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, var(--error-light), var(--warning-light));
     border: none;
-    font-size: 24px;
-    color: #9ca3af;
+    font-size: 20px;
+    color: var(--text-primary);
     cursor: pointer;
-    padding: 4px;
-    border-radius: 4px;
-    transition: all 0.2s ease;
+    padding: 8px;
+    border-radius: 50%;
+    transition: all var(--duration-normal) var(--ease-out);
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-sm);
 }
 
 .xt-update-close-btn:hover {
-    color: #6b7280;
-    background: #f3f4f6;
+    color: var(--error);
+    background: linear-gradient(135deg, var(--error), var(--warning));
+    color: white;
+    transform: scale(1.1);
+    box-shadow: var(--shadow-md);
 }
 
-/* Success state */
+.xt-update-close-btn:active {
+    transform: scale(0.95);
+}
+
+/* Enhanced Success state */
 .xt-update-success {
     text-align: center;
-    padding: 20px;
+    padding: 24px;
 }
 
 .xt-update-success-icon {
-    font-size: 48px;
-    margin-bottom: 16px;
+    font-size: 52px;
+    margin-bottom: 20px;
+    color: var(--success);
+    animation: xt-successPulse var(--duration-slow) var(--ease-bounce) 0.5s both;
 }
 
 .xt-update-success-title {
-    margin: 0 0 8px 0;
-    font-size: 24px;
-    color: #10b981;
+    margin: 0 0 12px 0;
+    font-size: 26px;
+    color: var(--success);
+    font-weight: 700;
 }
 
 .xt-update-success-message {
-    margin: 0 0 16px 0;
-    color: #6b7280;
+    margin: 0 0 20px 0;
+    color: var(--text-secondary);
+    font-size: 16px;
 }
 
 .xt-update-success-info {
-    background: #f0fdf4;
-    padding: 12px;
-    border-radius: 8px;
-    margin-bottom: 16px;
+    background: linear-gradient(135deg, var(--success-light), var(--pastel-mint));
+    padding: 16px;
+    border-radius: var(--radius-md);
+    margin-bottom: 20px;
+    border: 2px solid var(--success);
+    box-shadow: var(--shadow-sm);
 }
 
 .xt-update-success-info p {
     margin: 0;
     font-size: 14px;
-    color: #166534;
+    color: var(--success);
+    font-weight: 600;
 }
 
 .xt-update-countdown {
-    font-size: 12px;
-    color: #6b7280;
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 500;
 }
 
-/* Download state */
+/* Enhanced Download state */
 .xt-update-download {
     text-align: center;
-    padding: 20px;
+    padding: 24px;
 }
 
 .xt-update-download-icon {
-    font-size: 48px;
-    margin-bottom: 16px;
+    font-size: 52px;
+    margin-bottom: 20px;
+    color: var(--success);
+    animation: xt-downloadSpin var(--duration-slow) var(--ease-out) infinite;
 }
 
 .xt-update-download-title {
-    margin: 0 0 8px 0;
-    font-size: 24px;
-    color: #10b981;
+    margin: 0 0 12px 0;
+    font-size: 26px;
+    color: var(--success);
+    font-weight: 700;
 }
 
 .xt-update-download-message {
-    margin: 0 0 16px 0;
-    color: #6b7280;
+    margin: 0 0 20px 0;
+    color: var(--text-secondary);
+    font-size: 16px;
 }
 
 .xt-update-instructions {
-    background: #f3f4f6;
-    padding: 12px;
-    border-radius: 8px;
-    margin-bottom: 16px;
+    background: linear-gradient(135deg, var(--primary-ultra-light), var(--accent-light));
+    padding: 16px;
+    border-radius: var(--radius-md);
+    margin-bottom: 20px;
+    border: 2px solid var(--primary-light);
+    box-shadow: var(--shadow-sm);
 }
 
 .xt-update-instructions p {
     margin: 0;
     font-size: 14px;
-    color: #374151;
+    color: var(--text-primary);
+    font-weight: 500;
 }
 
 .xt-update-understand-btn {
-    background: #10b981;
+    background: linear-gradient(135deg, var(--success), #2F855A);
     color: white;
     border: none;
-    padding: 8px 16px;
-    border-radius: 6px;
+    padding: 12px 24px;
+    border-radius: var(--radius-md);
     cursor: pointer;
-    font-family: var(--xt-font-secondary);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    transition: all var(--duration-normal) var(--ease-out);
+    font-weight: 600;
+    box-shadow: var(--shadow-sm);
 }
 
-/* Error state */
+.xt-update-understand-btn:hover {
+    background: linear-gradient(135deg, #2F855A, var(--success));
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.xt-update-understand-btn:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Enhanced Error state */
 .xt-update-error {
     text-align: center;
-    padding: 20px;
+    padding: 24px;
 }
 
 .xt-update-error-icon {
-    font-size: 48px;
-    margin-bottom: 16px;
+    font-size: 52px;
+    margin-bottom: 20px;
+    color: var(--warning);
+    animation: xt-errorShake var(--duration-slow) var(--ease-bounce) 0.3s both;
 }
 
 .xt-update-error-title {
-    margin: 0 0 8px 0;
-    font-size: 24px;
-    color: #f59e0b;
+    margin: 0 0 12px 0;
+    font-size: 26px;
+    color: var(--warning);
+    font-weight: 700;
 }
 
 .xt-update-error-message {
-    margin: 0 0 16px 0;
-    color: #6b7280;
+    margin: 0 0 20px 0;
+    color: var(--text-secondary);
+    font-size: 16px;
 }
 
 .xt-update-error-info {
-    background: #fef3c7;
-    padding: 12px;
-    border-radius: 8px;
-    margin-bottom: 16px;
+    background: linear-gradient(135deg, var(--warning-light), var(--pastel-orange));
+    padding: 16px;
+    border-radius: var(--radius-md);
+    margin-bottom: 20px;
+    border: 2px solid var(--warning);
+    box-shadow: var(--shadow-sm);
 }
 
 .xt-update-error-info p {
     margin: 0;
     font-size: 14px;
-    color: #92400e;
+    color: var(--warning);
+    font-weight: 600;
 }
 
 .xt-update-error-btn {
-    background: #f59e0b;
+    background: linear-gradient(135deg, var(--warning), #C05621);
     color: white;
     border: none;
-    padding: 8px 16px;
-    border-radius: 6px;
+    padding: 12px 24px;
+    border-radius: var(--radius-md);
     cursor: pointer;
-    font-family: var(--xt-font-secondary);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    transition: all var(--duration-normal) var(--ease-out);
+    font-weight: 600;
+    box-shadow: var(--shadow-sm);
 }
 
-/* Animations */
+.xt-update-error-btn:hover {
+    background: linear-gradient(135deg, #C05621, var(--warning));
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.xt-update-error-btn:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Enhanced Animations */
 @keyframes xt-fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from { 
+        opacity: 0;
+        backdrop-filter: blur(0px);
+    }
+    to { 
+        opacity: 1;
+        backdrop-filter: blur(12px);
+    }
 }
 
 @keyframes xt-fadeOut {
-    from { opacity: 1; }
-    to { opacity: 0; }
+    from { 
+        opacity: 1;
+        backdrop-filter: blur(12px);
+    }
+    to { 
+        opacity: 0;
+        backdrop-filter: blur(0px);
+    }
 }
 
 @keyframes xt-slideUp {
     from { 
         opacity: 0;
-        transform: translateY(30px) scale(0.95);
+        transform: translateY(40px) scale(0.9);
     }
     to { 
         opacity: 1;
@@ -309,19 +519,73 @@
     }
     to { 
         opacity: 0;
-        transform: translateY(30px) scale(0.95);
+        transform: translateY(40px) scale(0.9);
     }
 }
 
-/* Changelog Content Styles */
+@keyframes xt-iconBounce {
+    0% {
+        opacity: 0;
+        transform: scale(0.5) rotate(-10deg);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.1) rotate(5deg);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+    }
+}
+
+@keyframes xt-successPulse {
+    0% {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes xt-downloadSpin {
+    0% {
+        transform: rotate(0deg) scale(1);
+    }
+    50% {
+        transform: rotate(180deg) scale(1.1);
+    }
+    100% {
+        transform: rotate(360deg) scale(1);
+    }
+}
+
+@keyframes xt-errorShake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-5px);
+    }
+    75% {
+        transform: translateX(5px);
+    }
+}
+
+/* Enhanced Changelog Content Styles */
 .xt-changelog-h2 {
-    color: #1f2937;
+    color: var(--text-primary);
     font-size: 16px;
     font-weight: 700;
-    margin: 16px 0 10px 0;
-    padding-bottom: 6px;
-    border-bottom: 2px solid #e5e7eb;
-    font-family: var(--xt-font-primary);
+    margin: 18px 0 12px 0;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--primary);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
     line-height: 1.3;
     word-wrap: break-word;
     overflow-wrap: break-word;
@@ -329,129 +593,137 @@
 }
 
 .xt-changelog-h3 {
-    color: #374151;
+    color: var(--text-secondary);
     font-size: 14px;
     font-weight: 600;
-    margin: 14px 0 8px 0;
-    font-family: var(--xt-font-primary);
+    margin: 16px 0 10px 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
     line-height: 1.3;
     word-wrap: break-word;
     overflow-wrap: break-word;
 }
 
 .xt-changelog-h4 {
-    color: #4f46e5;
+    color: var(--primary);
     font-size: 13px;
     font-weight: 600;
-    margin: 10px 0 6px 0;
-    font-family: var(--xt-font-primary);
+    margin: 12px 0 8px 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
     line-height: 1.3;
     word-wrap: break-word;
     overflow-wrap: break-word;
 }
 
 .xt-changelog-p {
-    margin: 8px 0;
-    line-height: 1.5;
-    color: #374151;
-    font-family: var(--xt-font-primary);
+    margin: 10px 0;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
 }
 
 .xt-changelog-ul {
-    margin: 8px 0 12px 16px;
+    margin: 10px 0 14px 16px;
     padding: 0;
     list-style: none;
 }
 
 .xt-changelog-li {
-    margin: 4px 0;
-    line-height: 1.4;
+    margin: 6px 0;
+    line-height: 1.5;
     position: relative;
-    padding-left: 16px;
-    color: #374151;
-    font-family: var(--xt-font-primary);
+    padding-left: 18px;
+    color: var(--text-secondary);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
 }
 
 .xt-changelog-li::before {
     content: '•';
-    color: #4f46e5;
+    color: var(--primary);
     font-weight: bold;
     position: absolute;
     left: 0;
+    font-size: 16px;
 }
 
 .xt-changelog-code {
-    background: #f3f4f6;
-    color: #dc2626;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-family: var(--xt-font-mono);
+    background: var(--border-light);
+    color: var(--error);
+    padding: 3px 8px;
+    border-radius: var(--radius-sm);
+    font-family: 'Inter', monospace;
     font-size: 12px;
     font-weight: 500;
+    border: 1px solid var(--border);
 }
 
 .xt-changelog-code-block {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 6px;
-    padding: 12px;
-    font-family: var(--xt-font-mono);
+    background: var(--pastel-lime);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    font-family: 'Inter', monospace;
     font-size: 12px;
-    color: #374151;
+    color: var(--text-primary);
     display: block;
     overflow-x: auto;
+    box-shadow: var(--shadow-sm);
 }
 
 .xt-changelog-pre {
-    margin: 12px 0;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 6px;
-    padding: 12px;
+    margin: 14px 0;
+    background: var(--pastel-lime);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px;
     overflow-x: auto;
+    box-shadow: var(--shadow-sm);
 }
 
 .xt-changelog-link {
-    color: #4f46e5;
+    color: var(--primary);
     text-decoration: underline;
     font-weight: 500;
+    transition: color var(--duration-fast) var(--ease-out);
 }
 
 .xt-changelog-link:hover {
-    color: #3730a3;
+    color: var(--primary-hover);
 }
 
 .xt-changelog-hr {
     border: none;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, #e5e7eb, transparent);
-    margin: 16px 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+    margin: 20px 0;
 }
 
 .xt-changelog-more {
     text-align: center;
-    margin-top: 16px;
-    padding: 12px;
-    background: #f9fafb;
-    border-radius: 6px;
-    border: 1px solid #e5e7eb;
+    margin-top: 20px;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--primary-ultra-light), var(--accent-light));
+    border-radius: var(--radius-md);
+    border: 2px solid var(--primary-light);
+    box-shadow: var(--shadow-sm);
 }
 
 .xt-changelog-more em {
-    color: #6b7280;
+    color: var(--text-muted);
     font-size: 12px;
     font-style: italic;
+    font-weight: 500;
 }
 
-/* Responsive */
+/* Enhanced Responsive */
 @media (max-width: 480px) {
     .xt-update-modal {
         padding: 24px;
         max-width: 320px;
+        margin: 20px;
     }
     
     .xt-update-title {
-        font-size: 20px;
+        font-size: 22px;
     }
     
     .xt-update-subtitle {
@@ -460,7 +732,7 @@
     
     .xt-update-buttons {
         flex-direction: column;
-        gap: 8px;
+        gap: 12px;
     }
     
     .xt-update-btn,
@@ -470,18 +742,18 @@
     
     .xt-changelog-h2 {
         font-size: 15px;
-        margin: 14px 0 8px 0;
-        padding-bottom: 4px;
+        margin: 16px 0 10px 0;
+        padding-bottom: 6px;
     }
     
     .xt-changelog-h3 {
         font-size: 13px;
-        margin: 12px 0 6px 0;
+        margin: 14px 0 8px 0;
     }
     
     .xt-changelog-h4 {
         font-size: 12px;
-        margin: 8px 0 4px 0;
+        margin: 10px 0 6px 0;
     }
     
     .xt-changelog-ul {
@@ -489,6 +761,6 @@
     }
     
     .xt-changelog-li {
-        padding-left: 12px;
+        padding-left: 14px;
     }
 } 

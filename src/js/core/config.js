@@ -2,7 +2,8 @@
 const CONFIG = {
     // API Configuration
     API: {
-        MODEL: "meta-llama/llama-4-scout-17b-16e-instruct",
+        // MODEL: "meta-llama/llama-4-scout-17b-16e-instruct",
+        MODEL: "meta-llama/llama-4-maverick-17b-128e-instruct",
         ENDPOINT: "https://api.groq.com/openai/v1/chat/completions",
         TTS_ENDPOINT: "https://api.groq.com/openai/v1/audio/speech",
         GITHUB_RELEASES_URL: 'https://api.github.com/repos/KimiZK-Dev/KimiZK-Translator/releases/latest'

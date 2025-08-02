@@ -39,6 +39,7 @@
 				"src/js/core/audio.js",
 				"src/js/core/notifications.js",
 				"src/js/core/ui.js",
+				"src/js/update_modal.js",
 				"src/js/main.js"
 			],
 			"css": [
