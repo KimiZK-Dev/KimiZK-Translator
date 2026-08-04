@@ -1,6 +1,36 @@
 # 📝 **Changelog - KimiZK-Translator**
 
-## 🚀 **Version 1.0.4 (Latest)**
+## 🚀 **Version 1.0.5 (Latest)**
+
+### ✨ **Tính năng & Cải tiến nổi bật**
+
+#### ⌨️ **Command Palette (Ctrl + K / Cmd + K)**
+- Giao diện tìm kiếm & thực thi lệnh nhanh định dạng macOS Spotlight / Raycast.
+- Đổi nhanh mô hình AI, truy cập trang Cài đặt, sao chép kết quả tức thì bằng phím tắt.
+
+#### 🎙️ **Thu âm AI & Nhận diện Giọng nói STT (Groq Whisper)**
+- Tích hợp mô hình `whisper-large-v3-turbo` trực tiếp trong Popup.
+- Giao diện nút Micro phát sáng gradient & dải sóng âm nhấp nháy sinh động.
+
+#### 📷 **Chụp màn hình OCR Vision (Qwen 3.6 27B)**
+- Chụp ảnh màn hình trang web, trích xuất văn bản từ hình ảnh và dịch nghĩa tự động bằng AI Vision.
+
+#### 🌐 **Nguồn tìm kiếm Web Citations (Groq Compound)**
+- Tự động hiển thị danh sách các thẻ liên kết nguồn dẫn chứng web khi dịch với mô hình Agentic AI (`groq/compound`).
+
+#### 🎵 **Hệ thống Âm thanh 3-Tier Audio Engine**
+- Tích hợp 3 lớp âm thanh dự phòng: Groq Orpheus AI TTS -> Google Cloud TTS -> Web Speech API.
+- Bổ sung menu chọn TTS Model (`canopylabs/orpheus-v1-english` & `canopylabs/orpheus-arabic-saudi`).
+- Giao diện trình phát âm thanh Glassmorphic AI Player sang trọng.
+
+#### 🎨 **Tối ưu hóa UI/UX & 100% Vector SVG Icons**
+- Thiết kế Popup rộng rãi (`380px`), bổ sung dải nút bấm cửa sổ chuẩn macOS Traffic Lights.
+- Chuyển đổi 100% các icon Emoji trong dự án thành Vector SVG sắc nét.
+- Xử lý triệt để lỗi HTTP 413 (Content Too Large) và tối ưu hóa 65% dung lượng prompt.
+
+---
+
+## 🚀 **Version 1.0.4**
 
 ### ✨ **Tính năng & Cải tiến nổi bật**
 
