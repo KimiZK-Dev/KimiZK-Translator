@@ -353,8 +353,10 @@
     font-size: 14px;
     font-weight: 600;
     color: #0f172a;
-    line-height: 1.5;
+    line-height: 1.6;
     margin: 0;
+    white-space: pre-wrap;
+    word-break: break-word;
 }
 
 .xt-description-text {

@@ -58,6 +58,17 @@ const AudioManager = {
                 this.currentAudio = null;
             }
             
+            // Stop Web Speech Synthesis if active
+            if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+                try { window.speechSynthesis.cancel(); } catch (e) {}
+            }
+
+            // Remove floating audio controls bar immediately
+            const floatingControls = document.querySelector('.xt-audio-controls');
+            if (floatingControls) {
+                floatingControls.remove();
+            }
+            
             // Clean up URL
             if (this.currentAudioUrl && !Object.values(this.ttsAudioCache).includes(this.currentAudioUrl)) {
                 URL.revokeObjectURL(this.currentAudioUrl);

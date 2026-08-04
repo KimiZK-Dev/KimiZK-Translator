@@ -155,6 +155,87 @@ const TranslationManager = {
             }
         }
     },
+
+    /**
+     * Display Vision OCR Translation Result in Floating Popup
+     * @param {object} rect - Selected region coordinates
+     * @param {object} result - OCR Translation Result
+     */
+    displayOcrResult(rect, result) {
+        if (!result) return;
+        const rawText = result.originalText || result.translated || "Vision OCR";
+        const displayText = rawText.length > 35 ? rawText.substring(0, 35) + "..." : rawText;
+        const isSingleWord = false;
+
+        this._lastSelectedText = result.originalText || result.translated || "";
+
+        const popup = UIManager.createPopup();
+        popup.innerHTML = this._createLoadingHTML(displayText);
+        UIManager.setupDragging(popup);
+
+        const popupWidth = 360;
+        let left = (rect.left + rect.width / 2) - (popupWidth / 2);
+        left = Math.max(20, Math.min(window.innerWidth - popupWidth - 20, left));
+        
+        let top = rect.top + rect.height + 12;
+        if (top + 280 > window.innerHeight) {
+            top = Math.max(20, rect.top - 280);
+        }
+
+        Object.assign(popup.style, {
+            top: `${top}px`,
+            left: `${left}px`,
+            opacity: '0',
+            transform: 'translateY(-10px) scale(0.95)'
+        });
+
+        requestAnimationFrame(() => {
+            popup.style.opacity = '1';
+            popup.style.transform = 'translateY(0) scale(1)';
+        });
+
+        const content = popup.querySelector(".xt-translator-content");
+        this._setupPopupControls(popup);
+
+        UIManager.renderTranslationResult(content, result, displayText, isSingleWord);
+        this._setupResultControls(content, result, isSingleWord, popup);
+    },
+
+    /**
+     * Display immediate OCR loading popup
+     * @param {object} rect - Selected region coordinates
+     * @returns {HTMLElement} Created popup element
+     */
+    displayOcrLoading(rect) {
+        const displayText = "Trích xuất OCR Vision";
+        const popup = UIManager.createPopup();
+        popup.innerHTML = this._createLoadingHTML(displayText);
+        UIManager.setupDragging(popup);
+
+        const popupWidth = 360;
+        let left = (rect.left + rect.width / 2) - (popupWidth / 2);
+        left = Math.max(20, Math.min(window.innerWidth - popupWidth - 20, left));
+        
+        let top = rect.top + rect.height + 12;
+        if (top + 280 > window.innerHeight) {
+            top = Math.max(20, rect.top - 280);
+        }
+
+        Object.assign(popup.style, {
+            top: `${top}px`,
+            left: `${left}px`,
+            opacity: '0',
+            transform: 'translateY(-10px) scale(0.95)'
+        });
+
+        requestAnimationFrame(() => {
+            popup.style.opacity = '1';
+            popup.style.transform = 'translateY(0) scale(1)';
+        });
+
+        this._setupPopupControls(popup);
+        return popup;
+    },
     
     /**
      * Create loading HTML
@@ -224,8 +305,7 @@ const TranslationManager = {
         let isMinimized = false;
 
         closeBtn.addEventListener('click', () => {
-            AudioManager.stopCurrentAudio();
-            popup.remove();
+            UIManager.removePopup();
         });
 
         minimizeBtn.addEventListener('click', (e) => {
@@ -244,17 +324,20 @@ const TranslationManager = {
      * @private
      */
     _setupResultControls(content, result, isSingleWord, popup) {
-        const listenBtn = content.querySelector('.xt-listen-btn');
+        const listenBtn = content.querySelector('.xt-listen-btn, .kz-listen-btn, .kz-fp-listen');
         if (listenBtn) {
-            // Use original selected text for audio (the text user highlighted)
-            const originalSelectedText = this._getOriginalSelectedText();
-            // console.log('Setting up audio for original text:', originalSelectedText);
-            AudioManager.setupAudioButton(listenBtn, originalSelectedText, isSingleWord, popup);
+            // Read ORIGINAL source text (cái bị dịch) as requested by user
+            const originalText = result?.originalText || this._getOriginalSelectedText();
+            const textToSpeak = (originalText && String(originalText).trim()) 
+                ? String(originalText).trim() 
+                : (result?.translated || result?.meaning || '');
+                
+            AudioManager.setupAudioButton(listenBtn, textToSpeak, isSingleWord, popup);
         }
 
-        const copyBtn = content.querySelector('.xt-copy-btn');
+        const copyBtn = content.querySelector('.xt-copy-btn, .kz-copy-btn, .kz-fp-copy');
         if (copyBtn) {
-            UIManager.setupCopyButton(copyBtn, result.translated);
+            UIManager.setupCopyButton(copyBtn, result?.translated || result?.meaning || '');
         }
     },
     
@@ -294,8 +377,7 @@ const TranslationManager = {
                 !e.target.closest('.xt-trigger-icon') && 
                 !window.getSelection().toString().trim() &&
                 !AudioManager.isInteractingWithAudio()) {
-                AudioManager.stopCurrentAudio();
-                UIManager.popup.remove();
+                UIManager.removePopup();
                 UIManager.triggerIcon?.remove();
             }
         } catch (error) {
@@ -393,11 +475,216 @@ const TranslationManager = {
         // Debug: Ctrl/Cmd + Shift + C to show cache info
         if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'C') {
             e.preventDefault();
-            // console.log('Audio cache info:', AudioManager.getCacheInfo());
             NotificationManager.show(`Cache size: ${AudioManager.getCacheSize()}/${AudioManager.MAX_CACHE_SIZE}`, 'info', 3000);
         }
     }
 };
+
+// Region Snipping Tool Controller for Interactive OCR Crop
+const RegionSnipper = {
+    targetLang: "Vietnamese",
+    _cleanupFn: null,
+
+    start(targetLang = "Vietnamese") {
+        this.cleanup();
+        this.targetLang = targetLang;
+
+        const overlay = document.createElement("div");
+        overlay.id = "xt-snip-overlay";
+        overlay.style.cssText = `
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.35);
+            z-index: 2147483647;
+            cursor: crosshair;
+            user-select: none;
+        `;
+
+        const banner = document.createElement("div");
+        banner.style.cssText = `
+            position: absolute;
+            top: 24px; left: 50%; transform: translateX(-50%);
+            background: #0f172a; color: #ffffff;
+            padding: 8px 18px; border-radius: 999px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-size: 13px; font-weight: 600;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.15);
+            display: flex; align-items: center; gap: 8px;
+            pointer-events: none;
+        `;
+        banner.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2"><path d="M6 3v18"></path><path d="M18 3v18"></path><rect x="6" y="7" width="12" height="10" rx="2"></rect></svg><span>Kéo thả chuột để chọn vùng màn hình cần dịch OCR (Nhấn ESC để hủy)</span>`;
+        overlay.appendChild(banner);
+
+        const box = document.createElement("div");
+        box.id = "xt-snip-box";
+        box.style.cssText = `
+            position: absolute;
+            border: 2px dashed #3b82f6;
+            background: rgba(59, 130, 246, 0.15);
+            display: none;
+            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.45);
+            pointer-events: none;
+        `;
+        overlay.appendChild(box);
+
+        document.body.appendChild(overlay);
+
+        let startX = 0, startY = 0, isDragging = false;
+
+        const onMouseDown = (e) => {
+            startX = e.clientX;
+            startY = e.clientY;
+            isDragging = true;
+            box.style.left = `${startX}px`;
+            box.style.top = `${startY}px`;
+            box.style.width = '0px';
+            box.style.height = '0px';
+            box.style.display = 'block';
+        };
+
+        const onMouseMove = (e) => {
+            if (!isDragging) return;
+            const currentX = e.clientX;
+            const currentY = e.clientY;
+
+            const left = Math.min(startX, currentX);
+            const top = Math.min(startY, currentY);
+            const width = Math.abs(currentX - startX);
+            const height = Math.abs(currentY - startY);
+
+            box.style.left = `${left}px`;
+            box.style.top = `${top}px`;
+            box.style.width = `${width}px`;
+            box.style.height = `${height}px`;
+        };
+
+        const onMouseUp = async (e) => {
+            if (!isDragging) return;
+            isDragging = false;
+
+            const rect = {
+                left: parseInt(box.style.left) || 0,
+                top: parseInt(box.style.top) || 0,
+                width: parseInt(box.style.width) || 0,
+                height: parseInt(box.style.height) || 0
+            };
+
+            this.cleanup();
+
+            if (rect.width > 15 && rect.height > 15) {
+                // Ensure Chrome DOM repaints clean screen without dark overlay before capturing tab
+                requestAnimationFrame(() => {
+                    setTimeout(() => {
+                        this.processCrop(rect);
+                    }, 120);
+                });
+            }
+        };
+
+        const onKeyDown = (e) => {
+            if (e.key === "Escape") {
+                this.cleanup();
+            }
+        };
+
+        overlay.addEventListener("mousedown", onMouseDown);
+        window.addEventListener("mousemove", onMouseMove);
+        window.addEventListener("mouseup", onMouseUp);
+        window.addEventListener("keydown", onKeyDown);
+
+        this._cleanupFn = () => {
+            overlay.removeEventListener("mousedown", onMouseDown);
+            window.removeEventListener("mousemove", onMouseMove);
+            window.removeEventListener("mouseup", onMouseUp);
+            window.removeEventListener("keydown", onKeyDown);
+            overlay.remove();
+        };
+    },
+
+    cleanup() {
+        if (this._cleanupFn) {
+            this._cleanupFn();
+            this._cleanupFn = null;
+        }
+    },
+
+    async processCrop(rect) {
+        // Open floating loading popup INSTANTLY at cropped location
+        const popup = TranslationManager.displayOcrLoading(rect);
+        const content = popup.querySelector(".xt-translator-content");
+
+        chrome.runtime.sendMessage({ action: "CAPTURE_VISIBLE_TAB" }, async (response) => {
+            if (!response || !response.dataUrl) {
+                if (content) content.innerHTML = `<div style="padding:14px; color:#ef4444;">Không thể chụp màn hình. Vui lòng thử lại.</div>`;
+                return;
+            }
+
+            const img = new Image();
+            img.onload = async () => {
+                const canvas = document.createElement("canvas");
+                const dpr = window.devicePixelRatio || 1;
+
+                canvas.width = rect.width * dpr;
+                canvas.height = rect.height * dpr;
+                const ctx = canvas.getContext("2d");
+
+                ctx.drawImage(
+                    img,
+                    rect.left * dpr, rect.top * dpr, rect.width * dpr, rect.height * dpr,
+                    0, 0, rect.width * dpr, rect.height * dpr
+                );
+
+                const croppedDataUrl = canvas.toDataURL("image/png");
+
+                chrome.runtime.sendMessage({
+                    action: "TRANSLATE_IMAGE",
+                    imageDataUrl: croppedDataUrl,
+                    targetLanguage: this.targetLang || "Vietnamese"
+                }, (translateRes) => {
+                    if (translateRes && translateRes.success && translateRes.result) {
+                        const result = translateRes.result;
+                        const rawText = result.originalText || result.translated || "Vision OCR";
+                        const displayText = rawText.length > 35 ? rawText.substring(0, 35) + "..." : rawText;
+
+                        // Update header title
+                        const titleEl = popup.querySelector(".xt-translator-word");
+                        if (titleEl) titleEl.textContent = displayText;
+
+                        // Render result smoothly inside popup
+                        UIManager.renderTranslationResult(content, result, displayText, false);
+                        TranslationManager._setupResultControls(content, result, false, popup);
+
+                        // Save to history
+                        if (typeof StorageManager !== 'undefined' && StorageManager.addTranslationHistory) {
+                            StorageManager.addTranslationHistory({
+                                type: 'ocr',
+                                originalText: result.originalText || 'Trích xuất OCR từ ảnh',
+                                translatedText: result.translated || '',
+                                targetLang: this.targetLang || 'Vietnamese',
+                                timestamp: Date.now()
+                            });
+                        }
+                    } else {
+                        const errMsg = translateRes?.error || "Không trích xuất được chữ từ hình ảnh.";
+                        if (content) {
+                            content.innerHTML = `<div style="padding: 14px; color: #ef4444; font-size: 13px;">Lỗi Vision OCR: ${errMsg}</div>`;
+                        }
+                    }
+                });
+            };
+            img.src = response.dataUrl;
+        });
+    }
+};
+
+// Handle Messages from Extension Popup or Background
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.action === "START_REGION_SNIP") {
+        RegionSnipper.start(request.targetLang || "Vietnamese");
+        sendResponse({ started: true });
+    }
+});
 
 // Initialize when script loads
 if (document.readyState === 'loading') {

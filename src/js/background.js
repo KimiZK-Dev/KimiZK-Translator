@@ -1,4 +1,6 @@
 // Service Worker for KimiZK-Translator (Manifest V3)
+importScripts('core/config.js', 'core/storage.js', 'core/utils.js', 'core/api.js');
+
 const CURRENT_VERSION = chrome.runtime.getManifest().version;
 
 // console.log('KimiZK-Translator Service Worker loading... Version:', CURRENT_VERSION);
@@ -90,6 +92,22 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             BackgroundService._handleGetLanguagePreferences(sendResponse);
             return true;
             
+        case "CAPTURE_VISIBLE_TAB":
+            chrome.tabs.captureVisibleTab(null, { format: "png" }, (dataUrl) => {
+                sendResponse({ dataUrl: dataUrl, error: chrome.runtime.lastError?.message });
+            });
+            return true;
+
+        case "TRANSLATE_IMAGE":
+            if (typeof ApiService !== 'undefined' && ApiService.translateImage) {
+                ApiService.translateImage(request.imageDataUrl, request.targetLanguage || 'Vietnamese')
+                    .then(result => sendResponse({ success: true, result }))
+                    .catch(err => sendResponse({ success: false, error: err.message }));
+            } else {
+                sendResponse({ success: false, error: "ApiService module chưa sẵn sàng trên Service Worker" });
+            }
+            return true;
+
         default:
             sendResponse({ error: 'Unknown action' });
             return false;

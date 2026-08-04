@@ -24,14 +24,29 @@ const Utils = {
     },
     
     /**
-     * Escape special characters for safe HTML rendering
+     * Escape special characters for safe HTML rendering without destroying line breaks
      * @param {string} text - Input text
-     * @returns {string} Escaped text
+     * @returns {string} Escaped HTML text
      */
     escapeSpecialChars(text) {
         if (!text) return '';
-        return text
-            .replace(/[\n\r\t]/g, ' ')
+        return String(text)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    },
+
+    /**
+     * Convert text to single line for title/headers
+     * @param {string} text - Input text
+     * @returns {string} Single line text
+     */
+    toSingleLine(text) {
+        if (!text) return '';
+        return this.escapeSpecialChars(text)
+            .replace(/[\n\r\t]+/g, ' ')
             .replace(/\s+/g, ' ')
             .trim();
     },

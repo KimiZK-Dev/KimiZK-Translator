@@ -43,12 +43,28 @@ const UIManager = {
     },
     
     /**
+     * Remove translation popup and stop any active audio
+     */
+    removePopup() {
+        if (typeof AudioManager !== 'undefined' && AudioManager.stopCurrentAudio) {
+            AudioManager.stopCurrentAudio();
+        }
+        if (this.popup) {
+            this.popup.remove();
+            this.popup = null;
+        }
+        const audioControls = document.querySelector('.xt-audio-controls');
+        if (audioControls) {
+            audioControls.remove();
+        }
+    },
+
+    /**
      * Create translation popup
      * @returns {HTMLElement} Popup element
      */
     createPopup() {
-        AudioManager.stopCurrentAudio();
-        this.popup?.remove();
+        this.removePopup();
         
         this.popup = document.createElement("div");
         this.popup.className = "xt-translator-popup";
@@ -382,7 +398,7 @@ const UIManager = {
         return `
             <div class="xt-translator-main">
                 <div class="xt-main-info">
-                    <h2 class="xt-word-title-text" title="${Utils.escapeSpecialChars(displayText)}">${Utils.escapeSpecialChars(displayText)}</h2>
+                    <h2 class="xt-word-title-text" title="${Utils.toSingleLine(displayText)}">${Utils.toSingleLine(displayText)}</h2>
                     <div class="xt-language-info">
                         <span class="xt-language-badge">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
