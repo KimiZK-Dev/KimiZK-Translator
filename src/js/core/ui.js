@@ -15,17 +15,12 @@ const UIManager = {
         this.triggerIcon?.remove();
         this.triggerIcon = document.createElement("div");
         this.triggerIcon.className = "xt-trigger-icon";
+        const iconUrl = (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.getURL) 
+            ? chrome.runtime.getURL('src/icons/icon32.png') 
+            : '';
         this.triggerIcon.innerHTML = `
-            <div class="xt-trigger-inner" title="Dịch văn bản">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill="url(#sparkle-trigger-grad)"/>
-                    <defs>
-                        <linearGradient id="sparkle-trigger-grad" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
-                            <stop stop-color="#6366F1"/>
-                            <stop offset="1" stop-color="#A855F7"/>
-                        </linearGradient>
-                    </defs>
-                </svg>
+            <div class="xt-trigger-inner" title="Dịch cùng KimiZK Translator">
+                <img src="${iconUrl}" width="20" height="20" style="display:block; width:20px; height:20px; object-fit:contain; border-radius:4px; pointer-events:none;" alt="Translate Icon" />
             </div>
         `;
         document.body.appendChild(this.triggerIcon);

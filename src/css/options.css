@@ -133,13 +133,14 @@ button, input, select, textarea{ font-family: inherit; font-size: inherit; color
   width: 32px;
   height: 32px;
   border-radius: 9px;
-  background: var(--accent);
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  overflow: hidden;
 }
-.xt-brand-mark svg{ width: 18px; height: 18px; }
+.xt-brand-img { width: 100%; height: 100%; object-fit: contain; display: block; border-radius: 9px; }
 
 .xt-brand-text{ min-width: 0; }
 .xt-brand-title{
@@ -736,11 +737,17 @@ button, input, select, textarea{ font-family: inherit; font-size: inherit; color
 /* ---------------------------------------------------------------------- */
 .xt-about-head{ display: flex; align-items: center; gap: 14px; margin-bottom: 4px; }
 .xt-about-mark{
-  width: 46px; height: 46px; border-radius: 12px;
-  background: var(--accent);
-  display: flex; align-items: center; justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
 }
-.xt-about-mark svg{ width: 24px; height: 24px; }
+.xt-about-img { width: 100%; height: 100%; object-fit: contain; display: block; border-radius: 12px; }
 .xt-about-head h2{ margin: 0; font-size: 16px; font-weight: 650; }
 .xt-about-head p{ margin: 2px 0 0; font-size: 12.5px; color: var(--text-muted); font-family: var(--font-mono); }
 
