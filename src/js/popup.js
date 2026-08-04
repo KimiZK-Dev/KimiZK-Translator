@@ -19,8 +19,28 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("open-options-btn")?.addEventListener("click", openOptionsPage);
     document.getElementById("full-settings-link")?.addEventListener("click", openOptionsPage);
 
+    // Theme toggle handler
+    const themeToggleBtn = document.getElementById("kz-theme-toggle");
+    themeToggleBtn?.addEventListener("click", async () => {
+        const isDark = document.body.classList.contains("dark-theme") || document.body.classList.contains("dark");
+        const nextTheme = isDark ? "light" : "dark";
+        document.body.classList.toggle("dark-theme", nextTheme === "dark");
+        document.body.classList.toggle("dark", nextTheme === "dark");
+        if (typeof StorageManager !== 'undefined' && StorageManager.setTheme) {
+            StorageManager.setTheme(nextTheme);
+        }
+    });
+
+    if (typeof StorageManager !== 'undefined' && StorageManager.getTheme) {
+        StorageManager.getTheme().then(theme => {
+            const isDark = theme === "dark";
+            document.body.classList.toggle("dark-theme", isDark);
+            document.body.classList.toggle("dark", isDark);
+        });
+    }
+
     // 3. Mode Tabs Logic (Text | Voice STT | Screen OCR)
-    const modeTabs = document.querySelectorAll(".xt-mode-tab");
+    const modeTabs = document.querySelectorAll(".kz-mode-tab, .xt-mode-tab");
     const modeViews = {
         text: document.getElementById("view-text-mode"),
         voice: document.getElementById("view-voice-mode"),
@@ -35,7 +55,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
             Object.keys(modeViews).forEach(m => {
                 if (modeViews[m]) {
-                    modeViews[m].style.display = m === selectedMode ? "block" : "none";
+                    if (m === selectedMode) {
+                        modeViews[m].style.display = "block";
+                        modeViews[m].classList.add("active");
+                    } else {
+                        modeViews[m].style.display = "none";
+                        modeViews[m].classList.remove("active");
+                    }
                 }
             });
         });
@@ -130,13 +156,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    const handlePopupTranslate = async (customQuery) => {
-        const query = customQuery || inputArea.value.trim();
+    const handlePopupTranslate = async (textOverride = null, typeOverride = 'text') => {
+        const query = textOverride || inputArea.value.trim();
         if (!query) return;
 
-        if (inputArea && !customQuery) inputArea.value = query;
         translateBtn.disabled = true;
-        translateBtn.innerHTML = `Đang dịch...`;
+        translateBtn.innerHTML = `
+            <svg class="xt-spin" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle><path d="M12 2a10 10 0 0 1 10 10"></path></svg>
+            Đang dịch...
+        `;
         
         if (resultBox) resultBox.style.display = "none";
         if (skeletonBox) skeletonBox.style.display = "flex";
@@ -154,6 +182,15 @@ document.addEventListener("DOMContentLoaded", () => {
             if (result) {
                 if (typeof StorageManager !== 'undefined' && StorageManager.recordTranslationEvent) {
                     StorageManager.recordTranslationEvent(query, targetLang, elapsed);
+                }
+                if (typeof StorageManager !== 'undefined' && StorageManager.addTranslationHistory) {
+                    StorageManager.addTranslationHistory({
+                        type: typeOverride || 'text',
+                        originalText: query,
+                        translatedText: result.translated || result.meaning || '',
+                        targetLang: targetLang,
+                        timestamp: Date.now()
+                    });
                 }
                 lastResult = result;
                 resultBox.style.display = "flex";
@@ -198,10 +235,23 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    listenBtn?.addEventListener("click", () => {
-        const textToSpeak = lastResult?.translated || lastResult?.meaning || inputArea.value.trim();
+    listenBtn?.addEventListener("click", async () => {
+        const textToSpeak = lastResult?.originalText || inputArea.value.trim() || lastResult?.translated || lastResult?.meaning || '';
         if (textToSpeak) {
-            ApiService.textToSpeech(textToSpeak);
+            listenBtn.style.opacity = "0.6";
+            listenBtn.disabled = true;
+            try {
+                const audioUrl = await ApiService.textToSpeech(textToSpeak);
+                if (audioUrl && audioUrl !== 'web-speech-used') {
+                    const audio = new Audio(audioUrl);
+                    await audio.play();
+                }
+            } catch (err) {
+                console.error("Popup TTS Playback Error:", err);
+            } finally {
+                listenBtn.style.opacity = "1";
+                listenBtn.disabled = false;
+            }
         }
     });
 
@@ -217,10 +267,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // 6. Voice Recording STT Feature (Groq Whisper)
+    // Voice STT Recording (Groq Whisper)
     const micBtn = document.getElementById("mic-record-btn");
     const voiceStatus = document.getElementById("voice-status-text");
     const voiceWaves = document.getElementById("voice-waves");
+
     let mediaRecorder = null;
     let audioChunks = [];
     let isRecording = false;
@@ -249,9 +300,9 @@ document.addEventListener("DOMContentLoaded", () => {
                             if (voiceStatus) voiceStatus.textContent = `Đã nhận diện: "${transcribedText}"`;
                             if (inputArea) inputArea.value = transcribedText;
                             
-                            // Switch back to text mode & trigger translation
+                            // Switch back to text mode & trigger translation with type 'voice'
                             document.querySelector('.xt-mode-tab[data-mode="text"]')?.click();
-                            handlePopupTranslate(transcribedText);
+                            handlePopupTranslate(transcribedText, 'voice');
                         } else {
                             if (voiceStatus) voiceStatus.textContent = "Không thể nhận diện âm thanh. Vui lòng nói rõ hơn.";
                             if (skeletonBox) skeletonBox.style.display = "none";
@@ -270,7 +321,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (voiceStatus) voiceStatus.textContent = "Đang thu âm... Nhấn lại nút micro để hoàn tất & dịch.";
             } catch (err) {
                 console.error("Mic Access Error:", err);
-                if (voiceStatus) voiceStatus.textContent = "Chưa cấp quyền Micro. Vui lòng cấp quyền trong Chrome.";
+                if (voiceStatus) {
+                    voiceStatus.innerHTML = `Chưa cấp quyền Micro. <button id="grant-mic-btn" style="color: #60a5fa; background: none; border: none; text-decoration: underline; cursor: pointer; font-weight: 600; padding: 0;">Nhấn vào đây để Cấp quyền 1-Click</button>`;
+                    document.getElementById("grant-mic-btn")?.addEventListener("click", () => {
+                        chrome.tabs.create({ url: chrome.runtime.getURL("src/html/options.html?requestMic=true") });
+                    });
+                }
             }
         } else {
             if (mediaRecorder && mediaRecorder.state !== "inactive") {
@@ -283,54 +339,27 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // 7. Screen OCR Vision Feature (Groq Vision qwen/qwen3.6-27b)
-    const captureOcrBtn = document.getElementById("capture-ocr-btn");
-    captureOcrBtn?.addEventListener("click", () => {
-        if (!chrome.tabs || !chrome.tabs.captureVisibleTab) {
-            alert("Tính năng chụp màn hình cần mở trên một trang web bất kỳ.");
+    const cropSnipBtn = document.getElementById("crop-snip-ocr-btn");
+    cropSnipBtn?.addEventListener("click", async () => {
+        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+        if (!tab || !tab.id) {
+            alert("Vui lòng mở tính năng này trên một trang web bất kỳ.");
             return;
         }
-
-        captureOcrBtn.disabled = true;
-        captureOcrBtn.textContent = "Đang chụp màn hình & OCR...";
-
-        if (skeletonBox) skeletonBox.style.display = "flex";
-        if (resultBox) resultBox.style.display = "none";
-
-        chrome.tabs.captureVisibleTab(null, { format: "png" }, async (dataUrl) => {
-            captureOcrBtn.disabled = false;
-            captureOcrBtn.innerHTML = `
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
-                Chụp màn hình & Dịch OCR
-            `;
-
-            if (chrome.runtime.lastError || !dataUrl) {
-                if (skeletonBox) skeletonBox.style.display = "none";
-                alert("Không thể chụp màn hình: " + (chrome.runtime.lastError?.message || "Lỗi không xác định"));
-                return;
+        const targetLang = targetSelect ? targetSelect.value : 'Vietnamese';
+        chrome.tabs.sendMessage(tab.id, {
+            action: "START_REGION_SNIP",
+            targetLang: targetLang
+        }, () => {
+            if (chrome.runtime.lastError) {
+                chrome.scripting.executeScript({
+                    target: { tabId: tab.id },
+                    files: ["src/js/core/config.js", "src/js/core/storage.js", "src/js/core/utils.js", "src/js/core/api.js", "src/js/core/ui.js", "src/js/main.js"]
+                }, () => {
+                    chrome.tabs.sendMessage(tab.id, { action: "START_REGION_SNIP", targetLang: targetLang });
+                });
             }
-
-            try {
-                const targetLang = targetSelect.value || 'Vietnamese';
-                const ocrResult = await ApiService.translateImage(dataUrl, targetLang);
-
-                if (skeletonBox) skeletonBox.style.display = "none";
-
-                if (ocrResult) {
-                    lastResult = ocrResult;
-                    if (resultBox) resultBox.style.display = "flex";
-                    if (resultText) resultText.textContent = ocrResult.translated || ocrResult.originalText || "Hoàn tất trích xuất OCR";
-                    if (detectedBadge) detectedBadge.textContent = `${ocrResult.detectedLanguage || 'Ảnh'} → ${targetLang}`;
-                    if (resultDesc) {
-                        resultDesc.style.display = "block";
-                        resultDesc.textContent = `[Gốc trích xuất OCR]: ${ocrResult.originalText || ''}`;
-                    }
-                }
-            } catch (err) {
-                console.error("Vision OCR Error:", err);
-                if (skeletonBox) skeletonBox.style.display = "none";
-                if (resultBox) resultBox.style.display = "flex";
-                if (resultText) resultText.textContent = "Lỗi nhận diện hình ảnh OCR: " + (err.message || "Vui lòng thử lại.");
-            }
+            window.close();
         });
     });
 
