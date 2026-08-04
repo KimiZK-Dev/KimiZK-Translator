@@ -369,14 +369,58 @@ button, input, select, textarea{ font-family: inherit; font-size: inherit; color
   font-weight: 550;
   padding: 4px 10px;
   border-radius: 999px;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
 }
-.xt-status .xt-dot{ width: 6px; height: 6px; border-radius: 50%; }
-.xt-status.ok{ background: var(--success-soft); color: var(--success); }
-.xt-status.ok .xt-dot{ background: var(--success); }
-.xt-status.warn{ background: var(--warning-soft); color: var(--warning); }
-.xt-status.warn .xt-dot{ background: var(--warning); }
-.xt-status.idle{ background: var(--surface-alt); color: var(--text-faint); }
-.xt-status.idle .xt-dot{ background: var(--text-faint); }
+.xt-status svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+.xt-status .xt-dot{
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.xt-status.ok, .xt-status.success{
+  background: var(--success-soft);
+  color: var(--success);
+  border-color: rgba(22, 163, 74, 0.25);
+}
+.xt-status.ok .xt-dot, .xt-status.success .xt-dot{
+  background: var(--success);
+  box-shadow: 0 0 6px var(--success);
+}
+
+.xt-status.warn, .xt-status.warning{
+  background: var(--warning-soft);
+  color: var(--warning);
+  border-color: rgba(217, 119, 6, 0.25);
+}
+.xt-status.warn .xt-dot, .xt-status.warning .xt-dot{
+  background: var(--warning);
+}
+
+.xt-status.danger, .xt-status.error{
+  background: var(--danger-soft);
+  color: var(--danger);
+  border-color: rgba(220, 38, 38, 0.25);
+}
+.xt-status.danger .xt-dot, .xt-status.error .xt-dot{
+  background: var(--danger);
+  box-shadow: 0 0 6px var(--danger);
+}
+
+.xt-status.idle{
+  background: var(--surface-alt);
+  color: var(--text-faint);
+  border-color: var(--border);
+}
+.xt-status.idle .xt-dot{
+  background: var(--text-faint);
+}
 
 /* checkbox row */
 .xt-check-row{
