@@ -594,18 +594,26 @@ button, input, select, textarea{ font-family: inherit; font-size: inherit; color
   font-size: 12.5px;
   font-weight: 500;
 }
-.xt-lang-chip button{
-  width: 16px; height: 16px;
+.xt-lang-chip button, .xt-lang-chip .chip-delete-btn {
+  width: 18px;
+  height: 18px;
   border: none;
   background: transparent;
-  color: var(--text-faint);
+  color: var(--text-muted);
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
+  padding: 0;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
 }
-.xt-lang-chip button:hover{ background: var(--danger-soft); color: var(--danger); }
+.xt-lang-chip button:hover, .xt-lang-chip .chip-delete-btn:hover {
+  background: var(--danger-soft);
+  color: var(--danger);
+  transform: scale(1.1);
+}
 .xt-lang-chip.xt-chip-empty{ color: var(--text-faint); border-style: dashed; }
 
 /* ---------------------------------------------------------------------- */
