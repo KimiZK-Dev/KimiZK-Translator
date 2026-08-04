@@ -79,6 +79,18 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.xt-translator-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
 }
 
 .xt-translator-word {

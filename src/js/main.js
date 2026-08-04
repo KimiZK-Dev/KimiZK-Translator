@@ -242,20 +242,15 @@ const TranslationManager = {
      * @private
      */
     _createLoadingHTML(displayText) {
+        const iconUrl = typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.getURL 
+            ? chrome.runtime.getURL('src/icons/icon32.png') 
+            : '';
         return `
             <div class="xt-translator-header" style="position: relative;">
                 <div class="xt-header-drag-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: move; z-index: 2; background: rgba(0,0,0,0);"></div>
                 <div class="xt-translator-title">
                     <span class="xt-translator-icon">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill="url(#sparkle-head-grad)"/>
-                            <defs>
-                                <linearGradient id="sparkle-head-grad" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
-                                    <stop stop-color="#818CF8"/>
-                                    <stop offset="1" stop-color="#C084FC"/>
-                                </linearGradient>
-                            </defs>
-                        </svg>
+                        <img src="${iconUrl}" width="18" height="18" style="display:block; width:18px; height:18px; object-fit:contain; border-radius:4px; pointer-events:none;" alt="KimiZK" />
                     </span>
                     <span class="xt-translator-word">${displayText}</span>
                 </div>
