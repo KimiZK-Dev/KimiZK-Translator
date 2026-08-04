@@ -1,5 +1,8 @@
 // API service module for KimiZK-Translator
 const ApiService = {
+    // Cooldown tracker for rate-limited API keys (key -> timestamp)
+    keyCooldowns: {},
+
     /**
      * Translate text using Groq API
      * @param {string} input - Text to translate
@@ -9,8 +12,16 @@ const ApiService = {
      */
     async translate(input, isSingleWord, targetLanguage = 'Vietnamese') {
         try {
-            const apiKey = await StorageManager.getApiKey();
-            if (!apiKey) {
+            const apiKeys = (typeof StorageManager !== 'undefined' && StorageManager.getApiKeys) 
+                ? await StorageManager.getApiKeys() 
+                : [];
+            
+            if (apiKeys.length === 0) {
+                const singleKey = await StorageManager.getApiKey();
+                if (singleKey) apiKeys.push(singleKey);
+            }
+
+            if (apiKeys.length === 0) {
                 throw new Error('API_KEY_NOT_FOUND');
             }
             
@@ -20,53 +31,111 @@ const ApiService = {
             const savedModel = (typeof StorageManager !== 'undefined' && StorageManager.getSelectedModel) 
                 ? await StorageManager.getSelectedModel() 
                 : CONFIG.API.MODEL;
-            const modelToUse = savedModel || CONFIG.API.MODEL || "llama-3.3-70b-versatile";
+            const primaryModel = savedModel || CONFIG.API.MODEL || "llama-3.3-70b-versatile";
             
-            const response = await fetch(CONFIG.API.ENDPOINT, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${apiKey}`
-                },
-                body: JSON.stringify({
-                    messages: [
-                        { role: "user", content: `${systemPrompt}\n\n${prompt}` }
-                    ],
-                    model: modelToUse,
-                    temperature: 0.2,
-                    max_completion_tokens: 2048,
-                    top_p: 1,
-                    stream: false
-                })
-            });
+            // Priority ordered fallback models list
+            const fallbackModels = [primaryModel, "llama-3.1-8b-instant", "groq/compound-mini", "qwen/qwen3.6-27b"].filter((v, i, a) => a.indexOf(v) === i);
+            
+            let response = null;
+            let errText = "";
+            let usedModel = primaryModel;
+            let usedKeyIndex = 0;
+            let success = false;
+
+            // SMART MATRIX FALLBACK STRATEGY:
+            // Outer loop tries highest quality models first.
+            // Inner loop tries all available API keys before downgrading model quality!
+            matrixLoop: for (const currentModel of fallbackModels) {
+                for (let keyIdx = 0; keyIdx < apiKeys.length; keyIdx++) {
+                    const key = apiKeys[keyIdx];
+                    
+                    // Skip key if it's currently on a active 60s rate-limit cooldown (unless all keys are in cooldown)
+                    if (this.keyCooldowns[key] && Date.now() < this.keyCooldowns[key] && apiKeys.length > 1) {
+                        console.info(`[Groq Fallback] Key #${keyIdx + 1} is in 60s rate limit cooldown. Trying next key...`);
+                        continue;
+                    }
+
+                    usedModel = currentModel;
+                    usedKeyIndex = keyIdx;
+
+                    try {
+                        const controller = new AbortController();
+                        const timeoutId = setTimeout(() => controller.abort(), 12000);
+
+                        response = await fetch(CONFIG.API.ENDPOINT, {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": `Bearer ${key}`
+                            },
+                            body: JSON.stringify({
+                                messages: [
+                                    { role: "user", content: `${systemPrompt}\n\n${prompt}` }
+                                ],
+                                model: currentModel,
+                                temperature: 0.2,
+                                max_completion_tokens: 2048,
+                                top_p: 1,
+                                stream: false
+                            }),
+                            signal: controller.signal
+                        });
+                        clearTimeout(timeoutId);
+
+                        if (response.ok) {
+                            success = true;
+                            // Clear cooldown for working key
+                            delete this.keyCooldowns[key];
+                            break matrixLoop;
+                        }
+
+                        errText = await response.text();
+                        console.warn(`[Groq API Fallback] Key #${keyIdx + 1} with model "${currentModel}" returned status ${response.status}:`, errText);
+
+                        // If 429 Rate Limit Exceeded (Tokens/Requests limit hit)
+                        if (response.status === 429 || errText.includes('rate_limit_exceeded') || errText.includes('TPM') || errText.includes('RPM')) {
+                            // Put this key in 60-second cooldown
+                            this.keyCooldowns[key] = Date.now() + 60000;
+                            console.info(`[Groq Fallback] 429 Rate Limit hit on Key #${keyIdx + 1}. Auto-switching to next key/model...`);
+                            continue;
+                        } else if (response.status === 401 || errText.includes('invalid_api_key')) {
+                            console.warn(`[Groq Fallback] Key #${keyIdx + 1} invalid (401). Skipping key...`);
+                            continue;
+                        } else {
+                            // Non-rate-limit error (e.g. model unavailable/decommissioned), try next model
+                            break;
+                        }
+                    } catch (netErr) {
+                        console.warn(`Network error on Key #${keyIdx + 1} (${currentModel}):`, netErr);
+                    }
+                }
+            }
 
             // Record rate limit headers if present
-            if (typeof StorageManager !== 'undefined' && StorageManager.updateRateLimits) {
+            if (response && typeof StorageManager !== 'undefined' && StorageManager.updateRateLimits) {
                 StorageManager.updateRateLimits(response.headers);
             }
 
-            if (!response.ok) {
-                const errText = await response.text();
-                if (response.status === 413 || errText.includes('request_too_large') || errText.includes('Request Entity Too Large') || errText.includes('Content Too Large')) {
+            if (!success || !response || !response.ok) {
+                if ((response && response.status === 413) || errText.includes('request_too_large') || errText.includes('Request Entity Too Large') || errText.includes('Content Too Large')) {
                     throw new Error(`Nội dung cần dịch quá lớn (Lỗi 413: Content Too Large). Vui lòng bôi đen hoặc nhập đoạn văn ngắn hơn.`);
                 }
-                if (response.status === 429) {
-                    const retryAfter = response.headers.get('retry-after') || '2';
-                    throw new Error(`Đã chạm giới hạn Groq Rate Limit (429). Vui lòng thử lại sau ${retryAfter} giây.`);
+                if ((response && response.status === 429) || errText.includes('rate_limit_exceeded')) {
+                    throw new Error(`Tất cả ${apiKeys.length} API Key & mô hình Groq hiện đã chạm giới hạn 100k token/ngày của Groq Free Tier. Vui lòng thêm thêm API Key phụ trong Cấu hình (Options) hoặc thử lại sau 1 phút.`);
                 }
                 if (errText.includes('model_decommissioned')) {
-                    throw new Error(`Mô hình AI này (${modelToUse}) đã bị Groq ngừng hỗ trợ. Vui lòng đổi sang Model khác trong Options.`);
+                    throw new Error(`Mô hình AI này (${usedModel}) đã bị Groq ngừng hỗ trợ. Vui lòng đổi sang Model khác trong Options.`);
                 }
                 if (errText.includes('model_not_found')) {
-                    throw new Error(`Không tìm thấy mô hình AI (${modelToUse}). Vui lòng chọn Model khác trong Options.`);
+                    throw new Error(`Không tìm thấy mô hình AI (${usedModel}). Vui lòng chọn Model khác trong Options.`);
                 }
                 if (errText.includes('blocked_api_access')) {
                     throw new Error(`Tài khoản Groq API của bạn đã vượt quá Hạn mức Ngân sách hàng tháng (Spend Limit). Vui lòng kiểm tra Bảng điều khiển Groq Console.`);
                 }
-                if (response.status === 498 || errText.includes('capacity_exceeded')) {
+                if ((response && response.status === 498) || errText.includes('capacity_exceeded')) {
                     throw new Error(`Dung lượng hệ thống Groq Flex tier đang bận (498). Vui lòng thử lại sau vài giây.`);
                 }
-                throw new Error(`API_ERROR_${response.status}: ${errText || response.statusText}`);
+                throw new Error(`API_ERROR_${response ? response.status : 'FETCH'}: ${errText || (response ? response.statusText : 'Lỗi kết nối mạng')}`);
             }
 
             const responseData = await response.json();
@@ -87,10 +156,24 @@ const ApiService = {
                     result.executedTools = message.executed_tools;
                 }
             }
+
+            // Automatically record recent language & translation history
+            if (StorageManager.addRecentLanguage) {
+                StorageManager.addRecentLanguage(targetLanguage);
+            }
+            if (StorageManager.addTranslationHistory && result) {
+                StorageManager.addTranslationHistory({
+                    type: 'text',
+                    originalText: input,
+                    translatedText: result.translated || result.meaning || '',
+                    targetLang: targetLanguage,
+                    timestamp: Date.now()
+                });
+            }
             
             if (!result) {
                 console.error('Failed to parse API response');
-                throw new Error('INVALID_API_RESPONSE');
+                return null;
             }
             
             // Validate required fields
@@ -131,7 +214,12 @@ const ApiService = {
      */
     async textToSpeech(text) {
         try {
-            if (text.length > CONFIG.AUDIO.MAX_TEXT_LENGTH) {
+            if (!text || !String(text).trim()) {
+                console.warn('Cannot perform TTS on empty text');
+                return null;
+            }
+            const cleanText = String(text).trim();
+            if (cleanText.length > CONFIG.AUDIO.MAX_TEXT_LENGTH) {
                 throw new Error('TEXT_TOO_LONG');
             }
 
@@ -140,16 +228,115 @@ const ApiService = {
             const savedDirection = await StorageManager.getTtsDirection();
             const savedTtsModel = (typeof StorageManager !== 'undefined' && StorageManager.getTtsModel) ? await StorageManager.getTtsModel() : null;
 
-            // Language detection
-            const detectedLang = Utils.detectLanguage ? Utils.detectLanguage(text) : 'english';
+            // Language detection (use English key names, NOT Vietnamese display names)
+            const detectedLang = this._detectLangKey(text);
             const isArabic = detectedLang === 'arabic' || /[\u0600-\u06ff]/.test(text);
             const isEnglish = detectedLang === 'english' || /^[a-zA-Z\s.,!?;:'"()-]+$/.test(text);
 
-            // Option 1: Groq Orpheus API (Supports English & Arabic)
+
+
+            const puterToken = (typeof StorageManager !== 'undefined' && StorageManager.getPuterToken) ? await StorageManager.getPuterToken() : null;
+
+            // Option 0: Puter AI TTS (Requires Puter Auth Token)
+            if (savedTtsModel && savedTtsModel.startsWith('puter-') && puterToken) {
+                try {
+                    const puterDriversUrl = "https://api.puter.com/drivers/call";
+                    const langCodeMap = {
+                        english: 'en-US', vietnamese: 'vi-VN', japanese: 'ja-JP', korean: 'ko-KR',
+                        chinese: 'zh-CN', french: 'fr-FR', german: 'de-DE', spanish: 'es-ES',
+                        russian: 'ru-RU', italian: 'it-IT', portuguese: 'pt-PT', thai: 'th-TH', arabic: 'ar-SA'
+                    };
+                    const bcp47Lang = langCodeMap[detectedLang] || 'vi-VN';
+                    const shortLang = bcp47Lang.split('-')[0];
+
+                    let providerName = "aws-polly";
+                    let providerArgs = { text: cleanText.slice(0, 2500), provider: "aws-polly", language: bcp47Lang, voice: "Joanna", engine: "neural" };
+
+                    if (savedTtsModel === 'puter-openai') {
+                        providerName = "openai";
+                        providerArgs = { text: cleanText.slice(0, 2500), provider: "openai", model: "gpt-4o-mini-tts", voice: "nova", response_format: "mp3" };
+                    } else if (savedTtsModel === 'puter-gemini') {
+                        providerName = "gemini";
+                        providerArgs = { text: cleanText.slice(0, 2500), provider: "gemini", model: "gemini-2.5-flash-preview-tts", voice: "Puck" };
+                    } else if (savedTtsModel === 'puter-elevenlabs') {
+                        providerName = "elevenlabs";
+                        providerArgs = { text: cleanText.slice(0, 2500), provider: "elevenlabs", model: "eleven_multilingual_v2" };
+                    } else if (savedTtsModel === 'puter-xai') {
+                        providerName = "xai";
+                        providerArgs = { text: cleanText.slice(0, 2500), provider: "xai", voice: "eve", language: shortLang };
+                    } else if (savedTtsModel === 'puter-speechify') {
+                        providerName = "speechify";
+                        providerArgs = { text: cleanText.slice(0, 2500), provider: "speechify", model: "simba-3.2", voice: "geffen_32" };
+                    }
+
+                    // Try requested provider, then fallback to aws-polly / openai if needed
+                    const providersToTry = [providerName, "aws-polly", "openai"].filter((v, i, a) => a.indexOf(v) === i);
+
+                    for (const currentProvider of providersToTry) {
+                        try {
+                            const currentArgs = { ...providerArgs, provider: currentProvider };
+                            const puterRes = await fetch(puterDriversUrl, {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                    "Authorization": `Bearer ${puterToken}`
+                                },
+                                body: JSON.stringify({
+                                    interface: "puter-tts",
+                                    driver: "ai-tts",
+                                    method: "synthesize",
+                                    args: currentArgs
+                                })
+                            });
+
+                            if (puterRes.ok) {
+                                const contentType = puterRes.headers.get("content-type") || "";
+                                if (contentType.includes("audio") || contentType.includes("octet") || contentType.includes("mpeg") || contentType.includes("mp3") || contentType.includes("wav")) {
+                                    const pBlob = await puterRes.blob();
+                                    if (pBlob && pBlob.size > 100) {
+                                        return URL.createObjectURL(new Blob([pBlob], { type: pBlob.type || 'audio/mp3' }));
+                                    }
+                                } else {
+                                    const pJson = await puterRes.json();
+                                    const audioSrc = pJson.result?.audio || pJson.result?.audio_url || pJson.audio || pJson.audio_url || pJson.result?.url || pJson.result;
+                                    if (typeof audioSrc === 'string' && audioSrc.startsWith('http')) {
+                                        return audioSrc;
+                                    }
+                                    if (pJson.result && pJson.result instanceof Blob) {
+                                        return URL.createObjectURL(pJson.result);
+                                    }
+                                }
+                            } else {
+                                const errBody = await puterRes.text();
+                                console.warn(`Puter Provider "${currentProvider}" returned status ${puterRes.status}:`, errBody);
+                            }
+                        } catch (providerErr) {
+                            console.warn(`Puter Provider "${currentProvider}" fetch error:`, providerErr);
+                        }
+                    }
+                } catch (puterErr) {
+                    console.warn("Puter Drivers TTS failed, falling back to Edge Neural AI:", puterErr);
+                }
+            }
+
+            // Option 0.5: Microsoft Edge Neural AI TTS (Primary - Free, No Key, High Quality Neural Voice)
+            if (!savedTtsModel || savedTtsModel === 'edge-tts' || savedTtsModel === 'google-translate') {
+                try {
+                    const edgeAudioUrl = await this.speakEdgeTts(cleanText, savedVoice);
+                    if (edgeAudioUrl) return edgeAudioUrl;
+                } catch (edgeErr) {
+                    console.warn("Edge Neural TTS failed, trying Google TTS fallback:", edgeErr);
+                }
+            }
+
+            // Option 1: Groq Orpheus API (Supports English & Arabic when valid key and model present)
             if (apiKey && (isEnglish || isArabic)) {
                 try {
-                    const ttsModel = isArabic ? "canopylabs/orpheus-arabic-saudi" : (savedTtsModel || CONFIG.API.TTS_MODEL || "canopylabs/orpheus-v1-english");
-                    const voice = isArabic ? "fahad" : (savedVoice || "hannah");
+                    const validGroqModel = (savedTtsModel && savedTtsModel.startsWith("canopylabs/")) 
+                        ? savedTtsModel 
+                        : (isArabic ? "canopylabs/orpheus-arabic-saudi" : "canopylabs/orpheus-v1-english");
+                    const VALID_GROQ_VOICES = ['autumn', 'diana', 'hannah', 'austin', 'daniel', 'troy', 'fahad', 'lulwa', 'noura', 'aisha', 'abdullah', 'sultan'];
+                    const groqVoice = isArabic ? "fahad" : (VALID_GROQ_VOICES.includes(savedVoice) ? savedVoice : "hannah");
 
                     let inputText = text.trim();
                     if (!/[.!?]$/.test(inputText)) {
@@ -168,9 +355,9 @@ const ApiService = {
                             "Authorization": `Bearer ${apiKey}`
                         },
                         body: JSON.stringify({
-                            model: ttsModel,
+                            model: validGroqModel,
                             input: inputText,
-                            voice: voice,
+                            voice: groqVoice,
                             response_format: "wav"
                         })
                     });
@@ -220,6 +407,122 @@ const ApiService = {
     },
 
     /**
+     * Synthesize natural speech using Microsoft Edge Neural TTS (Free, No Key required)
+     * @param {string} text 
+     * @param {string} voice 
+     * @returns {Promise<string>} Audio Blob URL
+     */
+    async speakEdgeTts(text, voice = '') {
+        return new Promise((resolve, reject) => {
+            try {
+                const detectedLang = ApiService._detectLangKey(text);
+                const isEnglish = detectedLang === 'english' || /^[a-zA-Z\s.,!?;:'"()-]+$/.test(text);
+                const selectedVoice = voice || (isEnglish ? 'en-US-AvaNeural' : 'vi-VN-HoaiMyNeural');
+
+                const TRUSTED_TOKEN = "6A5AA1D4E5C54E9C8150F55F759D4184";
+                const wsUrl = `wss://speech.platform.bing.com/consumer/speech/synthesize/readaloud/edge/v1?TrustedClientToken=${TRUSTED_TOKEN}`;
+                const ws = new WebSocket(wsUrl);
+                const audioChunks = [];
+
+                const timeout = setTimeout(() => {
+                    if (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING) {
+                        ws.close();
+                    }
+                    if (audioChunks.length > 0) {
+                        const blob = new Blob(audioChunks, { type: 'audio/mp3' });
+                        resolve(URL.createObjectURL(blob));
+                    } else {
+                        reject(new Error('Edge TTS Timeout'));
+                    }
+                }, 8000);
+
+                ws.binaryType = 'arraybuffer';
+
+                ws.onopen = () => {
+                    const configMsg = "Path: speech.config\r\nContent-Type: application/json; charset=utf-8\r\n\r\n" + JSON.stringify({context:{synthesis:{audio:{metadataversion:"2020-02-25",format:"audio-24khz-48kbitrate-mono-mp3"}}}});
+                    ws.send(configMsg);
+
+                    const reqId = Array.from(crypto.getRandomValues(new Uint8Array(16)))
+                        .map(b => b.toString(16).padStart(2, '0')).join('');
+
+                    const safeText = String(text)
+                        .replace(/&/g, '&amp;')
+                        .replace(/</g, '&lt;')
+                        .replace(/>/g, '&gt;')
+                        .replace(/"/g, '&quot;')
+                        .replace(/'/g, '&apos;');
+
+                    const ssml = `<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='vi-VN'>` +
+                                 `<voice name='${selectedVoice}'>${safeText}</voice></speak>`;
+
+                    const ssmlMsg = "Path: ssml\r\nX-RequestId: " + reqId + "\r\nContent-Type: application/ssml+xml\r\n\r\n" + ssml;
+                    ws.send(ssmlMsg);
+                };
+
+                ws.onmessage = (event) => {
+                    if (typeof event.data === 'string') {
+                        if (event.data.includes('Path: turn.end')) {
+                            clearTimeout(timeout);
+                            ws.close();
+                            if (audioChunks.length > 0) {
+                                const blob = new Blob(audioChunks, { type: 'audio/mp3' });
+                                resolve(URL.createObjectURL(blob));
+                            } else {
+                                reject(new Error('No audio data received'));
+                            }
+                        }
+                    } else if (event.data instanceof ArrayBuffer) {
+                        const view = new DataView(event.data);
+                        if (event.data.byteLength > 2) {
+                            const headerLength = view.getUint16(0);
+                            if (event.data.byteLength > 2 + headerLength) {
+                                const audioBuffer = event.data.slice(2 + headerLength);
+                                audioChunks.push(new Blob([audioBuffer], { type: 'audio/mp3' }));
+                            }
+                        }
+                    }
+                };
+
+                ws.onerror = (err) => {
+                    clearTimeout(timeout);
+                    ws.close();
+                    if (audioChunks.length > 0) {
+                        const blob = new Blob(audioChunks, { type: 'audio/mp3' });
+                        resolve(URL.createObjectURL(blob));
+                    } else {
+                        reject(err);
+                    }
+                };
+
+                ws.onclose = () => {
+                    clearTimeout(timeout);
+                    if (audioChunks.length > 0) {
+                        const blob = new Blob(audioChunks, { type: 'audio/mp3' });
+                        resolve(URL.createObjectURL(blob));
+                    }
+                };
+            } catch (err) {
+                reject(err);
+            }
+        });
+    },
+
+    /**
+     * Detect language key (returns English key name like 'english', 'vietnamese', NOT Vietnamese display name)
+     * @param {string} text - Text to detect language
+     * @returns {string} Language key in English
+     */
+    _detectLangKey(text) {
+        if (!text || !CONFIG || !CONFIG.LANGUAGES) return 'english';
+        for (const [langKey, pattern] of Object.entries(CONFIG.LANGUAGES)) {
+            if (pattern.test(text)) {
+                return langKey; // Returns 'english', 'vietnamese', 'japanese', etc.
+            }
+        }
+        return 'english';
+    },
+
+    /**
      * Speak text using browser native Web Speech API (speechSynthesis)
      * @param {string} text - Text to speak
      * @returns {Promise<string>} Special status flag for Web Speech API
@@ -234,7 +537,7 @@ const ApiService = {
                 window.speechSynthesis.resume();
                 const utterance = new SpeechSynthesisUtterance(text);
                 
-                const detected = Utils.detectLanguage ? Utils.detectLanguage(text) : 'english';
+                const detected = ApiService._detectLangKey(text);
                 const langMap = {
                     english: 'en-US', vietnamese: 'vi-VN', japanese: 'ja-JP',
                     korean: 'ko-KR', chinese: 'zh-CN', french: 'fr-FR',
@@ -310,60 +613,123 @@ const ApiService = {
      */
     async translateImage(base64Image, targetLanguage = 'Vietnamese') {
         try {
-            const apiKey = await StorageManager.getApiKey();
-            if (!apiKey) {
+            const apiKeys = (typeof StorageManager !== 'undefined' && StorageManager.getApiKeys) 
+                ? await StorageManager.getApiKeys() 
+                : [];
+            
+            if (apiKeys.length === 0) {
+                const singleKey = await StorageManager.getApiKey();
+                if (singleKey) apiKeys.push(singleKey);
+            }
+
+            if (apiKeys.length === 0) {
                 throw new Error('API_KEY_NOT_FOUND');
             }
 
-            const prompt = `Extract all text in this image (OCR) and translate it into ${targetLanguage}. Return a JSON object with:
+            const prompt = `Extract all text in this image (OCR) line by line and translate it into ${targetLanguage}.
+CRITICAL FORMATTING INSTRUCTION: Preserve the exact original line breaks, paragraph structure, and bullet points from the image using newline characters (\\n). Do NOT merge separate lines or paragraphs into one continuous block.
+
+Return a JSON object with:
 {
   "detectedLanguage": "language of extracted text",
-  "originalText": "all extracted text from image",
-  "translated": "translated text in ${targetLanguage}",
+  "originalText": "all extracted text with original line breaks (\\n)",
+  "translated": "translated text in ${targetLanguage} preserving all original line breaks (\\n)",
   "explanation": "brief description of image content"
 }`;
 
-            const formattedImageUrl = base64Image.startsWith('data:') ? base64Image : `data:image/jpeg;base64,${base64Image}`;
+            const formattedImageUrl = base64Image.startsWith('data:') ? base64Image : `data:image/png;base64,${base64Image}`;
 
-            const response = await fetch(CONFIG.API.ENDPOINT, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${apiKey}`
-                },
-                body: JSON.stringify({
-                    model: "qwen/qwen3.6-27b",
-                    messages: [
-                        {
-                            role: "user",
-                            content: [
-                                { type: "text", text: prompt },
+            let response = null;
+            let errText = "";
+            let success = false;
+
+            for (let keyIdx = 0; keyIdx < apiKeys.length; keyIdx++) {
+                const key = apiKeys[keyIdx];
+
+                if (this.keyCooldowns[key] && Date.now() < this.keyCooldowns[key] && apiKeys.length > 1) {
+                    console.info(`[Groq Vision Fallback] Key #${keyIdx + 1} is in 60s cooldown. Trying next key...`);
+                    continue;
+                }
+
+                try {
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+                    response = await fetch(CONFIG.API.ENDPOINT, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${key}`
+                        },
+                        body: JSON.stringify({
+                            model: "qwen/qwen3.6-27b",
+                            messages: [
                                 {
-                                    type: "image_url",
-                                    image_url: { url: formattedImageUrl }
+                                    role: "user",
+                                    content: [
+                                        { type: "text", text: prompt },
+                                        {
+                                            type: "image_url",
+                                            image_url: { url: formattedImageUrl }
+                                        }
+                                    ]
                                 }
-                            ]
-                        }
-                    ],
-                    temperature: 0.2,
-                    max_completion_tokens: 2048,
-                    response_format: { type: "json_object" }
-                })
-            });
+                            ],
+                            temperature: 0.2,
+                            max_completion_tokens: 2048,
+                            response_format: { type: "json_object" }
+                        }),
+                        signal: controller.signal
+                    });
+                    clearTimeout(timeoutId);
 
-            if (!response.ok) {
-                const errText = await response.text();
-                throw new Error(`VISION_ERROR_${response.status}: ${errText}`);
+                    if (response.ok) {
+                        success = true;
+                        delete this.keyCooldowns[key];
+                        break;
+                    }
+
+                    errText = await response.text();
+                    console.warn(`[Groq Vision API] Key #${keyIdx + 1} failed (${response.status}):`, errText);
+
+                    if (response.status === 429 || errText.includes('rate_limit_exceeded')) {
+                        this.keyCooldowns[key] = Date.now() + 60000;
+                        continue;
+                    }
+                } catch (netErr) {
+                    errText = netErr.message;
+                }
+            }
+
+            if (!success || !response || !response.ok) {
+                throw new Error(`Vision API Error: ${response ? response.status : 'Network Fail'} - ${errText}`);
             }
 
             const responseData = await response.json();
             const message = responseData.choices?.[0]?.message;
             const text = message?.content || message?.reasoning || "";
             const cleanedText = Utils.cleanJson(text);
-            
-            return JSON.parse(cleanedText);
+            const parsedResult = JSON.parse(cleanedText);
+
+            // Automatically record OCR translation in History and Recent Languages
+            if (typeof StorageManager !== 'undefined') {
+                if (StorageManager.addRecentLanguage) {
+                    StorageManager.addRecentLanguage(targetLanguage);
+                }
+                if (StorageManager.addTranslationHistory && parsedResult) {
+                    StorageManager.addTranslationHistory({
+                        type: 'ocr',
+                        originalText: parsedResult.originalText || 'Trích xuất OCR từ ảnh',
+                        translatedText: parsedResult.translated || '',
+                        targetLang: targetLanguage,
+                        timestamp: Date.now()
+                    });
+                }
+            }
+
+            return parsedResult;
         } catch (error) {
-            console.error('Groq Vision OCR translation error:', error);
+            console.error("Failed to parse vision response:", error);
             throw error;
         }
     },
@@ -508,6 +874,7 @@ Return JSON strictly matching schema:
 INPUT: "${escapedInput}"`;
         } else {
             return `Translate text into ${llmTargetLang}. The "translated" field MUST be 100% in ${llmTargetLang}.
+CRITICAL FORMATTING INSTRUCTION: Preserve the exact original line breaks, paragraph structure, and bullet points from the source text using newline characters (\\n). Do NOT merge separate paragraphs or lines into a single continuous block.
 
 Return JSON strictly matching schema:
 {
@@ -515,7 +882,7 @@ Return JSON strictly matching schema:
   "targetLanguage": "${displayTargetLang}",
   "original": "${escapedInput}",
   "transcription": "",
-  "translated": "clean, accurate translation in ${llmTargetLang}"
+  "translated": "clean, accurate translation in ${llmTargetLang} with preserved line breaks (\\n)"
 }
 
 INPUT: "${escapedInput}"`;

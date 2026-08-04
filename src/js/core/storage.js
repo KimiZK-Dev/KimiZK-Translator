@@ -40,6 +40,29 @@ const StorageManager = {
     },
     
     /**
+     * Get Puter Auth Token from storage
+     * @returns {Promise<string|null>}
+     */
+    async getPuterToken() {
+        return new Promise(resolve => {
+            chrome.storage.local.get(['PUTER_TOKEN'], result => {
+                resolve(result.PUTER_TOKEN || null);
+            });
+        });
+    },
+
+    /**
+     * Save Puter Auth Token to storage
+     * @param {string} token 
+     * @returns {Promise<boolean>}
+     */
+    async setPuterToken(token) {
+        return new Promise(resolve => {
+            chrome.storage.local.set({ PUTER_TOKEN: token }, () => resolve(true));
+        });
+    },
+
+    /**
      * Clear API key cache
      */
     clearApiKeyCache() {
@@ -212,7 +235,7 @@ const StorageManager = {
     async getTtsVoice() {
         return new Promise(resolve => {
             chrome.storage.local.get(['ttsVoice'], result => {
-                resolve(result.ttsVoice || 'hannah');
+                resolve(result.ttsVoice || 'vi-VN-HoaiMyNeural');
             });
         });
     },
@@ -262,7 +285,7 @@ const StorageManager = {
     async getTtsModel() {
         return new Promise(resolve => {
             chrome.storage.local.get(['ttsModel'], result => {
-                resolve(result.ttsModel || 'canopylabs/orpheus-v1-english');
+                resolve(result.ttsModel || 'edge-tts');
             });
         });
     },
@@ -555,6 +578,181 @@ const StorageManager = {
                     langCounts: stats.langCounts || {}
                 });
             });
+        });
+    },
+
+    /**
+     * Get list of API Keys for Multi-Key Fallback Pool
+     * @returns {Promise<string[]>}
+     */
+    async getApiKeys() {
+        return new Promise(resolve => {
+            chrome.storage.local.get(['API_KEYS', 'API_KEY'], result => {
+                let keys = [];
+                if (result.API_KEYS) {
+                    if (Array.isArray(result.API_KEYS)) {
+                        keys = result.API_KEYS;
+                    } else if (typeof result.API_KEYS === 'string') {
+                        keys = result.API_KEYS.split(/[\n,]+/).map(k => k.trim()).filter(Boolean);
+                    }
+                }
+                if (keys.length === 0 && result.API_KEY) {
+                    keys = [result.API_KEY.trim()];
+                }
+                resolve(keys);
+            });
+        });
+    },
+
+    /**
+     * Save multiple API Keys
+     * @param {string[]|string} keys 
+     * @returns {Promise<boolean>}
+     */
+    async saveApiKeys(keys) {
+        let keysArray = [];
+        if (Array.isArray(keys)) {
+            keysArray = keys.map(k => k.trim()).filter(Boolean);
+        } else if (typeof keys === 'string') {
+            keysArray = keys.split(/[\n,]+/).map(k => k.trim()).filter(Boolean);
+        }
+
+        const primaryKey = keysArray.length > 0 ? keysArray[0] : '';
+        this._apiKeyCache = primaryKey;
+
+        return new Promise(resolve => {
+            chrome.storage.local.set({ API_KEYS: keysArray, API_KEY: primaryKey }, () => {
+                resolve(!chrome.runtime.lastError);
+            });
+        });
+    },
+
+    /**
+     * Get recent languages list
+     * @returns {Promise<string[]>}
+     */
+    async getRecentLanguages() {
+        return new Promise(resolve => {
+            chrome.storage.local.get(['recentLanguages'], result => {
+                resolve(result.recentLanguages || ['Vietnamese', 'English', 'Japanese', 'Korean']);
+            });
+        });
+    },
+
+    /**
+     * Add language to recent list
+     * @param {string} lang 
+     */
+    async addRecentLanguage(lang) {
+        if (!lang) return;
+        const current = await this.getRecentLanguages();
+        const updated = [lang, ...current.filter(l => l !== lang)].slice(0, 8);
+        return new Promise(resolve => {
+            chrome.storage.local.set({ recentLanguages: updated }, () => resolve(updated));
+        });
+    },
+
+    /**
+     * Remove language from recent list
+     * @param {string} lang 
+     */
+    async removeRecentLanguage(lang) {
+        if (!lang) return;
+        const current = await this.getRecentLanguages();
+        const updated = current.filter(l => l !== lang);
+        return new Promise(resolve => {
+            chrome.storage.local.set({ recentLanguages: updated }, () => resolve(updated));
+        });
+    },
+
+    /**
+     * Get favorite languages list
+     * @returns {Promise<string[]>}
+     */
+    async getFavoriteLanguages() {
+        return new Promise(resolve => {
+            chrome.storage.local.get(['favoriteLanguages'], result => {
+                resolve(result.favoriteLanguages || ['Vietnamese', 'English']);
+            });
+        });
+    },
+
+    /**
+     * Set favorite languages list
+     * @param {string[]} langs 
+     */
+    async setFavoriteLanguages(langs) {
+        return new Promise(resolve => {
+            chrome.storage.local.set({ favoriteLanguages: langs }, () => resolve(!chrome.runtime.lastError));
+        });
+    },
+
+    /**
+     * Get full translation history
+     * @returns {Promise<object[]>}
+     */
+    async getTranslationHistory() {
+        return new Promise(resolve => {
+            chrome.storage.local.get(['translationHistoryRecords'], result => {
+                resolve(result.translationHistoryRecords || []);
+            });
+        });
+    },
+
+    /**
+     * Add record to translation history
+     * @param {object} record { type, originalText, translatedText, targetLang, timestamp }
+     */
+    async addTranslationHistory(record) {
+        if (!record || !record.originalText || !record.originalText.trim()) return;
+        const history = await this.getTranslationHistory();
+
+        // Prevent duplicate history items generated within 3 seconds
+        if (history.length > 0) {
+            const first = history[0];
+            if (first.originalText.trim() === record.originalText.trim() && 
+                Math.abs(Date.now() - (first.timestamp || 0)) < 3000) {
+                // Update translated text if previous was placeholder
+                if ((!first.translatedText || first.translatedText.includes('Đang chờ')) && record.translatedText) {
+                    first.translatedText = record.translatedText;
+                    chrome.storage.local.set({ translationHistoryRecords: history });
+                }
+                return history;
+            }
+        }
+
+        const newRecord = {
+            id: Date.now().toString(36) + Math.random().toString(36).substring(2, 5),
+            type: record.type || 'text', // 'text', 'voice', 'ocr'
+            originalText: record.originalText.trim(),
+            translatedText: (record.translatedText || '').trim(),
+            targetLang: record.targetLang || 'Vietnamese',
+            timestamp: record.timestamp || Date.now()
+        };
+        const updated = [newRecord, ...history].slice(0, 150);
+        return new Promise(resolve => {
+            chrome.storage.local.set({ translationHistoryRecords: updated }, () => resolve(updated));
+        });
+    },
+
+    /**
+     * Delete history record by ID
+     * @param {string} id 
+     */
+    async deleteTranslationHistoryItem(id) {
+        const history = await this.getTranslationHistory();
+        const updated = history.filter(item => item.id !== id);
+        return new Promise(resolve => {
+            chrome.storage.local.set({ translationHistoryRecords: updated }, () => resolve(updated));
+        });
+    },
+
+    /**
+     * Clear all translation history
+     */
+    async clearTranslationHistory() {
+        return new Promise(resolve => {
+            chrome.storage.local.set({ translationHistoryRecords: [] }, () => resolve(true));
         });
     },
 
