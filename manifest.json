@@ -11,13 +11,17 @@
 		"notifications",
 		"tabs",
 		"management",
-		"downloads"
+		"downloads",
+		"audioCapture"
 	],
 	"host_permissions": [
 		"<all_urls>",
 		"https://api.groq.com/openai/v1/chat/completions",
 		"https://api.groq.com/openai/v1/audio/speech",
-		"https://api.github.com/repos/KimiZK-Dev/KimiZK-Translator/releases"
+		"https://api.github.com/repos/KimiZK-Dev/KimiZK-Translator/releases",
+		"https://api.puter.com/*",
+		"https://translate.google.com/*",
+		"wss://speech.platform.bing.com/*"
 	],
 	"background": {
 		"service_worker": "src/js/background.js"
