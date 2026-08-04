@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KimiZK Translator</title>
+    <link rel="stylesheet" href="../css/fonts.css">
+    <link rel="stylesheet" href="../css/popup.css">
+</head>
+<body>
+    <div class="xt-popup-container">
+        <!-- Top macOS App Bar with Traffic Lights -->
+        <div class="xt-popup-header">
+            <div class="xt-mac-controls">
+                <span class="xt-mac-dot red" title="Đóng"></span>
+                <span class="xt-mac-dot yellow" title="Thu nhỏ"></span>
+                <span class="xt-mac-dot green" title="Mở rộng"></span>
+            </div>
+            <div class="xt-brand">
+                <div class="xt-brand-logo">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill="url(#pop-brand-grad)"/>
+                        <defs>
+                            <linearGradient id="pop-brand-grad" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#3b82f6"/>
+                                <stop offset="1" stop-color="#8b5cf6"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <div class="xt-brand-title">
+                    <span class="xt-title-main">KimiZK Translator</span>
+                    <span class="xt-status-badge"><span class="xt-dot"></span> Groq AI Engine</span>
+                </div>
+            </div>
+            <div class="xt-header-actions">
+                <button id="cmd-palette-btn" class="xt-cmd-trigger" title="Command Palette (Ctrl+K)">
+                    <span>⌘K</span>
+                </button>
+                <button id="open-options-btn" class="xt-icon-btn" title="Mở trang cài đặt chi tiết">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- 3 Feature Mode Tabs Bar (Text, Voice STT, Screen OCR) -->
+        <div class="xt-mode-tabs">
+            <button class="xt-mode-tab active" data-mode="text">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                Dịch chữ
+            </button>
+            <button class="xt-mode-tab" data-mode="voice">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+                Thu âm AI (STT)
+            </button>
+            <button class="xt-mode-tab" data-mode="ocr">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                Chụp OCR Vision
+            </button>
+        </div>
+
+        <!-- Popup Body -->
+        <div class="xt-popup-body">
+            <!-- Mode 1: Text Translation View -->
+            <div id="view-text-mode" class="xt-mode-view">
+                <!-- macOS Segmented Control Pills for Target Language -->
+                <div class="xt-segmented-control">
+                    <button class="xt-seg-btn active" data-lang="Vietnamese">Tiếng Việt</button>
+                    <button class="xt-seg-btn" data-lang="English">English</button>
+                    <button class="xt-seg-btn" data-lang="Japanese">日本語</button>
+                    <button class="xt-seg-btn" data-lang="Korean">한국어</button>
+                </div>
+
+                <div class="xt-quick-box">
+                    <div class="xt-lang-bar">
+                        <span class="xt-lang-label">Ngôn ngữ khác:</span>
+                        <select id="popup-target-lang" class="xt-select">
+                            <option value="Vietnamese">Tiếng Việt</option>
+                            <option value="English">English</option>
+                            <option value="Japanese">日本語</option>
+                            <option value="Korean">한국어</option>
+                            <option value="Chinese">中文</option>
+                            <option value="French">Français</option>
+                            <option value="German">Deutsch</option>
+                            <option value="Spanish">Español</option>
+                        </select>
+                    </div>
+
+                    <div class="xt-input-wrapper">
+                        <textarea id="popup-input-text" placeholder="Nhập hoặc dán văn bản cần dịch..." rows="3"></textarea>
+                        <button id="popup-translate-btn" class="xt-submit-btn">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                            Dịch ngay
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mode 2: Voice Recording STT View (Groq Whisper) -->
+            <div id="view-voice-mode" class="xt-mode-view" style="display: none;">
+                <div class="xt-voice-card">
+                    <div class="xt-voice-wave-container">
+                        <div id="voice-waves" class="xt-voice-waves">
+                            <span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span>
+                        </div>
+                        <button id="mic-record-btn" class="xt-mic-btn">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+                        </button>
+                    </div>
+                    <p id="voice-status-text" class="xt-voice-status">Nhấn micro để bắt đầu thu âm giọng nói...</p>
+                    <span class="xt-voice-hint">Sử dụng Groq Whisper Large v3 Turbo để nhận diện giọng nói siêu tốc</span>
+                </div>
+            </div>
+
+            <!-- Mode 3: Screen OCR Capture View (Groq Vision) -->
+            <div id="view-ocr-mode" class="xt-mode-view" style="display: none;">
+                <div class="xt-ocr-card">
+                    <div class="xt-ocr-icon-box">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                    </div>
+                    <h4>Chụp màn hình & Dịch văn bản (OCR)</h4>
+                    <p>Trích xuất văn bản từ hình ảnh trên màn hình trang web và dịch bằng mô hình <strong>Qwen 3.6 27B Vision</strong>.</p>
+                    <button id="capture-ocr-btn" class="xt-ocr-action-btn">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                        Chụp màn hình & Dịch OCR
+                    </button>
+                </div>
+            </div>
+
+            <!-- Skeleton Loader -->
+            <div id="popup-skeleton" class="xt-skeleton-box" style="display: none;">
+                <div class="xt-skeleton-line short"></div>
+                <div class="xt-skeleton-line full"></div>
+                <div class="xt-skeleton-line medium"></div>
+            </div>
+
+            <!-- Instant Translation Result Container -->
+            <div id="popup-result-container" class="xt-result-box" style="display: none;">
+                <div class="xt-result-header">
+                    <span id="popup-detected-lang" class="xt-result-badge">Tự động phát hiện</span>
+                    <div class="xt-result-actions">
+                        <button id="popup-listen-btn" class="xt-micro-btn" title="Nghe phát âm">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                        </button>
+                        <button id="popup-copy-btn" class="xt-micro-btn" title="Sao chép">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                        </button>
+                    </div>
+                </div>
+                <div id="popup-result-text" class="xt-result-content"></div>
+                <div id="popup-result-desc" class="xt-result-desc" style="display: none;"></div>
+
+                <!-- Web Search Citations Container (Groq Compound) -->
+                <div id="popup-citations-container" class="xt-citations-box" style="display: none;">
+                    <div class="xt-citations-title">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                        Nguồn tìm kiếm Web (Citations):
+                    </div>
+                    <div id="popup-citations-list" class="xt-citations-list"></div>
+                </div>
+            </div>
+
+            <!-- Quick Toggles -->
+            <div class="xt-quick-toggles">
+                <div class="xt-toggle-row">
+                    <span class="xt-toggle-label">Thông báo cập nhật tự động</span>
+                    <label class="xt-switch">
+                        <input type="checkbox" id="popup-notify-toggle">
+                        <span class="xt-slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Bar -->
+        <div class="xt-popup-footer">
+            <span>KimiZK v<span id="version">1.0.4</span></span>
+            <button id="full-settings-link" class="xt-link-btn" style="display: inline-flex; align-items: center; gap: 4px;">
+                Cài đặt nâng cao
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- macOS Style Command Palette Overlay -->
+    <div id="cmd-palette-overlay" class="xt-cmd-overlay" style="display: none;">
+        <div class="xt-cmd-modal">
+            <div class="xt-cmd-search-bar">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input id="cmd-input" type="text" placeholder="Gõ lệnh hoặc tìm kiếm (Model, Ngôn ngữ, Cài đặt...)" autocomplete="off">
+                <kbd class="xt-cmd-esc">ESC</kbd>
+            </div>
+            <div class="xt-cmd-list" id="cmd-list">
+                <div class="xt-cmd-group-title">Mô hình AI (Models)</div>
+                <div class="xt-cmd-item" data-action="set-model" data-value="llama-3.3-70b-versatile">
+                    <span class="xt-cmd-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg></span>
+                    <div class="xt-cmd-text"><strong>Llama 3.3 70B Versatile</strong><span>Siêu tốc độ & Chuẩn xác (Mặc định)</span></div>
+                </div>
+                <div class="xt-cmd-item" data-action="set-model" data-value="groq/compound">
+                    <span class="xt-cmd-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" width="18" height="10" rx="2"></rect><circle cx="12" cy="5" r="2"></circle><path d="M12 7v4"></path><line x1="8" y1="16" x2="8.01" y2="16"></line><line x1="16" y1="16" x2="16.01" y2="16"></line></svg></span>
+                    <div class="xt-cmd-text"><strong>Groq Compound (Agentic AI)</strong><span>Tích hợp Web Search & Code Interpreter</span></div>
+                </div>
+                <div class="xt-cmd-item" data-action="set-model" data-value="qwen/qwen3.6-27b">
+                    <span class="xt-cmd-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg></span>
+                    <div class="xt-cmd-text"><strong>Qwen 3.6 27B (Vision & OCR)</strong><span>Mô hình suy luận & nhận diện hình ảnh</span></div>
+                </div>
+
+                <div class="xt-cmd-group-title">Cài đặt & Lệnh nhanh</div>
+                <div class="xt-cmd-item" data-action="open-options">
+                    <span class="xt-cmd-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></span>
+                    <div class="xt-cmd-text"><strong>Mở trang Cài đặt (Options)</strong><span>Cấu hình API Key, Giọng đọc & Giao diện</span></div>
+                </div>
+                <div class="xt-cmd-item" data-action="copy-last">
+                    <span class="xt-cmd-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2" stroke-linecap="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg></span>
+                    <div class="xt-cmd-text"><strong>Sao chép bản dịch vừa xong</strong><span>Lưu vào khay nhớ tạm (Clipboard)</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/core/config.js"></script>
+    <script src="../js/core/utils.js"></script>
+    <script src="../js/core/storage.js"></script>
+    <script src="../js/core/api.js"></script>
+    <script src="../js/core/audio.js"></script>
+    <script src="../js/popup.js"></script>
+</body>
+</html>
