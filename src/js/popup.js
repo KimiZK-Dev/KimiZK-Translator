@@ -21,11 +21,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Theme toggle handler
     const themeToggleBtn = document.getElementById("kz-theme-toggle");
+
+    function applyPopupTheme(theme) {
+        const isDark = theme === "dark";
+        document.body.classList.toggle("dark-theme", isDark);
+        document.body.classList.toggle("dark", isDark);
+        if (themeToggleBtn) {
+            themeToggleBtn.title = isDark ? "Chuyển sang giao diện Sáng" : "Chuyển sang giao diện Tối";
+            themeToggleBtn.innerHTML = isDark
+                ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>`
+                : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
+        }
+    }
+
     themeToggleBtn?.addEventListener("click", async () => {
         const isDark = document.body.classList.contains("dark-theme") || document.body.classList.contains("dark");
         const nextTheme = isDark ? "light" : "dark";
-        document.body.classList.toggle("dark-theme", nextTheme === "dark");
-        document.body.classList.toggle("dark", nextTheme === "dark");
+        applyPopupTheme(nextTheme);
         if (typeof StorageManager !== 'undefined' && StorageManager.setTheme) {
             StorageManager.setTheme(nextTheme);
         }
@@ -33,9 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (typeof StorageManager !== 'undefined' && StorageManager.getTheme) {
         StorageManager.getTheme().then(theme => {
-            const isDark = theme === "dark";
-            document.body.classList.toggle("dark-theme", isDark);
-            document.body.classList.toggle("dark", isDark);
+            applyPopupTheme(theme);
         });
     }
 
