@@ -1,378 +1,446 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KimiZK Translator - Cài đặt nâng cao</title>
-    <link rel="stylesheet" href="../css/fonts.css">
-    <link rel="stylesheet" href="../css/options.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KimiZK Translator — Cấu hình</title>
+<link rel="stylesheet" href="../css/fonts.css">
+<link rel="stylesheet" href="../css/options.css">
 </head>
 <body>
-    <div class="xt-app-container">
-        <!-- Sidebar Navigation -->
-        <aside class="xt-sidebar">
-            <div class="xt-sidebar-header">
-                <div class="xt-sidebar-logo">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-                        <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill="url(#opt-logo-grad)"/>
-                        <defs>
-                            <linearGradient id="opt-logo-grad" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
-                                <stop stop-color="#2563eb"/>
-                                <stop offset="1" stop-color="#7c3aed"/>
-                            </linearGradient>
-                        </defs>
-                    </svg>
-                </div>
-                <div class="xt-sidebar-brand">
-                    <h2>KimiZK Translator</h2>
-                    <span class="xt-ver-tag">v<span id="opt-version">1.0.5</span></span>
-                </div>
-            </div>
 
-            <nav class="xt-nav-menu">
-                <button class="xt-nav-item active" data-tab="tab-ai">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg>
-                    Cấu hình Groq AI
-                </button>
-                <button class="xt-nav-item" data-tab="tab-stats">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-                    Thống kê Dịch thuật
-                </button>
-                <button class="xt-nav-item" data-tab="tab-languages">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-                    Quản lý Ngôn ngữ
-                </button>
-                <button class="xt-nav-item" data-tab="tab-playground">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
-                    Thử nghiệm Playground
-                </button>
-                <button class="xt-nav-item" data-tab="tab-about">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-                    Thông tin & Cập nhật
-                </button>
-            </nav>
+<div class="xt-app">
 
-            <div class="xt-sidebar-footer">
-                <button id="theme-toggle-btn" class="xt-btn-theme-toggle" type="button">
-                    <span id="theme-toggle-icon">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-                    </span>
-                    <span id="theme-toggle-text">Chế độ Tối</span>
-                </button>
-                <div style="margin-top: 12px; display: flex; justify-content: space-between; align-items: center;">
-                    <span id="opt-time-display">--:--:--</span>
-                    <span>Groq LPU</span>
-                </div>
-            </div>
-        </aside>
+  <!-- ============================= SIDEBAR ============================= -->
+  <aside class="xt-sidebar">
 
-        <!-- Main Content View Area -->
-        <main class="xt-main-content">
-            <!-- TAB 1: Groq AI Config -->
-            <section id="tab-ai" class="xt-tab-content active">
-                <div class="xt-page-header">
-                    <h1>Cấu hình Groq AI & API Key</h1>
-                    <p class="xt-page-desc">Quản lý API Key, kết nối máy chủ Groq LPU và chọn mô hình AI tối ưu.</p>
-                </div>
-
-                <div class="xt-card-grid">
-                    <!-- API Key Card -->
-                    <div class="xt-opt-card">
-                        <div class="xt-card-title">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg>
-                            Groq API Key
-                        </div>
-                        <div class="xt-input-group">
-                            <label for="opt-api-key">API Key Groq Cloud (<a href="https://console.groq.com/keys" target="_blank">Lấy key miễn phí tại đây</a>):</label>
-                            <div class="xt-input-row">
-                                <input type="password" id="opt-api-key" placeholder="gsk_..." class="xt-form-input">
-                                <button id="opt-toggle-key-btn" class="xt-btn-secondary" type="button">Hiện</button>
-                                <button id="opt-save-key-btn" class="xt-btn-primary" type="button">Lưu Key</button>
-                            </div>
-                            <div id="opt-key-status" class="xt-status-box">Đang kiểm tra kết nối...</div>
-                        </div>
-                    </div>
-
-                    <!-- AI Model Selector Card -->
-                    <div class="xt-opt-card">
-                        <div class="xt-card-title">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
-                            Lựa chọn Mô hình AI (Groq Models)
-                        </div>
-                        <div class="xt-input-group">
-                            <label for="opt-model-select">Mô hình AI Dịch thuật:</label>
-                            <select id="opt-model-select" class="xt-form-select">
-                                <option value="llama-3.3-70b-versatile">Llama 3.3 70B Versatile (Khuyên dùng - Chuẩn xác 100% & Siêu tốc)</option>
-                                <option value="groq/compound">Groq Compound (Agentic AI - Tích hợp Web Search & Code Interpreter)</option>
-                                <option value="groq/compound-mini">Groq Compound Mini (Siêu tốc & Tích hợp Web Search)</option>
-                                <option value="deepseek-r1-distill-llama-70b">DeepSeek R1 Distill Llama 70B (Mô hình Suy luận Chuyên sâu)</option>
-                                <option value="openai/gpt-oss-120b">OpenAI GPT-OSS 120B (Mô hình 120 tỷ tham số & Browser Search)</option>
-                                <option value="openai/gpt-oss-20b">OpenAI GPT-OSS 20B (Mô hình GPT-OSS 20B)</option>
-                                <option value="qwen/qwen3.6-27b">Qwen 3.6 27B (Mô hình suy luận & Vision OCR Qwen)</option>
-                                <option value="llama-3.1-8b-instant">Llama 3.1 8B Instant (Siêu tốc độ & Tiết kiệm Token)</option>
-                            </select>
-                            <p class="xt-hint">Khuyên dùng <strong>Llama 3.3 70B Versatile</strong> cho khả năng dịch tiếng Việt tự nhiên nhất.</p>
-                        </div>
-                    </div>
-
-                    <!-- Groq Orpheus TTS Voice Settings Card -->
-                    <div class="xt-opt-card">
-                        <div class="xt-card-title">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
-                            Cấu hình Giọng đọc AI & Biểu cảm TTS (Groq Orpheus)
-                        </div>
-                        <div class="xt-input-group" style="gap: 16px;">
-                            <div>
-                                <label for="opt-tts-model-select">Mô hình Giọng đọc AI (TTS Model):</label>
-                                <select id="opt-tts-model-select" class="xt-form-select" style="margin-top: 6px;">
-                                    <option value="canopylabs/orpheus-v1-english">canopylabs/orpheus-v1-english (Groq Orpheus V1 English TTS - Mặc định)</option>
-                                    <option value="canopylabs/orpheus-arabic-saudi">canopylabs/orpheus-arabic-saudi (Groq Orpheus Arabic Saudi TTS)</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label for="opt-voice-select">Giọng đọc Personas (Voice):</label>
-                                <select id="opt-voice-select" class="xt-form-select" style="margin-top: 6px;">
-                                    <option value="hannah">Hannah (Nữ - Giọng đọc Tiếng Anh truyền cảm - Mặc định)</option>
-                                    <option value="autumn">Autumn (Nữ - Giọng đọc Tiếng Anh tự nhiên)</option>
-                                    <option value="diana">Diana (Nữ - Giọng đọc Tiếng Anh thanh lịch)</option>
-                                    <option value="troy">Troy (Nam - Giọng đọc Tiếng Anh trầm ấm)</option>
-                                    <option value="austin">Austin (Nam - Giọng đọc Tiếng Anh nam tính)</option>
-                                    <option value="daniel">Daniel (Nam - Giọng đọc Tiếng Anh rõ ràng)</option>
-                                    <option value="fahad">Fahad (Nam - Giọng Tiếng Ả Rập Saudi)</option>
-                                    <option value="lulwa">Lulwa (Nữ - Giọng Tiếng Ả Rập Saudi)</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label for="opt-voice-direction">Sắc thái Biểu cảm Voice (Vocal Directions):</label>
-                                <select id="opt-voice-direction" class="xt-form-select" style="margin-top: 6px;">
-                                    <option value="none">Natural / Conversational (Tự nhiên - Giọng trò chuyện chuẩn)</option>
-                                    <option value="[cheerful]">cheerful (Vui vẻ, tươi sáng)</option>
-                                    <option value="[friendly]">friendly (Thân thiện, ấm áp)</option>
-                                    <option value="[professionally]">professionally (Chuyên nghiệp, trang trọng)</option>
-                                    <option value="[confidently]">confidently (Tự tin, rõ ràng)</option>
-                                    <option value="[whisper]">whisper (Thì thầm truyền cảm)</option>
-                                </select>
-                                <p class="xt-hint">Groq Orpheus hỗ trợ điều khiển biểu cảm giọng đọc qua các thẻ Vocal Directions. <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" style="display:inline-block;vertical-align:middle;margin-right:2px;"><path d="M9 18h6m-5 3h4a2 2 0 0 0 2-2V9a7 7 0 1 0-14 0v8a2 2 0 0 0 2 2h4z"></path></svg> <em>Lưu ý: Nếu sử dụng lần đầu, vui lòng truy cập <a href="https://console.groq.com/playground?model=canopylabs%2Forpheus-v1-english" target="_blank" style="color: #2563eb; font-weight: 500;">Groq Playground</a> và nhấn "Accept Terms" để kích hoạt giọng đọc Orpheus AI. Tiện ích sẽ tự động chuyển sang Google TTS nếu chưa chấp nhận điều khoản.</em></p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Notification Toggle Settings -->
-                    <div class="xt-opt-card">
-                        <div class="xt-card-title">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-                            Thông báo & Cập nhật tự động
-                        </div>
-                        <div class="xt-checkbox-row">
-                            <input type="checkbox" id="update-notifications" checked>
-                            <label for="update-notifications">Tự động nhận thông báo khi có phiên bản mới</label>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- TAB 2: Proper Analytics Dashboard & Charts -->
-            <section id="tab-stats" class="xt-tab-content">
-                <div class="xt-page-header">
-                    <h1>Báo cáo Thống kê Dịch thuật</h1>
-                    <p class="xt-page-desc">Phân tích chỉ số tần suất dịch, xu hướng 7 ngày và phân bố ngôn ngữ thực tế.</p>
-                </div>
-
-                <!-- Summary KPI Cards Grid (4 Columns) -->
-                <div class="xt-kpi-grid">
-                    <div class="xt-kpi-card">
-                        <div class="xt-kpi-label">Tổng số từ đã dịch</div>
-                        <div class="xt-kpi-val" id="kpi-total-words">0</div>
-                        <div class="xt-kpi-sub">Xử lý bởi Groq LPU</div>
-                    </div>
-                    <div class="xt-kpi-card">
-                        <div class="xt-kpi-label">Số lượt dịch</div>
-                        <div class="xt-kpi-val" id="kpi-total-trans">0</div>
-                        <div class="xt-kpi-sub">Yêu cầu hoàn tất</div>
-                    </div>
-                    <div class="xt-kpi-card">
-                        <div class="xt-kpi-label">Lượt dịch hôm nay</div>
-                        <div class="xt-kpi-val" id="kpi-today">0</div>
-                        <div class="xt-kpi-sub">Hôm nay</div>
-                    </div>
-                    <div class="xt-kpi-card">
-                        <div class="xt-kpi-label">Tốc độ trung bình</div>
-                        <div class="xt-kpi-val" id="kpi-speed">0 ms</div>
-                        <div class="xt-kpi-sub">Thời gian phản hồi</div>
-                    </div>
-                </div>
-
-                <!-- Main Trend Area/Line Chart Card -->
-                <div class="xt-opt-card" style="margin-top: 24px;">
-                    <div class="xt-card-title" style="justify-content: space-between;">
-                        <span style="display: flex; align-items: center; gap: 8px;">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
-                            Xu hướng Dịch thuật 7 Ngày Gần nhất
-                        </span>
-                        <span style="font-size: 12px; font-weight: 500; color: #64748b;">(Dữ liệu thực tế local)</span>
-                    </div>
-                    <div class="xt-chart-viewport" id="trend-chart-viewport">
-                        <!-- Vector SVG Trend Chart injected via JS -->
-                    </div>
-                </div>
-
-                <!-- Secondary Charts Grid: Donut Breakdown + Top Language -->
-                <div class="xt-charts-two-col" style="margin-top: 24px;">
-                    <!-- Language Distribution Donut Chart -->
-                    <div class="xt-opt-card">
-                        <div class="xt-card-title">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg>
-                            Phân bố Ngôn ngữ Đích
-                        </div>
-                        <div class="xt-donut-layout" id="donut-chart-layout">
-                            <!-- Vector Donut SVG Chart & Legend injected via JS -->
-                        </div>
-                    </div>
-
-                    <!-- Usage Highlights -->
-                    <div class="xt-opt-card">
-                        <div class="xt-card-title">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                            Chỉ số Đáng chú ý
-                        </div>
-                        <div class="xt-metrics-list">
-                            <div class="xt-metric-item">
-                                <span class="xt-m-label">Ngôn ngữ dịch nhiều nhất:</span>
-                                <span class="xt-m-val" id="metric-top-lang">Chưa có</span>
-                            </div>
-                            <div class="xt-metric-item">
-                                <span class="xt-m-label">Tỷ lệ sử dụng:</span>
-                                <span class="xt-m-val" id="metric-top-pct">0%</span>
-                            </div>
-                            <div class="xt-metric-item">
-                                <span class="xt-m-label">Thời gian tiết kiệm ước tính:</span>
-                                <span class="xt-m-val" id="metric-time-saved">0 Phút</span>
-                            </div>
-                            <div class="xt-metric-item">
-                                <span class="xt-m-label">Trạng thái hạ tầng AI:</span>
-                                <span class="xt-m-val" style="color: #10b981;">Online (Normal)</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- TAB 3: Languages -->
-            <section id="tab-languages" class="xt-tab-content">
-                <div class="xt-page-header">
-                    <h1>Quản lý Ngôn ngữ Dịch</h1>
-                    <p class="xt-page-desc">Tùy chỉnh ngôn ngữ mặc định, quản lý danh sách ngôn ngữ yêu thích và gần đây.</p>
-                </div>
-
-                <div class="xt-card-grid">
-                    <!-- Default Language Card -->
-                    <div class="xt-opt-card">
-                        <div class="xt-card-title">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-                            Ngôn ngữ Dịch Mặc định
-                        </div>
-                        <div class="xt-input-group">
-                            <label for="opt-target-lang">Chọn ngôn ngữ đích chính:</label>
-                            <div class="xt-input-row">
-                                <select id="opt-target-lang" class="xt-form-select">
-                                    <option value="Vietnamese">Tiếng Việt (Vietnamese)</option>
-                                    <option value="English">English (Tiếng Anh)</option>
-                                    <option value="Japanese">日本語 (Tiếng Nhật)</option>
-                                    <option value="Korean">한국어 (Tiếng Hàn)</option>
-                                    <option value="Chinese">中文 (Tiếng Trung)</option>
-                                    <option value="French">Français (Tiếng Pháp)</option>
-                                    <option value="German">Deutsch (Tiếng Đức)</option>
-                                    <option value="Spanish">Español (Tiếng Tây Ban Nha)</option>
-                                    <option value="Italian">Italiano (Tiếng Ý)</option>
-                                    <option value="Russian">Русский (Tiếng Nga)</option>
-                                    <option value="Portuguese">Português (Tiếng Bồ Đào Nha)</option>
-                                    <option value="Thai">ไทย (Tiếng Thái)</option>
-                                    <option value="Indonesian">Bahasa Indonesia</option>
-                                    <option value="Malay">Bahasa Melayu</option>
-                                    <option value="Arabic">العربية (Tiếng Ả Rập)</option>
-                                    <option value="Hindi">हिन्दी (Tiếng Ấn Độ)</option>
-                                </select>
-                                <button id="custom-language-btn" class="xt-btn-primary" type="button">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 6px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                                    Thêm vào Yêu thích
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Favorite Languages Card -->
-                    <div class="xt-opt-card">
-                        <div class="xt-card-title">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                            Danh sách Ngôn ngữ Yêu thích (Click để kích hoạt nhanh)
-                        </div>
-                        <div id="favorite-languages-list" class="xt-tags-container">
-                            <!-- Favorite languages dynamically populated -->
-                        </div>
-                    </div>
-
-                    <!-- Recent Languages Card -->
-                    <div class="xt-opt-card">
-                        <div class="xt-card-title">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                            Ngôn ngữ Sử dụng Gần đây
-                        </div>
-                        <div id="recent-languages-list" class="xt-tags-container">
-                            <!-- Recent languages dynamically populated -->
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- TAB 4: Playground Sandbox -->
-            <section id="tab-playground" class="xt-tab-content">
-                <div class="xt-page-header">
-                    <h1>Bàn thử nghiệm AI Live Playground</h1>
-                    <p class="xt-page-desc">Thử nghiệm trực tiếp tốc độ và chất lượng dịch thuật của AI ngay tại đây.</p>
-                </div>
-
-                <div class="xt-opt-card">
-                    <div class="xt-playground-layout">
-                        <div class="xt-pg-col">
-                            <label for="pg-input">Văn bản gốc:</label>
-                            <textarea id="pg-input" class="xt-pg-area" rows="6" placeholder="Nhập văn bản cần thử nghiệm vào đây..."></textarea>
-                            <button id="pg-run-btn" class="xt-btn-primary" style="margin-top: 10px;">Thực hiện Dịch Live</button>
-                        </div>
-                        <div class="xt-pg-col">
-                            <label>Kết quả Dịch AI:</label>
-                            <div id="pg-output" class="xt-pg-result">Kết quả sẽ xuất hiện ở đây...</div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- TAB 5: About & Updates -->
-            <section id="tab-about" class="xt-tab-content">
-                <div class="xt-page-header">
-                    <h1>Thông tin & Bản cập nhật</h1>
-                    <p class="xt-page-desc">Thông tin dự án KimiZK Translator và lịch sử phiên bản.</p>
-                </div>
-
-                <div class="xt-opt-card">
-                    <div class="xt-about-info">
-                        <h3>KimiZK Translator v<span id="opt-version-about">1.0.5</span></h3>
-                        <p style="color: #64748b; margin-top: 4px;">Tiện ích mở rộng dịch thuật AI đa ngôn ngữ sử dụng hạ tầng siêu tốc Groq LPU.</p>
-                        
-                        <div class="xt-btn-row" style="margin-top: 20px; display: flex; gap: 12px;">
-                            <button id="opt-check-update-btn" class="xt-btn-primary">Kiểm tra bản cập nhật mới</button>
-                            <button id="github-link" class="xt-btn-secondary">GitHub Repository</button>
-                            <button id="facebook-link" class="xt-btn-secondary">Facebook Community</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </main>
+    <div class="xt-brand">
+      <div class="xt-brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 5h9M7 3v2M15 5c-1 5-3.5 8.5-7 11M8.5 9.5c1.2 2 3 3.6 5 4.7"/>
+          <path d="M14 21l4-9 4 9M15.2 18h5.6"/>
+        </svg>
+      </div>
+      <div class="xt-brand-text">
+        <div class="xt-brand-title">KimiZK Translator</div>
+        <span class="xt-brand-badge" id="opt-version">v1.0.5</span>
+      </div>
     </div>
 
-    <script src="../js/core/config.js"></script>
-    <script src="../js/core/utils.js"></script>
-    <script src="../js/core/storage.js"></script>
-    <script src="../js/core/api.js"></script>
-    <script src="../js/options.js"></script>
+    <nav class="xt-nav-menu">
+      <button class="xt-nav-item active" data-tab="tab-ai">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a4 4 0 0 1 4 4v4a4 4 0 1 1-8 0V7a4 4 0 0 1 4-4Z"/><path d="M19 11a7 7 0 0 1-14 0M12 18v3M9 21h6"/></svg>
+        Cấu hình Groq AI
+      </button>
+      <button class="xt-nav-item" data-tab="tab-stats">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>
+        Thống kê Dịch thuật
+      </button>
+      <button class="xt-nav-item" data-tab="tab-languages">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 6 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-6-3.8-9S9.5 5.7 12 3Z"/></svg>
+        Quản lý Ngôn ngữ
+      </button>
+      <button class="xt-nav-item" data-tab="tab-history">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/><path d="M12 7v5l4 2"/></svg>
+        Lịch sử Dịch thuật
+      </button>
+      <button class="xt-nav-item" data-tab="tab-playground">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4 3 12l5 8M16 4l5 8-5 8"/></svg>
+        Thử nghiệm Playground
+      </button>
+      <button class="xt-nav-item" data-tab="tab-about">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.5v.01"/></svg>
+        Thông tin &amp; Cập nhật
+      </button>
+    </nav>
+
+    <div class="xt-sidebar-footer">
+      <span id="opt-time-display">--:--:--</span>
+      <button class="xt-icon-btn" id="theme-toggle-btn" title="Đổi giao diện Sáng / Tối" aria-label="Đổi giao diện">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- ============================ MAIN CONTENT ========================= -->
+  <main class="xt-main-content">
+
+    <!-- ============ TAB 1 — CẤU HÌNH GROQ AI ============ -->
+    <section class="xt-tab-panel active" id="tab-ai">
+      <div class="xt-panel-header">
+        <h1>Cấu hình Groq AI</h1>
+        <p>Kết nối API, danh sách API Key dự phòng, quyền micro và chọn mô hình dịch / đọc giọng nói.</p>
+      </div>
+
+      <div class="xt-opt-card">
+        <div class="xt-card-head">
+          <div>
+            <div class="xt-card-title"><span class="xt-dot"></span>Danh sách API Key Dự phòng (Multi-Key Pool)</div>
+            <p class="xt-card-sub">Nhập nhiều Groq API Key (mỗi key 1 dòng hoặc cách nhau bởi dấu phẩy). Khi 1 key bị giới hạn (Rate Limit 429), hệ thống sẽ tự động chuyển sang key tiếp theo!</p>
+          </div>
+          <span class="xt-status idle" id="opt-key-status"><span class="xt-dot"></span>Chưa kết nối</span>
+        </div>
+        <div class="xt-field">
+          <label for="opt-api-keys">Danh sách API Key (Groq Cloud)</label>
+          <textarea id="opt-api-keys" class="xt-input" rows="3" placeholder="gsk_key1...&#10;gsk_key2...&#10;gsk_key3..."></textarea>
+          <div style="margin-top: 10px; display: flex; justify-content: flex-end; align-items: center;">
+            <button class="xt-btn xt-btn-primary" id="opt-save-key-btn" type="button">Lưu danh sách Key</button>
+          </div>
+          <p class="xt-help-text">Key được lưu cục bộ trên trình duyệt, không gửi đi nơi khác ngoài Groq.</p>
+        </div>
+      </div>
+
+      <div class="xt-opt-card" id="mic-permission-card">
+        <div class="xt-card-head">
+          <div>
+            <div class="xt-card-title"><span class="xt-dot"></span>Quyền Micro</div>
+            <p class="xt-card-sub">Cần thiết để nhận diện giọng nói khi dịch trực tiếp.</p>
+          </div>
+          <span class="xt-status warn" id="opt-mic-status"><span class="xt-dot"></span>Chưa cấp quyền</span>
+        </div>
+        <button class="xt-btn" id="opt-request-mic-btn" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v4M9 21h6"/></svg>
+          Cấp quyền 1-Click
+        </button>
+      </div>
+
+      <div class="xt-opt-card">
+        <div class="xt-card-head">
+          <div>
+            <div class="xt-card-title"><span class="xt-dot"></span>Mô hình AI</div>
+            <p class="xt-card-sub">Chọn mô hình dùng để dịch nội dung.</p>
+          </div>
+        </div>
+        <div class="xt-field">
+          <label for="opt-model-select">Model dịch</label>
+          <select id="opt-model-select" class="xt-select">
+            <option value="llama-3.3-70b-versatile">llama-3.3-70b-versatile</option>
+            <option value="groq/compound">groq/compound (Không giới hạn TPD)</option>
+            <option value="groq/compound-mini">groq/compound-mini (Không giới hạn TPD)</option>
+            <option value="deepseek-r1-distill-llama-70b">deepseek-r1-distill-llama-70b</option>
+            <option value="openai/gpt-oss-120b">openai/gpt-oss-120b</option>
+            <option value="openai/gpt-oss-20b">openai/gpt-oss-20b</option>
+            <option value="qwen/qwen3.6-27b">qwen/qwen3.6-27b (OCR Vision)</option>
+            <option value="llama-3.1-8b-instant">llama-3.1-8b-instant (Siêu tốc)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="xt-opt-card">
+        <div class="xt-card-head">
+          <div>
+            <div class="xt-card-title"><span class="xt-dot"></span>Giọng đọc AI (TTS)</div>
+            <p class="xt-card-sub">Tuỳ chỉnh giọng đọc khi nghe lại bản dịch.</p>
+          </div>
+        </div>
+        <div class="xt-field">
+          <label for="opt-tts-model-select">Model TTS (Bộ phát âm)</label>
+          <select id="opt-tts-model-select" class="xt-select">
+            <option value="edge-tts">Edge Neural AI (Miễn phí, Không cần Key — Giọng đọc siêu tự nhiên)</option>
+            <option value="puter-polly">Puter AI — AWS Polly Neural TTS (Cần Puter Token)</option>
+            <option value="puter-openai">Puter AI — OpenAI TTS (gpt-4o-mini-tts)</option>
+            <option value="puter-gemini">Puter AI — Google Gemini TTS (gemini-2.5-flash)</option>
+            <option value="puter-elevenlabs">Puter AI — ElevenLabs TTS (Multilingual v2)</option>
+            <option value="puter-xai">Puter AI — xAI Grok Expressive TTS</option>
+            <option value="puter-speechify">Puter AI — Speechify TTS (Simba 3.2)</option>
+            <option value="google-translate">Google Translate TTS (Miễn phí tiêu chuẩn)</option>
+            <option value="canopylabs/orpheus-v1-english">Groq Orpheus — English (Cần Groq Key)</option>
+            <option value="canopylabs/orpheus-arabic-saudi">Groq Orpheus — Arabic (Cần Groq Key)</option>
+          </select>
+        </div>
+        <div class="xt-field" id="tts-puter-token-field" style="display:none;">
+          <label for="opt-puter-token">Puter Auth Token (JWT Token từ Puter.com)</label>
+          <input type="password" id="opt-puter-token" class="xt-input" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVC..." />
+        </div>
+        <div class="xt-field" id="tts-voice-field">
+          <label for="opt-voice-select">Giọng đọc</label>
+          <select id="opt-voice-select" class="xt-select">
+            <optgroup id="voice-group-edge" label="Edge Neural AI">
+              <option value="vi-VN-HoaiMyNeural">Hoài My (Nữ Tiếng Việt)</option>
+              <option value="vi-VN-NamMinhNeural">Nam Minh (Nam Tiếng Việt)</option>
+              <option value="en-US-AvaNeural">Ava (Nữ Tiếng Anh)</option>
+              <option value="en-US-AndrewNeural">Andrew (Nam Tiếng Anh)</option>
+              <option value="ja-JP-NanamiNeural">Nanami (Nữ Tiếng Nhật)</option>
+              <option value="ko-KR-SunHiNeural">Sun-Hi (Nữ Tiếng Hàn)</option>
+              <option value="zh-CN-XiaoxiaoNeural">Xiaoxiao (Nữ Tiếng Trung)</option>
+            </optgroup>
+            <optgroup id="voice-group-groq" label="Groq Orpheus">
+              <option value="hannah">Hannah</option>
+              <option value="autumn">Autumn</option>
+              <option value="troy">Troy</option>
+              <option value="fahad">Fahad (Arabic)</option>
+            </optgroup>
+          </select>
+        </div>
+        <div class="xt-field" id="tts-direction-field">
+          <label for="opt-voice-direction">Biểu cảm giọng đọc</label>
+          <select id="opt-voice-direction" class="xt-select">
+            <option value="none">Mặc định</option>
+            <option value="[cheerful]">Vui vẻ</option>
+            <option value="[friendly]">Thân thiện</option>
+            <option value="[professionally]">Chuyên nghiệp</option>
+            <option value="[confidently]">Tự tin</option>
+            <option value="[whisper]">Thì thầm</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="xt-opt-card">
+        <div class="xt-check-row">
+          <div class="xt-check-copy">
+            <strong>Thông báo cập nhật</strong>
+            <span>Nhận thông báo khi có phiên bản mới của tiện ích.</span>
+          </div>
+          <label class="xt-switch">
+            <input type="checkbox" id="update-notifications" checked>
+            <span class="xt-switch-track"></span>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TAB 2 — THỐNG KÊ DỊCH THUẬT ============ -->
+    <section class="xt-tab-panel" id="tab-stats">
+      <div class="xt-panel-header">
+        <h1>Thống kê Dịch thuật</h1>
+        <p>Tổng quan hoạt động dịch của bạn trong 7 ngày gần nhất.</p>
+      </div>
+
+      <div class="xt-kpi-grid">
+        <div class="xt-kpi-card">
+          <div class="xt-kpi-label">Tổng số từ đã dịch</div>
+          <div class="xt-kpi-value" id="kpi-total-words">0</div>
+        </div>
+        <div class="xt-kpi-card">
+          <div class="xt-kpi-label">Tổng số lượt dịch</div>
+          <div class="xt-kpi-value" id="kpi-total-trans">0</div>
+        </div>
+        <div class="xt-kpi-card">
+          <div class="xt-kpi-label">Lượt dịch hôm nay</div>
+          <div class="xt-kpi-value" id="kpi-today">0</div>
+        </div>
+        <div class="xt-kpi-card">
+          <div class="xt-kpi-label">Tốc độ trung bình</div>
+          <div class="xt-kpi-value" id="kpi-speed">0<small>ms</small></div>
+        </div>
+      </div>
+
+      <div class="xt-chart-grid">
+        <div class="xt-opt-card">
+          <div class="xt-card-title" style="margin-bottom:14px;"><span class="xt-dot"></span>Hoạt động 7 ngày</div>
+          <div id="trend-chart-viewport"></div>
+        </div>
+        <div class="xt-opt-card">
+          <div class="xt-card-title" style="margin-bottom:14px;"><span class="xt-dot"></span>Phân bố ngôn ngữ</div>
+          <div id="donut-chart-layout"></div>
+        </div>
+      </div>
+
+      <div class="xt-metric-row">
+        <div class="xt-metric-card">
+          <div class="xt-metric-label">Ngôn ngữ dùng nhiều nhất</div>
+          <div class="xt-metric-value" id="metric-top-lang">—</div>
+        </div>
+        <div class="xt-metric-card">
+          <div class="xt-metric-label">Tỉ lệ</div>
+          <div class="xt-metric-value" id="metric-top-pct">—</div>
+        </div>
+        <div class="xt-metric-card">
+          <div class="xt-metric-label">Thời gian tiết kiệm</div>
+          <div class="xt-metric-value" id="metric-time-saved">—</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TAB 3 — QUẢN LÝ NGÔN NGỮ ============ -->
+    <section class="xt-tab-panel" id="tab-languages">
+      <div class="xt-panel-header">
+        <h1>Quản lý Ngôn ngữ</h1>
+        <p>Đặt ngôn ngữ đích mặc định và quản lý danh sách yêu thích.</p>
+      </div>
+
+      <div class="xt-opt-card">
+        <div class="xt-field">
+          <label for="opt-target-lang">Ngôn ngữ đích mặc định</label>
+          <select id="opt-target-lang" class="xt-select">
+            <option value="Vietnamese">Tiếng Việt (Vietnamese)</option>
+            <option value="English">English</option>
+            <option value="Japanese">日本語 (Japanese)</option>
+            <option value="Korean">한국어 (Korean)</option>
+            <option value="Chinese">中文 (Chinese)</option>
+            <option value="French">Français (French)</option>
+            <option value="German">Deutsch (German)</option>
+            <option value="Spanish">Español (Spanish)</option>
+            <option value="Russian">Русский (Russian)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="xt-opt-card">
+        <div class="xt-card-head">
+          <div class="xt-card-title"><span class="xt-dot"></span>Ngôn ngữ yêu thích</div>
+          <button class="xt-btn" id="custom-language-btn" type="button">+ Thêm vào Yêu thích</button>
+        </div>
+        <div class="xt-lang-list" id="favorite-languages-list">
+          <span class="xt-lang-chip xt-chip-empty">Chưa có ngôn ngữ yêu thích</span>
+        </div>
+      </div>
+
+      <div class="xt-opt-card">
+        <div class="xt-card-title" style="margin-bottom:14px;"><span class="xt-dot"></span>Dùng gần đây</div>
+        <div class="xt-lang-list" id="recent-languages-list">
+          <span class="xt-lang-chip xt-chip-empty">Chưa có lịch sử</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TAB 4 — LỊCH SỬ DỊCH THUẬT ============ -->
+    <section class="xt-tab-panel" id="tab-history">
+      <div class="xt-panel-header">
+        <h1>Lịch sử Dịch thuật</h1>
+        <p>Quản lý và tra cứu lại tất cả các bản dịch từ bôi đen, voice thu âm, OCR ảnh màn hình...</p>
+      </div>
+
+      <!-- Toolbar: search + filter + clear all -->
+      <div class="xt-opt-card xt-history-toolbar">
+        <div class="xt-history-search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" id="history-search-input" class="xt-input xt-history-search-input" placeholder="Tìm theo văn bản gốc hoặc bản dịch…">
+        </div>
+        <select id="history-filter-type" class="xt-select xt-history-filter">
+          <option value="all">Tất cả hình thức</option>
+          <option value="text">Văn bản bôi đen</option>
+          <option value="voice">Voice (Whisper)</option>
+          <option value="ocr">OCR Ảnh (Vision)</option>
+        </select>
+        <button class="xt-btn xt-btn-danger" id="clear-history-btn" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13"/></svg>
+          Xoá toàn bộ lịch sử
+        </button>
+      </div>
+
+      <!-- History list container -->
+      <div id="history-list" class="xt-history-list"></div>
+
+      <!-- Empty state template -->
+      <template id="history-empty-template">
+        <div class="xt-history-empty">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l2.5 2.5"/></svg>
+          <p>Chưa có dữ liệu lịch sử dịch nào tương ứng</p>
+        </div>
+      </template>
+
+      <!-- Single history item template -->
+      <template id="history-item-template">
+        <article class="xt-history-card" data-id="">
+          <header class="xt-history-card-top">
+            <span class="xt-history-badge">
+              <span class="xt-history-type-icon"></span>
+              <span class="xt-history-type-label"></span>
+              <span class="xt-history-dot">•</span>
+              <span class="xt-history-lang"></span>
+            </span>
+            <span class="xt-history-time"></span>
+            <button class="xt-history-delete delete-item-btn" title="Xoá mục này" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13"/></svg>
+            </button>
+          </header>
+          <p class="xt-history-original"></p>
+          <div class="xt-history-translated"></div>
+        </article>
+      </template>
+    </section>
+
+    <!-- ============ TAB 5 — PLAYGROUND ============ -->
+    <section class="xt-tab-panel" id="tab-playground">
+      <div class="xt-panel-header">
+        <h1>Thử nghiệm Playground</h1>
+        <p>Kiểm tra nhanh kết quả dịch với cấu hình hiện tại.</p>
+      </div>
+
+      <div class="xt-opt-card">
+        <div class="xt-pg-grid">
+          <div>
+            <div class="xt-pg-toolbar"><span>Văn bản gốc</span></div>
+            <textarea id="pg-input" class="xt-pg-textarea" placeholder="Nhập hoặc dán văn bản cần dịch thử…"></textarea>
+          </div>
+          <div>
+            <div class="xt-pg-toolbar"><span>Kết quả</span></div>
+            <div id="pg-output" class="xt-pg-output xt-pg-empty">Kết quả dịch sẽ hiện ở đây…</div>
+          </div>
+        </div>
+        <div style="margin-top:14px; display:flex; justify-content:flex-end;">
+          <button class="xt-btn xt-btn-primary" id="pg-run-btn" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l16 9-16 9V3Z"/></svg>
+            Dịch thử
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TAB 6 — THÔNG TIN & CẬP NHẬT ============ -->
+    <section class="xt-tab-panel" id="tab-about">
+      <div class="xt-panel-header">
+        <h1>Thông tin &amp; Cập nhật</h1>
+        <p>Phiên bản hiện tại và các liên kết liên quan.</p>
+      </div>
+
+      <div class="xt-opt-card">
+        <div class="xt-about-head">
+          <div class="xt-about-mark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 5h9M7 3v2M15 5c-1 5-3.5 8.5-7 11M8.5 9.5c1.2 2 3 3.6 5 4.7"/>
+              <path d="M14 21l4-9 4 9M15.2 18h5.6"/>
+            </svg>
+          </div>
+          <div>
+            <h2>KimiZK Translator</h2>
+            <p id="opt-version-about">Phiên bản 1.0.5</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="xt-opt-card">
+        <button class="xt-btn" id="opt-check-update-btn" type="button" style="width:100%; justify-content:center;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v6h-6"/></svg>
+          Kiểm tra cập nhật
+        </button>
+      </div>
+
+      <div class="xt-opt-card">
+        <div class="xt-link-list">
+          <a href="https://github.com/KimiZK-Dev/KimiZK-Translator" id="github-link" class="xt-link-row" target="_blank" rel="noopener noreferrer">
+            <div class="xt-link-left">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-3.16 19.5c.5.1.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.95 0-1.1.39-1.99 1.03-2.69-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.6 9.6 0 0 1 5 0c1.91-1.3 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.6 1.03 2.69 0 3.85-2.34 4.7-4.57 4.95.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/></svg>
+              <div>
+                <div class="xt-link-title">Mã nguồn trên GitHub</div>
+                <div class="xt-link-desc">Xem code, báo lỗi hoặc đóng góp</div>
+              </div>
+            </div>
+            <svg class="xt-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+          </a>
+          <a href="https://www.facebook.com/NgHxBach" id="facebook-link" class="xt-link-row" target="_blank" rel="noopener noreferrer">
+            <div class="xt-link-left">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-7.5H16l.5-3H13.5V8.3c0-.87.24-1.46 1.5-1.46H16.6V4.14C16.3 4.1 15.34 4 14.22 4c-2.34 0-3.94 1.43-3.94 4.04v2.46H7.7v3h2.58V21h3.22Z"/></svg>
+              <div>
+                <div class="xt-link-title">Facebook Tác giả</div>
+                <div class="xt-link-desc">Liên hệ hỗ trợ &amp; góp ý trực tiếp</div>
+              </div>
+            </div>
+            <svg class="xt-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script src="../js/core/config.js"></script>
+<script src="../js/core/utils.js"></script>
+<script src="../js/core/storage.js"></script>
+<script src="../js/core/api.js"></script>
+<script src="../js/options.js"></script>
 </body>
 </html>
