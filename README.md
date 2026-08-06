@@ -26,9 +26,21 @@
 Hỗ trợ 3 chế độ dịch chính (**Văn bản**, **Giọng nói STT**, **Chụp màn hình OCR**) và tích hợp nút chuyển đổi giao diện Sáng / Tối động:
 
 <div align="center">
-  <img src="assets/images/popup-extension-dark.png" alt="Popup tiện ích - Giao diện Tối" width="360" style="border-radius: 10px; margin-right: 12px;" />
-  <img src="assets/images/popup-extension-light.png" alt="Popup tiện ích - Giao diện Sáng" width="360" style="border-radius: 10px;" />
+  <img src="assets/images/popup-extension-dark.png" alt="Popup tiện ích - Giao diện Tối" width="280" style="border-radius: 10px; margin-right: 12px;" />
+  <img src="assets/images/popup-extension-light.png" alt="Popup tiện ích - Giao diện Sáng" width="280" style="border-radius: 10px;" />
   <p><em>Popup Tiện ích: Chế độ Tối (Dark Mode) và Chế độ Sáng (Light Mode)</em></p>
+</div>
+
+---
+
+## 🔍 Cửa sổ Dịch nổi (Translation Overlay)
+
+Tự động xuất hiện khi bôi đen văn bản hoặc bấm phím tắt dịch trên trang web. Hỗ trợ dịch câu văn ngữ cảnh và tra cứu từ điển chuyên sâu kèm loại từ, giải thích & ví dụ thực tế:
+
+<div align="center">
+  <img src="assets/images/popup-translate-sentence.png" alt="Popup Dịch nổi - Dịch đoạn văn" width="280" style="border-radius: 10px; margin-right: 12px;" />
+  <img src="assets/images/popup-translate-dictionary.png" alt="Popup Dịch nổi - Tra từ điển chuyên sâu" width="280" style="border-radius: 10px;" />
+  <p><em>Cửa sổ Dịch nổi: Dịch đoạn văn ngữ cảnh (Trái) & Phân tích từ điển chi tiết (Phải)</em></p>
 </div>
 
 ---
@@ -38,20 +50,30 @@ Hỗ trợ 3 chế độ dịch chính (**Văn bản**, **Giọng nói STT**, **
 Trung tâm cài đặt nâng cao cho phép quản lý danh sách API Key dự phòng (Multi-Key Pool), cấp quyền micro 1-Click, tùy chọn mô hình AI và nhà cung cấp giọng đọc TTS:
 
 <div align="center">
-  <img src="assets/images/options-page-dashboard.png" alt="Trang Cấu hình Options - Cấu hình AI & API" width="760" style="border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);" />
+  <img src="assets/images/options-page-dashboard.png" alt="Trang Cấu hình Options - Cấu hình AI & API" width="680" style="border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);" />
   <p><em>Giao diện Cấu hình AI & API với tính năng Multi-Key Pool tự động chuyển key khi lỗi 429</em></p>
 </div>
 
 ---
 
-## 🔍 Cửa sổ Dịch nổi (Translation Popup)
+## 🎬 Video Hướng dẫn (Tutorial Videos)
 
-Tự động xuất hiện khi bôi đen văn bản hoặc bấm phím tắt dịch trên trang web. Hỗ trợ dịch câu văn ngữ cảnh và tra cứu từ điển chuyên sâu kèm loại từ, giải thích & ví dụ:
+### 1. Hướng dẫn Lấy Groq API Key miễn phí
 
 <div align="center">
-  <img src="assets/images/popup-translate-sentence.png" alt="Popup Dịch nổi - Dịch đoạn văn" width="360" style="border-radius: 10px; margin-right: 12px;" />
-  <img src="assets/images/popup-translate-dictionary.png" alt="Popup Dịch nổi - Tra từ điển chuyên sâu" width="360" style="border-radius: 10px;" />
-  <p><em>Cửa sổ Dịch nổi: Dịch câu văn ngắn/dài (Trái) & Phân tích từ điển chi tiết (Phải)</em></p>
+  <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.youtube.com/vi/DEFAULT_VIDEO_ID/hqdefault.jpg" alt="Video Hướng dẫn Lấy Groq API Key" width="560" style="border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.15);" />
+  </a>
+  <p>🎬 <em>[Video Placeholder] Nhấp vào ảnh để xem video hướng dẫn đăng ký & lấy Groq API Key miễn phí</em></p>
+</div>
+
+### 2. Hướng dẫn Lấy Puter Auth Token & Cấu hình Giọng đọc AI
+
+<div align="center">
+  <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.youtube.com/vi/DEFAULT_VIDEO_ID/hqdefault.jpg" alt="Video Hướng dẫn Lấy Puter Token" width="560" style="border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.15);" />
+  </a>
+  <p>🎬 <em>[Video Placeholder] Nhấp vào ảnh để xem video hướng dẫn lấy Puter Auth Token và dùng các giọng đọc AI</em></p>
 </div>
 
 ---
