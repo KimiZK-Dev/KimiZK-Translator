@@ -67,7 +67,7 @@ Trung tâm cài đặt nâng cao cho phép quản lý danh sách API Key dự ph
   <p>🎬 <em>[Video Placeholder] Nhấp vào ảnh để xem video hướng dẫn đăng ký & lấy Groq API Key miễn phí</em></p>
 </div>
 
-### 2. Hướng dẫn Lấy Puter Auth Token & Cấu hình Giọng đọc AI
+### 2. Hướng dẫn Lấy Puter Auth Token
 
 <div align="center">
   <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer">
