@@ -19,18 +19,48 @@
 
 **KimiZK Translator** là một tiện ích Chrome Extension hiện đại giúp bạn dịch thuật văn bản, tra cứu từ vựng, phát âm chuẩn AI và trích xuất chữ từ hình ảnh trực tiếp trên trình duyệt. Tiện ích được thiết kế theo phong cách tối giản, phản hồi nhanh và tích hợp nhiều lớp AI dự phòng (Failover Engine) để đảm bảo không bị gián đoạn khi sử dụng.
 
+---
+
+## 🖼️ Giao diện Tiện ích (Popup Interface)
+
+Hỗ trợ 3 chế độ dịch chính (**Văn bản**, **Giọng nói STT**, **Chụp màn hình OCR**) và tích hợp nút chuyển đổi giao diện Sáng / Tối động:
+
 <div align="center">
-  <img src="assets/images/popup-preview.png" alt="Giao diện Popup KimiZK Translator" width="380" style="border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);" />
-  <p><em>Giao diện popup dịch thuật KimiZK Translator trên trình duyệt</em></p>
+  <img src="assets/images/popup-extension-dark.png" alt="Popup tiện ích - Giao diện Tối" width="360" style="border-radius: 10px; margin-right: 12px;" />
+  <img src="assets/images/popup-extension-light.png" alt="Popup tiện ích - Giao diện Sáng" width="360" style="border-radius: 10px;" />
+  <p><em>Popup Tiện ích: Chế độ Tối (Dark Mode) và Chế độ Sáng (Light Mode)</em></p>
 </div>
 
 ---
 
-## ✨ Tính năng cốt lõi
+## ⚙️ Trang Cấu hình (Options Dashboard)
+
+Trung tâm cài đặt nâng cao cho phép quản lý danh sách API Key dự phòng (Multi-Key Pool), cấp quyền micro 1-Click, tùy chọn mô hình AI và nhà cung cấp giọng đọc TTS:
+
+<div align="center">
+  <img src="assets/images/options-page-dashboard.png" alt="Trang Cấu hình Options - Cấu hình AI & API" width="760" style="border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);" />
+  <p><em>Giao diện Cấu hình AI & API với tính năng Multi-Key Pool tự động chuyển key khi lỗi 429</em></p>
+</div>
+
+---
+
+## 🔍 Cửa sổ Dịch nổi (Translation Popup)
+
+Tự động xuất hiện khi bôi đen văn bản hoặc bấm phím tắt dịch trên trang web. Hỗ trợ dịch câu văn ngữ cảnh và tra cứu từ điển chuyên sâu kèm loại từ, giải thích & ví dụ:
+
+<div align="center">
+  <img src="assets/images/popup-translate-sentence.png" alt="Popup Dịch nổi - Dịch đoạn văn" width="360" style="border-radius: 10px; margin-right: 12px;" />
+  <img src="assets/images/popup-translate-dictionary.png" alt="Popup Dịch nổi - Tra từ điển chuyên sâu" width="360" style="border-radius: 10px;" />
+  <p><em>Cửa sổ Dịch nổi: Dịch câu văn ngắn/dài (Trái) & Phân tích từ điển chi tiết (Phải)</em></p>
+</div>
+
+---
+
+## ✨ Tính năng nổi bật
 
 ### 1. Multi-AI Translation Engine
 - **Mô hình AI đa dạng**: Tích hợp các mô hình ngôn ngữ thế hệ mới như `llama-3.3-70b-versatile`, `qwen3.6-27b` và `groq/compound-mini`.
-- **Phân tích nghĩa chuyên sâu**: Hiển thị phiên âm IPA, loại từ, ví dụ thực tế và giải thích ngữ cảnh chi tiết thay vì chỉ dịch thô.
+- **Phân tích nghĩa chuyên sâu**: Hiển thị loại từ (Danh từ, Động từ, Tính từ...), giải thích ngữ cảnh chi tiết và ví dụ thực tế.
 
 ### 2. Hệ thống Âm thanh Đa tầng (Multi-Provider TTS)
 - **Microsoft Edge Neural AI (Mặc định)**: Giọng đọc tự nhiên, chuẩn bản ngữ (Hoài My, Nam Minh, Ava, Andrew, Nanami, Sun-Hi...) hoàn toàn miễn phí mà không cần API Key.
@@ -47,15 +77,6 @@
 ### 5. Điều khiển nhanh & Giao diện Linh hoạt
 - **Command Palette (`Ctrl + K` / `Cmd + K`)**: Bảng điều khiển lệnh nhanh kiểu Raycast / Spotlight.
 - **Theme Động**: Đổi giao diện Sáng / Tối với biểu tượng Mặt Trời ☀️ / Mặt Trăng 🌙 biến đổi theo trạng thái.
-
----
-
-## 🖼️ Giao diện Cấu hình
-
-<div align="center">
-  <img src="assets/images/options-preview.png" alt="Giao diện Cấu hình Options" width="720" style="border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);" />
-  <p><em>Trang cấu hình trung tâm an toàn & quản lý API Key an toàn</em></p>
-</div>
 
 ---
 
