@@ -1,212 +1,96 @@
-# KimiZK-Translator
+# 🌐 KimiZK-Translator (v1.0.5)
 
-Chrome Extension dịch đa ngôn ngữ sang tiếng Việt với giao diện hiện đại và AI tích hợp.
-
-## 🚀 Tính năng
-
-- **Dịch đa ngôn ngữ**: Hỗ trợ 13+ ngôn ngữ (Anh, Pháp, Đức, Tây Ban Nha, Ý, Nhật, Hàn, Trung, Nga, Ả Rập, Thái, Bồ Đào Nha)
-- **AI tích hợp**: Sử dụng Groq API với model `qwen/qwen3.6-27b` hoặc `openai/gpt-oss-120b` chuẩn xác cao
-- **Giao diện hiện đại**: Popup đẹp mắt với animation mượt mà
-- **Phát âm chuẩn**: Text-to-Speech với phát âm IPA
-- **Kéo thả tự do**: Di chuyển popup theo ý muốn
-- **Auto-update**: Tự động kiểm tra và cập nhật phiên bản mới
-- **Manifest V3**: Tuân thủ chuẩn mới nhất của Chrome
-
-## 📁 Cấu trúc dự án (Đã được tối ưu hóa)
-
-```
-kimizk-translator/
-├── manifest.json                 # Cấu hình extension
-├── src/
-│   ├── js/
-│   │   ├── core/               # Core modules (MỚI)
-│   │   │   ├── config.js       # Cấu hình toàn cục
-│   │   │   ├── storage.js      # Quản lý Chrome Storage
-│   │   │   ├── utils.js        # Hàm tiện ích
-│   │   │   ├── api.js          # API service
-│   │   │   ├── audio.js        # Quản lý âm thanh
-│   │   │   ├── notifications.js # Quản lý thông báo
-│   │   │   └── ui.js          # Quản lý giao diện
-│   │   ├── background.js       # Service Worker
-│   │   └── main.js            # Content Script chính
-│   ├── css/                   # Stylesheets
-│   ├── html/                  # HTML templates
-│   └── icons/                # Icons
-└── README.md
-```
-
-## 🔧 Cải thiện trong phiên bản 1.0.4
-
-### 1. **Tối ưu hóa cấu trúc code**
-- **Modular Architecture**: Chia nhỏ code thành các module riêng biệt
-- **Separation of Concerns**: Tách biệt rõ ràng các chức năng
-- **Clean Code**: Code sạch, dễ đọc và bảo trì
-
-### 2. **Cải thiện hiệu suất**
-- **Lazy Loading**: Load module khi cần thiết
-- **Memory Management**: Quản lý bộ nhớ tốt hơn với cache
-- **Debounce/Throttle**: Tối ưu hóa event handlers
-- **Error Handling**: Xử lý lỗi toàn diện
-
-### 3. **Tối ưu hóa logic**
-- **Async/Await**: Sử dụng Promise hiện đại
-- **Event Delegation**: Tối ưu hóa event listeners
-- **State Management**: Quản lý state tập trung
-- **Configuration**: Cấu hình tập trung và dễ thay đổi
-
-### 4. **Cải thiện UX**
-- **Keyboard Shortcuts**: Phím tắt nhanh (Ctrl+Shift+L, Escape)
-- **Better Notifications**: Thông báo thông minh hơn
-- **Responsive Design**: Giao diện responsive
-- **Accessibility**: Cải thiện khả năng tiếp cận
-
-## 🛠️ Cài đặt
-
-1. **Clone repository**:
-   ```bash
-   git clone https://github.com/KimiZK-Dev/KimiZK-Translator.git
-   cd KimiZK-Translator
-   ```
-
-2. **Cài đặt extension**:
-   - Mở Chrome và vào `chrome://extensions/`
-   - Bật "Developer mode"
-   - Click "Load unpacked" và chọn thư mục dự án
-
-3. **Cấu hình API Key**:
-   - Lấy API key từ [Groq](https://console.groq.com/)
-   - Click vào icon extension và nhập API key
-
-## 🎯 Sử dụng
-
-1. **Dịch văn bản**:
-   - Bôi đen văn bản cần dịch
-   - Click vào icon translate xuất hiện
-   - Xem kết quả dịch trong popup
-
-2. **Phát âm**:
-   - Click nút "Nghe" để phát âm
-   - Điều chỉnh âm lượng bằng thanh trượt
-
-3. **Sao chép**:
-   - Click nút "Copy" để sao chép bản dịch
-
-4. **Di chuyển popup**:
-   - Kéo header để di chuyển popup
-   - Thu gọn/mở rộng bằng nút minimize
-
-## 🔧 Cấu hình
-
-### API Configuration (config.js)
-```javascript
-const CONFIG = {
-    API: {
-        MODEL: "meta-llama/llama-4-scout-17b-16e-instruct",
-        ENDPOINT: "https://api.groq.com/openai/v1/chat/completions",
-        TTS_ENDPOINT: "https://api.groq.com/openai/v1/audio/speech"
-    },
-    UI: {
-        POPUP_WIDTH: 400,
-        POPUP_HEIGHT: 350,
-        Z_INDEX: 2147483647
-    }
-};
-```
-
-### Storage Management (storage.js)
-```javascript
-// Lưu API key
-await StorageManager.saveApiKey('your-api-key');
-
-// Lấy API key
-const apiKey = await StorageManager.getApiKey();
-```
-
-## 🚀 Tính năng mới
-
-### 1. **Module System**
-- **Config Module**: Quản lý cấu hình tập trung
-- **Storage Module**: Quản lý Chrome Storage an toàn
-- **Utils Module**: Hàm tiện ích tái sử dụng
-- **API Module**: Xử lý API calls với error handling
-- **Audio Module**: Quản lý âm thanh với cache
-- **Notification Module**: Hệ thống thông báo thống nhất
-- **UI Module**: Quản lý giao diện tập trung
-
-### 2. **Performance Optimizations**
-- **Memory Leak Prevention**: Tự động cleanup resources
-- **Event Optimization**: Debounce/throttle cho scroll events
-- **Cache Management**: LRU cache cho audio files
-- **Lazy Loading**: Load modules khi cần
-
-### 3. **Error Handling**
-- **Graceful Degradation**: Xử lý lỗi mượt mà
-- **User Feedback**: Thông báo lỗi thân thiện
-- **Retry Logic**: Tự động thử lại khi lỗi
-- **Fallback Mechanisms**: Phương án dự phòng
-
-### 4. **Developer Experience**
-- **Clean Code**: Code dễ đọc và bảo trì
-- **Modular Design**: Dễ mở rộng và thay đổi
-- **Documentation**: JSDoc comments đầy đủ
-- **Type Safety**: Validation và type checking
-
-## 🔄 Auto-Update System
-
-Extension tự động kiểm tra cập nhật:
-- **Startup Check**: Kiểm tra khi khởi động browser
-- **Periodic Check**: Kiểm tra định kỳ mỗi 6 giờ
-- **Manual Check**: Kiểm tra thủ công từ popup
-- **Smart Notifications**: Thông báo thông minh
-
-## 🎨 UI/UX Improvements
-
-- **Modern Design**: Giao diện hiện đại với glassmorphism
-- **Smooth Animations**: Animation mượt mà với CSS transitions
-- **Responsive Layout**: Tự động điều chỉnh kích thước
-- **Accessibility**: Hỗ trợ keyboard navigation
-- **Dark Mode Ready**: Sẵn sàng cho dark mode
-
-## 🛡️ Security
-
-- **API Key Protection**: Lưu trữ an toàn trong Chrome Storage
-- **Content Security Policy**: CSP nghiêm ngặt
-- **Input Validation**: Validate tất cả input
-- **XSS Prevention**: Escape HTML content
-- **CORS Handling**: Xử lý CORS đúng cách
-
-## 📊 Performance Metrics
-
-- **Load Time**: < 100ms
-- **Memory Usage**: < 50MB
-- **CPU Usage**: < 5% khi idle
-- **Network Requests**: Tối ưu hóa với caching
-- **Bundle Size**: < 500KB
-
-## 🤝 Contributing
-
-1. Fork repository
-2. Tạo feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
-5. Tạo Pull Request
-
-## 📝 License
-
-Distributed under the MIT License. See `LICENSE` for more information.
-
-## 📞 Contact
-
-- **Facebook**: [KimiZK](https://www.facebook.com/nhb.xyz)
-- **GitHub**: [KimiZK-Dev](https://github.com/KimiZK-Dev)
-- **Email**: [Contact via Facebook]
-
-## 🙏 Acknowledgments
-
-- **Groq**: Cung cấp AI API
-- **Chrome Extensions**: Documentation và examples
-- **Community**: Feedback và suggestions
+Chrome Extension dịch đa ngôn ngữ sang tiếng Việt với giao diện hiện đại, tích hợp **Multi-AI Engine** (Groq AI, Puter AI, Microsoft Edge Neural AI, Google Translate & Groq Whisper STT).
 
 ---
 
-**Made with ❤️ by KimiZK** 
+## 🚀 Tính năng nổi bật
+
+- 🤖 **Multi-AI Engine**: Tích hợp các mô hình AI mạnh mẽ nhất (`llama-3.3-70b-versatile`, `qwen3.6-27b`, `groq/compound-mini`).
+- 🔊 **Hệ thống TTS Đa tầng (Multi-Provider Audio Engine)**:
+  - **Microsoft Edge Neural AI** (Miễn phí, Không cần Key — Giọng đọc siêu tự nhiên Hoài My, Nam Minh, Ava, Andrew).
+  - **Puter AI TTS** (Hỗ trợ AWS Polly, OpenAI TTS, Google Gemini TTS, ElevenLabs, xAI Grok, Speechify qua Puter Auth Token).
+  - **Groq Orpheus AI TTS** (Phát âm cảm xúc tiếng Anh & Ả Rập).
+  - **Google Translate TTS** (Miễn phí tiêu chuẩn).
+- 🔑 **Multi-Key Pool (Dự phòng thông minh)**: Tự động chuyển đổi API Key khi 1 key chạm giới hạn Rate Limit (HTTP 429), đảm bảo trải nghiệm dịch không bị gián đoạn.
+- 🎙️ **Nhận diện Giọng nói STT (Groq Whisper)**: Thu âm giọng nói và chuyển đổi thành văn bản dịch nghĩa tức thì (`whisper-large-v3-turbo`).
+- 📷 **Chụp màn hình OCR Vision**: Khoanh vùng ảnh bất kỳ trên trang web để trích xuất chữ và dịch nghĩa bằng AI Vision.
+- ⌨️ **Command Palette (Ctrl + K / Cmd + K)**: Tìm kiếm & thực thi lệnh nhanh định dạng Raycast / Spotlight.
+- 🎨 **Giao diện Hiện đại & Theme Động**: Hỗ trợ Sáng / Tối (Light & Dark Theme) với nút chuyển đổi biểu tượng Mặt Trời ☀️ / Mặt Trăng 🌙 sinh động.
+- 📊 **Thống kê Bento Grid (Analytics)**: Theo dõi tổng số từ đã dịch, tốc độ phản hồi API ms, và biểu đồ 7 ngày gần nhất.
+
+---
+
+## 📁 Cấu trúc dự án
+
+```
+KimiZK-Translator/
+├── manifest.json                 # Cấu hình Chrome Extension (Manifest V3)
+├── src/
+│   ├── js/
+│   │   ├── core/                 # Các module lõi
+│   │   │   ├── config.js         # Hằng số & Cấu hình toàn cục
+│   │   │   ├── storage.js        # Quản lý Chrome Local Storage & Multi-Key Pool
+│   │   │   ├── utils.js          # Hàm tiện ích (cleanJson, detectLanguage...)
+│   │   │   ├── api.js            # API Service (Groq, Puter, Edge TTS, Whisper)
+│   │   │   ├── audio.js          # Quản lý trình phát & cache âm thanh
+│   │   │   ├── notifications.js  # Hệ thống thông báo
+│   │   │   └── ui.js             # Quản lý giao diện Popup dịch nổi trên trang web
+│   │   ├── background.js         # Service Worker (Background Script)
+│   │   ├── popup.js              # Controller cho Popup Extension
+│   │   ├── options.js            # Controller cho trang Cấu hình (Options Page)
+│   │   └── main.js               # Content Script chính (Text Selection & OCR Snipper)
+│   ├── css/                      # Stylesheets (options.css, popup.css, styles.css)
+│   ├── html/                     # HTML Templates (options.html, popup.html)
+│   └── icons/                    # Bộ Icon chính thức (16px, 24px, 32px, 64px, 128px, 156px, 512px)
+├── CHANGELOG.md                  # Nhật ký thay đổi qua từng phiên bản
+└── README.md                     # Tài liệu hướng dẫn sử dụng
+```
+
+---
+
+## 🛠️ Cài đặt
+
+1. **Clone hoặc tải mã nguồn**:
+   ```bash
+   git clone https://github.com/KimiZK-Dev/KimiZK-Translator.git
+   ```
+
+2. **Cài đặt vào Trình duyệt (Chrome / Brave / Edge / Cốc Cốc)**:
+   - Mở trình duyệt và truy cập `chrome://extensions/`
+   - Bật **"Developer mode"** (Chế độ dành cho nhà phát triển) ở góc trên bên phải.
+   - Bấm **"Load unpacked"** (Tải tiện ích đã giải nén) và chọn thư mục `KimiZK-Translator`.
+
+3. **Cấu hình API Key**:
+   - Nhấp vào biểu tượng KimiZK-Translator ➔ Mở **Cài đặt (Options)** ➔ Chọn tab **"Cấu hình AI & API"**.
+   - Nhập một hoặc nhiều API Key từ [Groq Console](https://console.groq.com/) (Free).
+   - *(Tùy chọn)* Nhập **Puter Auth Token** nếu muốn dùng các giọng đọc Puter AI (OpenAI, Gemini, ElevenLabs).
+
+---
+
+## 🎯 Phím tắt tiện ích
+
+- **`Ctrl + Shift + L`** (hoặc `Cmd + Shift + L`): Dịch nhanh đoạn văn bản đang bôi đen.
+- **`Ctrl + K`** (hoặc `Cmd + K`): Mở bảng lệnh Command Palette.
+- **`Escape`**: Đóng nhanh cửa sổ dịch hoặc bảng lệnh.
+
+---
+
+## 🛡️ Bảo mật & Hiệu năng
+
+- **Bảo mật API Key**: Toàn bộ API Key và Puter Token được lưu trữ cục bộ trong `chrome.storage.local` trên trình duyệt người dùng, tuyệt đối không gửi qua máy chủ trung gian.
+- **Tốc độ phản hồi cực nhanh**: Tích hợp thuật toán AbortController quản lý timeout (12s) và bộ nhớ tạm cache âm thanh tái sử dụng.
+
+---
+
+## 📝 Giấy phép (License)
+
+Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
+
+---
+
+## 📞 Liên hệ & Hỗ trợ
+
+- **Tác giả**: [KimiZK-Dev](https://github.com/KimiZK-Dev)
+- **Facebook**: [NgHxBach](https://www.facebook.com/NgHxBach)
+- **GitHub Repository**: [KimiZK-Dev/KimiZK-Translator](https://github.com/KimiZK-Dev/KimiZK-Translator)
