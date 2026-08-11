@@ -321,19 +321,19 @@ class UpdateModal {
             const trimmedLine = line.trim();
             
             // Check if we're entering a features section
-            if (trimmedLine.includes('### ✨ **Tính năng mới**') || 
-                trimmedLine.includes('### 🚀 **Tính năng mới**') ||
-                trimmedLine.includes('## 🚀 Version') ||
-                trimmedLine.includes('### ✨')) {
+            if (trimmedLine.toLowerCase().includes('tính năng mới') || 
+                trimmedLine.toLowerCase().includes('version') ||
+                trimmedLine.startsWith('### ') ||
+                trimmedLine.startsWith('## ')) {
                 inFeaturesSection = true;
                 continue;
             }
             
             // Check if we're leaving features section
-            if (inFeaturesSection && (trimmedLine.startsWith('### 🎨') || 
-                                     trimmedLine.startsWith('### 🔧') || 
-                                     trimmedLine.startsWith('### 🐛') ||
-                                     trimmedLine.startsWith('## 📋'))) {
+            if (inFeaturesSection && (trimmedLine.startsWith('### Giao diện') || 
+                                     trimmedLine.startsWith('### Sửa lỗi') || 
+                                     trimmedLine.startsWith('### Cập nhật') ||
+                                     trimmedLine.startsWith('## Bảng'))) {
                 break;
             }
             
@@ -396,16 +396,12 @@ class UpdateModal {
         for (const line of lines) {
             const trimmedLine = line.trim();
             
-            // Look for lines with emojis and features
-            if (trimmedLine.includes('✨') || 
-                trimmedLine.includes('🚀') || 
-                trimmedLine.includes('🎨') || 
-                trimmedLine.includes('🔧') ||
-                trimmedLine.includes('🛡️') ||
-                trimmedLine.includes('🔐') ||
-                trimmedLine.includes('🎯')) {
+            // Look for bullet feature lines
+            if (trimmedLine.startsWith('-') || 
+                trimmedLine.startsWith('*') || 
+                trimmedLine.startsWith('•')) {
                 
-                let feature = trimmedLine.replace(/^[✨🚀🎨🔧🛡️🔐🎯\s-]+/, '').trim();
+                let feature = trimmedLine.replace(/^[-*•\s]+/, '').trim();
                 
                 // Remove markdown formatting
                 feature = feature.replace(/\*\*/g, '').replace(/`/g, '');
@@ -466,7 +462,7 @@ class UpdateModal {
         let featuresSection = '';
         
         for (const section of sections) {
-            if (section.includes('Tính năng mới') || section.includes('✨') || section.includes('🚀')) {
+            if (section.toLowerCase().includes('tính năng') || section.toLowerCase().includes('cập nhật')) {
                 featuresSection = section;
                 break;
             }
