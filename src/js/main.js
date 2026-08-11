@@ -40,6 +40,15 @@ const TranslationManager = {
         
         // Keyboard shortcuts
         document.addEventListener('keydown', this._handleKeyboard.bind(this));
+
+        // Realtime Theme Sync from Extension Storage
+        if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.onChanged) {
+            chrome.storage.onChanged.addListener((changes, areaName) => {
+                if (areaName === 'local' && changes.appTheme) {
+                    UIManager.applyTheme(changes.appTheme.newValue);
+                }
+            });
+        }
     },
     
     /**
@@ -164,7 +173,7 @@ const TranslationManager = {
     displayOcrResult(rect, result) {
         if (!result) return;
         const rawText = result.originalText || result.translated || "Vision OCR";
-        const displayText = rawText.length > 35 ? rawText.substring(0, 35) + "..." : rawText;
+        const displayText = rawText;
         const isSingleWord = false;
 
         this._lastSelectedText = result.originalText || result.translated || "";
@@ -319,20 +328,22 @@ const TranslationManager = {
      * @private
      */
     _setupResultControls(content, result, isSingleWord, popup) {
-        const listenBtn = content.querySelector('.xt-listen-btn, .kz-listen-btn, .kz-fp-listen');
-        if (listenBtn) {
-            // Read ORIGINAL source text (cái bị dịch) as requested by user
-            const originalText = result?.originalText || this._getOriginalSelectedText();
-            const textToSpeak = (originalText && String(originalText).trim()) 
-                ? String(originalText).trim() 
-                : (result?.translated || result?.meaning || '');
-                
-            AudioManager.setupAudioButton(listenBtn, textToSpeak, isSingleWord, popup);
+        const origText = result?.originalText || this._getOriginalSelectedText();
+        const transText = result?.translated || result?.meaning || '';
+
+        const listenOrigBtn = content.querySelector('.xt-listen-orig-btn');
+        if (listenOrigBtn && origText) {
+            AudioManager.setupAudioButton(listenOrigBtn, String(origText).trim(), isSingleWord, popup, true);
+        }
+
+        const listenTransBtn = content.querySelector('.xt-listen-btn, .kz-listen-btn, .kz-fp-listen');
+        if (listenTransBtn && transText) {
+            AudioManager.setupAudioButton(listenTransBtn, String(transText).trim(), isSingleWord, popup, false);
         }
 
         const copyBtn = content.querySelector('.xt-copy-btn, .kz-copy-btn, .kz-fp-copy');
         if (copyBtn) {
-            UIManager.setupCopyButton(copyBtn, result?.translated || result?.meaning || '');
+            UIManager.setupCopyButton(copyBtn, transText);
         }
     },
     
@@ -366,6 +377,11 @@ const TranslationManager = {
      */
     _handleOutsideClick(e) {
         try {
+            // Ignore if clicked element was detached from DOM during click handling (e.g. innerHTML icon replacement)
+            if (e.target && !e.target.isConnected) {
+                return;
+            }
+
             if (UIManager.popup && 
                 !UIManager.popup.contains(e.target) && 
                 !e.target.closest('.xt-audio-controls') && 
@@ -450,9 +466,8 @@ const TranslationManager = {
     _handleKeyboard(e) {
         // Escape key to close popup
         if (e.key === 'Escape') {
-            if (UIManager.popup) {
-                AudioManager.stopCurrentAudio();
-                UIManager.popup.remove();
+            if (UIManager.popup && !UIManager.isDragging) {
+                UIManager.removePopup();
                 UIManager.triggerIcon?.remove();
             }
         }
@@ -640,7 +655,7 @@ const RegionSnipper = {
                     if (translateRes && translateRes.success && translateRes.result) {
                         const result = translateRes.result;
                         const rawText = result.originalText || result.translated || "Vision OCR";
-                        const displayText = rawText.length > 35 ? rawText.substring(0, 35) + "..." : rawText;
+                        const displayText = rawText;
 
                         // Update header title
                         const titleEl = popup.querySelector(".xt-translator-word");
