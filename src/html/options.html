@@ -20,7 +20,7 @@
       </div>
       <div class="xt-brand-text">
         <div class="xt-brand-title">KimiZK Translator</div>
-        <span class="xt-brand-badge" id="opt-version">v1.0.5</span>
+        <span class="xt-brand-badge" id="opt-version">v1.0.6</span>
       </div>
     </div>
 
@@ -45,6 +45,10 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4 3 12l5 8M16 4l5 8-5 8"/></svg>
         Thử nghiệm Playground
       </button>
+      <button class="xt-nav-item" data-tab="tab-videos">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+        Video Hướng dẫn
+      </button>
       <button class="xt-nav-item" data-tab="tab-about">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.5v.01"/></svg>
         Thông tin &amp; Cập nhật
@@ -66,132 +70,237 @@
     <section class="xt-tab-panel active" id="tab-ai">
       <div class="xt-panel-header">
         <h1>Cấu hình AI &amp; API</h1>
-        <p>Quản lý API Key, mô hình dịch AI và thiết lập giọng đọc phát âm (Puter, Edge, Groq).</p>
+        <p>Quản lý API Key, mô hình dịch AI và giọng đọc phát âm (Edge, Puter, Groq).</p>
       </div>
 
+      <!-- Card 1: Khóa API & Token Pool -->
       <div class="xt-opt-card">
         <div class="xt-card-head">
           <div>
-            <div class="xt-card-title"><span class="xt-dot"></span>Danh sách API Key Dự phòng (Multi-Key Pool)</div>
-            <p class="xt-card-sub">Nhập nhiều Groq API Key (mỗi key 1 dòng hoặc cách nhau bởi dấu phẩy). Khi 1 key bị giới hạn (Rate Limit 429), hệ thống sẽ tự động chuyển sang key tiếp theo!</p>
+            <div class="xt-card-title"><span class="xt-dot"></span>Danh sách API Key (Groq Cloud)</div>
+            <p class="xt-card-sub">Tự động chuyển key tiếp theo khi gặp giới hạn Rate Limit 429 (Mỗi key 1 dòng hoặc cách nhau bởi dấu phẩy).</p>
           </div>
-          <span class="xt-status idle" id="opt-key-status"><span class="xt-dot"></span>Chưa kết nối</span>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <button class="xt-guide-pill-btn" data-goto-tab="tab-videos" data-video-index="0" type="button" title="Xem Video Hướng dẫn lấy Key Groq">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+              <span>Video Hướng dẫn</span>
+            </button>
+            <span class="xt-status idle" id="opt-key-status" aria-live="polite"><span class="xt-dot"></span>Chưa kết nối</span>
+          </div>
         </div>
         <div class="xt-field">
-          <label for="opt-api-keys">Danh sách API Key (Groq Cloud)</label>
           <textarea id="opt-api-keys" class="xt-input" rows="3" placeholder="gsk_key1...&#10;gsk_key2...&#10;gsk_key3..."></textarea>
-          <div style="margin-top: 10px; display: flex; justify-content: flex-end; align-items: center;">
+          <div style="margin-top: 10px; display: flex; justify-content: flex-end;">
             <button class="xt-btn xt-btn-primary" id="opt-save-key-btn" type="button">Lưu danh sách Key</button>
           </div>
           <p class="xt-help-text">Key được lưu cục bộ trên trình duyệt, không gửi đi nơi khác ngoài Groq.</p>
         </div>
       </div>
 
-      <div class="xt-opt-card" id="mic-permission-card">
+      <div class="xt-opt-card" id="puter-tokens-card">
         <div class="xt-card-head">
           <div>
-            <div class="xt-card-title"><span class="xt-dot"></span>Quyền Micro</div>
-            <p class="xt-card-sub">Cần thiết để nhận diện giọng nói khi dịch trực tiếp.</p>
+            <div class="xt-card-title"><span class="xt-dot"></span>Danh sách Puter Auth Token (Puter AI TTS)</div>
+            <p class="xt-card-sub">Mở khóa các giọng đọc AI cao cấp: AWS Polly, OpenAI, Gemini 2.5, ElevenLabs, xAI Grok, Speechify.</p>
           </div>
-          <span class="xt-status warn" id="opt-mic-status"><span class="xt-dot"></span>Chưa cấp quyền</span>
-        </div>
-        <button class="xt-btn" id="opt-request-mic-btn" type="button">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v4M9 21h6"/></svg>
-          Cấp quyền 1-Click
-        </button>
-      </div>
-
-      <div class="xt-opt-card">
-        <div class="xt-card-head">
-          <div>
-            <div class="xt-card-title"><span class="xt-dot"></span>Mô hình AI</div>
-            <p class="xt-card-sub">Chọn mô hình dùng để dịch nội dung.</p>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <button class="xt-guide-pill-btn" data-goto-tab="tab-videos" data-video-index="1" type="button" title="Xem Video Hướng dẫn lấy Token Puter">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+              <span>Video Hướng dẫn</span>
+            </button>
+            <span class="xt-status idle" id="opt-puter-status" aria-live="polite"><span class="xt-dot"></span>Chưa kiểm tra</span>
           </div>
         </div>
         <div class="xt-field">
-          <label for="opt-model-select">Model dịch</label>
+          <textarea id="opt-puter-tokens" class="xt-input" rows="3" placeholder="eyJhbGciOiJIUzI1...&#10;eyJhbGciOiJIUzI1..."></textarea>
+          <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <button class="xt-btn" id="opt-check-puter-btn" type="button">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+              Kiểm tra Dung lượng
+            </button>
+            <button class="xt-btn xt-btn-primary" id="opt-save-puter-btn" type="button">Lưu Puter Tokens</button>
+          </div>
+          <p class="xt-help-text">Token được lưu cục bộ trên trình duyệt, không gửi đi nơi khác ngoài Puter API.</p>
+        </div>
+        <div id="puter-usage-details" aria-live="polite" style="margin-top: 12px;"></div>
+      </div>
+
+      <!-- Card 2: Mô hình Dịch & Bộ Phát Âm TTS -->
+      <div class="xt-opt-card">
+        <div class="xt-card-head">
+          <div>
+            <div class="xt-card-title"><span class="xt-dot"></span>Mô hình Dịch &amp; Giọng đọc AI</div>
+            <p class="xt-card-sub">Lựa chọn mô hình trí tuệ nhân tạo và công nghệ phát âm khi dịch.</p>
+          </div>
+          <button class="xt-guide-pill-btn" data-goto-tab="tab-videos" data-video-index="2" type="button" title="Xem Video Hướng dẫn Kích hoạt Giọng đọc Groq">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+            <span>Video Hướng dẫn</span>
+          </button>
+        </div>
+
+        <div class="xt-field">
+          <label for="opt-model-select">Mô hình AI Dịch thuật</label>
           <select id="opt-model-select" class="xt-select">
-            <option value="llama-3.3-70b-versatile">llama-3.3-70b-versatile</option>
-            <option value="groq/compound">groq/compound (Không giới hạn TPD)</option>
-            <option value="groq/compound-mini">groq/compound-mini (Không giới hạn TPD)</option>
+            <option value="llama-3.3-70b-versatile">llama-3.3-70b-versatile (Khuyên dùng)</option>
+            <option value="groq/compound">groq/compound (Tìm kiếm Web &amp; Citations)</option>
+            <option value="groq/compound-mini">groq/compound-mini (Compound Siêu tốc)</option>
             <option value="deepseek-r1-distill-llama-70b">deepseek-r1-distill-llama-70b</option>
             <option value="openai/gpt-oss-120b">openai/gpt-oss-120b</option>
             <option value="openai/gpt-oss-20b">openai/gpt-oss-20b</option>
-            <option value="qwen/qwen3.6-27b">qwen/qwen3.6-27b (OCR Vision)</option>
-            <option value="llama-3.1-8b-instant">llama-3.1-8b-instant (Siêu tốc)</option>
+            <option value="qwen/qwen3.6-27b">qwen/qwen3.6-27b (Hỗ trợ Vision OCR)</option>
+            <option value="llama-3.1-8b-instant">llama-3.1-8b-instant (Siêu tốc độ)</option>
           </select>
+        </div>
+
+        <div class="xt-field" style="margin-top: 16px;">
+          <label for="opt-translation-mode">Chế độ &amp; Giọng văn Dịch thuật (Áp dụng cho toàn bộ Bôi đen &amp; Popup)</label>
+          <select id="opt-translation-mode" class="xt-select">
+            <option value="auto">Tự động (Từ đơn tra Từ điển · Đoạn văn dịch Trôi chảy)</option>
+            <option value="tech">Chuyên ngành CNTT, Lập trình &amp; Kỹ thuật</option>
+            <option value="academic">Học thuật, Nghiên cứu &amp; Báo khoa học</option>
+            <option value="business">Thương mại, Kinh tế &amp; Văn phong Trịnh trọng</option>
+            <option value="casual">Giao tiếp hàng ngày, Đời sống &amp; Thân mật</option>
+          </select>
+        </div>
+
+        <!-- Sub-card A: Giọng đọc Văn bản Gốc -->
+        <div style="margin-top: 14px; padding: 14px; background: var(--surface-alt); border: 1px solid var(--border); border-radius: 12px;">
+          <div style="font-weight: 700; font-size: 13px; color: #6366f1; display: flex; align-items: center; gap: 6px; margin-bottom: 12px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+            Cấu hình Giọng đọc Văn bản Gốc (Original Text TTS)
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="xt-field">
+              <label for="opt-tts-model-orig">Bộ phát âm Gốc (TTS Engine)</label>
+              <select id="opt-tts-model-orig" class="xt-select">
+                <option value="edge-tts">Edge Neural AI (Miễn phí · Giọng đọc siêu tự nhiên)</option>
+                <option value="puter-polly">Puter AI — AWS Polly Neural</option>
+                <option value="puter-openai">Puter AI — OpenAI TTS (gpt-4o-mini-tts)</option>
+                <option value="puter-gemini">Puter AI — Google Gemini 2.5 Flash</option>
+                <option value="puter-elevenlabs">Puter AI — ElevenLabs Multilingual v2</option>
+                <option value="puter-xai">Puter AI — xAI Grok Expressive</option>
+                <option value="puter-speechify">Puter AI — Speechify Simba 3.2</option>
+                <option value="google-translate">Google Translate TTS (Miễn phí)</option>
+                <option value="canopylabs/orpheus-v1-english">Groq Orpheus — Tiếng Anh</option>
+                <option value="canopylabs/orpheus-arabic-saudi">Groq Orpheus — Tiếng Ả Rập</option>
+              </select>
+            </div>
+            <div class="xt-field" id="tts-voice-orig-field">
+              <label for="opt-voice-orig">Giọng đọc Gốc</label>
+              <select id="opt-voice-orig" class="xt-select">
+                <optgroup id="voice-group-orig-edge" label="Edge Neural AI">
+                  <option value="en-US-JennyNeural">Jenny (Nữ Tiếng Anh - Mỹ)</option>
+                  <option value="en-US-GuyNeural">Guy (Nam Tiếng Anh - Mỹ)</option>
+                  <option value="en-US-AvaNeural">Ava (Nữ Tiếng Anh)</option>
+                  <option value="en-US-AndrewNeural">Andrew (Nam Tiếng Anh)</option>
+                  <option value="en-GB-SoniaNeural">Sonia (Nữ Tiếng Anh - Anh)</option>
+                  <option value="en-GB-RyanNeural">Ryan (Nam Tiếng Anh - Anh)</option>
+                  <option value="ja-JP-NanamiNeural">Nanami (Nữ Tiếng Nhật)</option>
+                  <option value="ko-KR-SunHiNeural">Sun-Hi (Nữ Tiếng Hàn)</option>
+                  <option value="zh-CN-XiaoxiaoNeural">Xiaoxiao (Nữ Tiếng Trung)</option>
+                  <option value="fr-FR-DeniseNeural">Denise (Nữ Tiếng Pháp)</option>
+                  <option value="de-DE-KatjaNeural">Katja (Nữ Tiếng Đức)</option>
+                  <option value="es-ES-ElviraNeural">Elvira (Nữ Tiếng Tây Ban Nha)</option>
+                  <option value="vi-VN-HoaiMyNeural">Hoài My (Nữ Tiếng Việt)</option>
+                  <option value="vi-VN-NamMinhNeural">Nam Minh (Nam Tiếng Việt)</option>
+                </optgroup>
+                <optgroup id="voice-group-orig-groq" label="Groq Orpheus">
+                  <option value="hannah">Hannah</option>
+                  <option value="autumn">Autumn</option>
+                  <option value="troy">Troy</option>
+                  <option value="fahad">Fahad (Arabic)</option>
+                </optgroup>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sub-card B: Giọng đọc Bản Dịch -->
+        <div style="margin-top: 14px; padding: 14px; background: var(--surface-alt); border: 1px solid var(--border); border-radius: 12px;">
+          <div style="font-weight: 700; font-size: 13px; color: #10b981; display: flex; align-items: center; gap: 6px; margin-bottom: 12px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+            Cấu hình Giọng đọc Bản Dịch (Translated Text TTS)
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="xt-field">
+              <label for="opt-tts-model-select">Bộ phát âm Dịch (TTS Engine)</label>
+              <select id="opt-tts-model-select" class="xt-select">
+                <option value="edge-tts">Edge Neural AI (Miễn phí · Giọng đọc siêu tự nhiên)</option>
+                <option value="puter-polly">Puter AI — AWS Polly Neural</option>
+                <option value="puter-openai">Puter AI — OpenAI TTS (gpt-4o-mini-tts)</option>
+                <option value="puter-gemini">Puter AI — Google Gemini 2.5 Flash</option>
+                <option value="puter-elevenlabs">Puter AI — ElevenLabs Multilingual v2</option>
+                <option value="puter-xai">Puter AI — xAI Grok Expressive</option>
+                <option value="puter-speechify">Puter AI — Speechify Simba 3.2</option>
+                <option value="google-translate">Google Translate TTS (Miễn phí)</option>
+                <option value="canopylabs/orpheus-v1-english">Groq Orpheus — Tiếng Anh</option>
+                <option value="canopylabs/orpheus-arabic-saudi">Groq Orpheus — Tiếng Ả Rập</option>
+              </select>
+            </div>
+            <div class="xt-field" id="tts-voice-field">
+              <label for="opt-voice-select">Giọng đọc Dịch</label>
+              <select id="opt-voice-select" class="xt-select">
+                <optgroup id="voice-group-edge" label="Edge Neural AI">
+                  <option value="vi-VN-HoaiMyNeural">Hoài My (Nữ Tiếng Việt)</option>
+                  <option value="vi-VN-NamMinhNeural">Nam Minh (Nam Tiếng Việt)</option>
+                  <option value="en-US-AvaNeural">Ava (Nữ Tiếng Anh)</option>
+                  <option value="en-US-AndrewNeural">Andrew (Nam Tiếng Anh)</option>
+                  <option value="ja-JP-NanamiNeural">Nanami (Nữ Tiếng Nhật)</option>
+                  <option value="ko-KR-SunHiNeural">Sun-Hi (Nữ Tiếng Hàn)</option>
+                  <option value="zh-CN-XiaoxiaoNeural">Xiaoxiao (Nữ Tiếng Trung)</option>
+                </optgroup>
+                <optgroup id="voice-group-groq" label="Groq Orpheus">
+                  <option value="hannah">Hannah</option>
+                  <option value="autumn">Autumn</option>
+                  <option value="troy">Troy</option>
+                  <option value="fahad">Fahad (Arabic)</option>
+                </optgroup>
+              </select>
+            </div>
+          </div>
+
+          <div class="xt-field" id="tts-puter-token-field" style="display:none; margin-top: 12px;">
+            <label for="opt-puter-token">Token Puter dùng cho TTS</label>
+            <select id="opt-puter-token" class="xt-select"></select>
+          </div>
+
+          <div class="xt-field" id="tts-direction-field" style="margin-top: 12px;">
+            <label for="opt-voice-direction">Biểu cảm giọng đọc</label>
+            <select id="opt-voice-direction" class="xt-select">
+              <option value="none">Mặc định</option>
+              <option value="[cheerful]">Vui vẻ</option>
+              <option value="[friendly]">Thân thiện</option>
+              <option value="[professionally]">Chuyên nghiệp</option>
+              <option value="[confidently]">Tự tin</option>
+              <option value="[whisper]">Thì thầm</option>
+            </select>
+          </div>
         </div>
       </div>
 
+      <!-- Card 3: Hệ thống & Quyền Hạn -->
       <div class="xt-opt-card">
-        <div class="xt-card-head">
-          <div>
-            <div class="xt-card-title"><span class="xt-dot"></span>Giọng đọc AI (TTS)</div>
-            <p class="xt-card-sub">Tuỳ chỉnh giọng đọc khi nghe lại bản dịch.</p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: center;">
+          <div id="mic-permission-card" style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+            <div>
+              <strong style="font-size: 13.5px; display: block;">Quyền Micro</strong>
+              <span id="opt-mic-status" class="xt-status warn" style="margin-top: 4px;"><span class="xt-dot"></span>Chưa cấp quyền</span>
+            </div>
+            <button class="xt-btn" id="opt-request-mic-btn" type="button" style="padding: 6px 12px; font-size: 12px;">
+              Cấp quyền
+            </button>
           </div>
-        </div>
-        <div class="xt-field">
-          <label for="opt-tts-model-select">Model TTS (Bộ phát âm)</label>
-          <select id="opt-tts-model-select" class="xt-select">
-            <option value="edge-tts">Edge Neural AI (Miễn phí, Không cần Key — Giọng đọc siêu tự nhiên)</option>
-            <option value="puter-polly">Puter AI — AWS Polly Neural TTS (Cần Puter Token)</option>
-            <option value="puter-openai">Puter AI — OpenAI TTS (gpt-4o-mini-tts)</option>
-            <option value="puter-gemini">Puter AI — Google Gemini TTS (gemini-2.5-flash)</option>
-            <option value="puter-elevenlabs">Puter AI — ElevenLabs TTS (Multilingual v2)</option>
-            <option value="puter-xai">Puter AI — xAI Grok Expressive TTS</option>
-            <option value="puter-speechify">Puter AI — Speechify TTS (Simba 3.2)</option>
-            <option value="google-translate">Google Translate TTS (Miễn phí tiêu chuẩn)</option>
-            <option value="canopylabs/orpheus-v1-english">Groq Orpheus — English (Cần Groq Key)</option>
-            <option value="canopylabs/orpheus-arabic-saudi">Groq Orpheus — Arabic (Cần Groq Key)</option>
-          </select>
-        </div>
-        <div class="xt-field" id="tts-puter-token-field" style="display:none;">
-          <label for="opt-puter-token">Puter Auth Token (JWT Token từ Puter.com)</label>
-          <input type="password" id="opt-puter-token" class="xt-input" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVC..." />
-        </div>
-        <div class="xt-field" id="tts-voice-field">
-          <label for="opt-voice-select">Giọng đọc</label>
-          <select id="opt-voice-select" class="xt-select">
-            <optgroup id="voice-group-edge" label="Edge Neural AI">
-              <option value="vi-VN-HoaiMyNeural">Hoài My (Nữ Tiếng Việt)</option>
-              <option value="vi-VN-NamMinhNeural">Nam Minh (Nam Tiếng Việt)</option>
-              <option value="en-US-AvaNeural">Ava (Nữ Tiếng Anh)</option>
-              <option value="en-US-AndrewNeural">Andrew (Nam Tiếng Anh)</option>
-              <option value="ja-JP-NanamiNeural">Nanami (Nữ Tiếng Nhật)</option>
-              <option value="ko-KR-SunHiNeural">Sun-Hi (Nữ Tiếng Hàn)</option>
-              <option value="zh-CN-XiaoxiaoNeural">Xiaoxiao (Nữ Tiếng Trung)</option>
-            </optgroup>
-            <optgroup id="voice-group-groq" label="Groq Orpheus">
-              <option value="hannah">Hannah</option>
-              <option value="autumn">Autumn</option>
-              <option value="troy">Troy</option>
-              <option value="fahad">Fahad (Arabic)</option>
-            </optgroup>
-          </select>
-        </div>
-        <div class="xt-field" id="tts-direction-field">
-          <label for="opt-voice-direction">Biểu cảm giọng đọc</label>
-          <select id="opt-voice-direction" class="xt-select">
-            <option value="none">Mặc định</option>
-            <option value="[cheerful]">Vui vẻ</option>
-            <option value="[friendly]">Thân thiện</option>
-            <option value="[professionally]">Chuyên nghiệp</option>
-            <option value="[confidently]">Tự tin</option>
-            <option value="[whisper]">Thì thầm</option>
-          </select>
-        </div>
-      </div>
 
-      <div class="xt-opt-card">
-        <div class="xt-check-row">
-          <div class="xt-check-copy">
-            <strong>Thông báo cập nhật</strong>
-            <span>Nhận thông báo khi có phiên bản mới của tiện ích.</span>
+          <div class="xt-check-row" style="margin: 0; padding-left: 20px; border-left: 1px solid var(--border);">
+            <div class="xt-check-copy">
+              <strong style="font-size: 13.5px;">Thông báo cập nhật</strong>
+              <span style="font-size: 11.5px;">Tự động báo khi có bản mới.</span>
+            </div>
+            <label class="xt-switch">
+              <input type="checkbox" id="update-notifications" checked>
+              <span class="xt-switch-track"></span>
+            </label>
           </div>
-          <label class="xt-switch">
-            <input type="checkbox" id="update-notifications" checked>
-            <span class="xt-switch-track"></span>
-          </label>
         </div>
       </div>
     </section>
@@ -252,41 +361,88 @@
     <!-- ============ TAB 3 — QUẢN LÝ NGÔN NGỮ ============ -->
     <section class="xt-tab-panel" id="tab-languages">
       <div class="xt-panel-header">
-        <h1>Quản lý Ngôn ngữ</h1>
-        <p>Đặt ngôn ngữ đích mặc định và quản lý danh sách yêu thích.</p>
+        <h1>Quản lý Ngôn ngữ & Dịch</h1>
+        <p>Tùy chỉnh ngôn ngữ mặc định, quản lý danh sách chọn nhanh và tra cứu hơn 249 ngôn ngữ Google Translate.</p>
       </div>
 
-      <div class="xt-opt-card">
-        <div class="xt-field">
-          <label for="opt-target-lang">Ngôn ngữ đích mặc định</label>
-          <select id="opt-target-lang" class="xt-select">
-            <option value="Vietnamese">Tiếng Việt (Vietnamese)</option>
-            <option value="English">English</option>
-            <option value="Japanese">日本語 (Japanese)</option>
-            <option value="Korean">한국어 (Korean)</option>
-            <option value="Chinese">中文 (Chinese)</option>
-            <option value="French">Français (French)</option>
-            <option value="German">Deutsch (German)</option>
-            <option value="Spanish">Español (Spanish)</option>
-            <option value="Russian">Русский (Russian)</option>
-          </select>
+      <!-- CARD 1: NGÔN NGỮ ĐÍCH MẶC ĐỊNH (INTEGRATED SEARCHABLE SELECT) -->
+      <div class="xt-opt-card" style="position: relative; z-index: 50;">
+        <div class="eyebrow"><span class="dot"></span>Ngôn ngữ đích mặc định</div>
+        <p class="card-sub">Áp dụng cho mọi lượt dịch mới, trừ khi bạn chọn ngôn ngữ khác ngay trong popup.</p>
+        <div class="target-row">
+          <div class="kz-select-custom-wrap" id="opt-target-select-wrap" style="width: 100%;">
+            <button type="button" class="kz-select-trigger" id="opt-target-trigger">
+              <span id="opt-target-selected-label">Tiếng Việt (Vietnamese)</span>
+              <svg class="kz-select-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+            <div class="kz-select-dropdown" id="opt-target-dropdown" style="display: none;">
+              <div class="kz-select-search-box">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" id="opt-target-search" placeholder="Gõ để tìm & xóa ngôn ngữ khỏi danh sách..." autocomplete="off" />
+              </div>
+              <div class="kz-select-options-list" id="opt-target-options-list"></div>
+            </div>
+          </div>
+          <select id="opt-target-lang" style="display: none;"></select>
         </div>
       </div>
 
+      <!-- CARD 2: GỘP DANH SÁCH CHỌN NHANH THÀNH 1 CARD CÓ TAB -->
       <div class="xt-opt-card">
-        <div class="xt-card-head">
-          <div class="xt-card-title"><span class="xt-dot"></span>Ngôn ngữ yêu thích</div>
-          <button class="xt-btn" id="custom-language-btn" type="button">+ Thêm vào Yêu thích</button>
+        <div class="eyebrow"><span class="dot"></span>Danh sách chọn nhanh</div>
+        <p class="card-sub">Đây là các ngôn ngữ xuất hiện trong menu chọn nhanh khi bạn dịch. Bấm biểu tượng ngôi sao ở danh mục bên dưới để thêm vào Yêu thích.</p>
+        
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="fav" type="button">Yêu thích <span class="count" id="fav-count-badge">(0)</span></button>
+          <button class="tab-btn" data-tab="recent" type="button">Dùng gần đây <span class="count" id="recent-count-badge">(0)</span></button>
+          <button class="tab-btn" data-tab="target-quick" type="button">Danh sách đích <span class="count" id="quicklist-count-badge">(0)</span></button>
         </div>
-        <div class="xt-lang-list" id="favorite-languages-list">
+
+        <!-- Tab 1: Favorite Chips -->
+        <div class="chip-list" id="favorite-languages-list">
           <span class="xt-lang-chip xt-chip-empty">Chưa có ngôn ngữ yêu thích</span>
         </div>
+
+        <!-- Tab 2: Recent Chips -->
+        <div class="chip-list" id="recent-languages-list" style="display:none;">
+          <span class="xt-lang-chip xt-chip-empty">Chưa có lịch sử</span>
+        </div>
+
+        <!-- Tab 3: Target Quick List & Delete -->
+        <div id="tab-target-quick" style="display:none;">
+          <div id="target-quicklist-chips" class="chip-list"></div>
+        </div>
       </div>
 
+      <!-- CARD 3: BỘ TRA CỨU 249 NGÔN NGỮ GOOGLE TRANSLATE CÓ A–Z RAIL -->
       <div class="xt-opt-card">
-        <div class="xt-card-title" style="margin-bottom:14px;"><span class="xt-dot"></span>Dùng gần đây</div>
-        <div class="xt-lang-list" id="recent-languages-list">
-          <span class="xt-lang-chip xt-chip-empty">Chưa có lịch sử</span>
+        <div class="eyebrow"><span class="dot"></span>Danh mục 249 Ngôn ngữ Google Translate</div>
+        <p class="card-sub" id="google-count-label">249 ngôn ngữ · nhóm theo bảng chữ cái A–Z để dễ dò tìm bằng mắt</p>
+
+        <div class="icon-legend">
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Bấm "Thêm Đích" để thêm vào Menu chọn nhanh</span>
+          <span><svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Bấm ngôi sao để thêm vào Yêu thích</span>
+        </div>
+
+        <div class="catalog-toolbar">
+          <div class="search-wrap">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="google-search-input" class="xt-input" placeholder="Tìm theo tên (Vietnamese, Myanmar...), mã ISO (vi, my), quốc gia (VN, MM)..." autocomplete="off">
+          </div>
+          <div class="filter-group">
+            <button class="filter-btn active" data-filter="all" id="btn-filter-all" type="button" aria-pressed="true">Tất cả</button>
+            <button class="filter-btn" data-filter="has-iso" type="button" aria-pressed="false">Có mã ISO</button>
+            <button class="filter-btn" data-filter="favorites" type="button" aria-pressed="false">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -1px; margin-right: 3px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>Yêu thích
+            </button>
+          </div>
+        </div>
+
+        <div class="catalog-body">
+          <div class="catalog-scroll" id="google-catalog-scroll">
+            <div id="google-catalog-list"></div>
+          </div>
+          <div class="az-rail" id="az-rail"></div>
         </div>
       </div>
     </section>
@@ -298,12 +454,8 @@
         <p>Quản lý và tra cứu lại tất cả các bản dịch từ bôi đen, voice thu âm, OCR ảnh màn hình...</p>
       </div>
 
-      <!-- Toolbar: search + filter + clear all -->
+      <!-- Toolbar: filter + clear all -->
       <div class="xt-opt-card xt-history-toolbar">
-        <div class="xt-history-search">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-          <input type="text" id="history-search-input" class="xt-input xt-history-search-input" placeholder="Tìm theo văn bản gốc hoặc bản dịch…">
-        </div>
         <select id="history-filter-type" class="xt-select xt-history-filter">
           <option value="all">Tất cả hình thức</option>
           <option value="text">Văn bản bôi đen</option>
@@ -348,34 +500,174 @@
       </template>
     </section>
 
-    <!-- ============ TAB 5 — PLAYGROUND ============ -->
+    <!-- ============ TAB 5 — PLAYGROUND WORKBENCH ============ -->
     <section class="xt-tab-panel" id="tab-playground">
       <div class="xt-panel-header">
-        <h1>Thử nghiệm Playground</h1>
-        <p>Kiểm tra nhanh kết quả dịch với cấu hình hiện tại.</p>
+        <h1>Thử nghiệm AI &amp; Sandbox Workbench</h1>
+        <p>Phòng thí nghiệm kiểm tra toàn diện các chế độ dịch, mô hình AI, bộ phát âm TTS và thông số kỹ thuật.</p>
       </div>
 
       <div class="xt-opt-card">
-        <div class="xt-pg-grid">
-          <div>
-            <div class="xt-pg-toolbar"><span>Văn bản gốc</span></div>
-            <textarea id="pg-input" class="xt-pg-textarea" placeholder="Nhập hoặc dán văn bản cần dịch thử…"></textarea>
+        <!-- Control Bar 1: Target Lang + Mode + Model + TTS -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--border);">
+          <div class="xt-field">
+            <label for="pg-target-lang">Ngôn ngữ đích</label>
+            <select id="pg-target-lang" class="xt-select"></select>
           </div>
-          <div>
-            <div class="xt-pg-toolbar"><span>Kết quả</span></div>
-            <div id="pg-output" class="xt-pg-output xt-pg-empty">Kết quả dịch sẽ hiện ở đây…</div>
+
+          <div class="xt-field">
+            <label for="pg-mode-select">Chế độ dịch thử</label>
+            <select id="pg-mode-select" class="xt-select">
+              <option value="auto">Tự động (Từ đơn / Đoạn văn)</option>
+              <option value="single">Tra từ điển (POS, IPA, Cấp độ, Ví dụ)</option>
+              <option value="text">Dịch đoạn văn / Văn bản dài</option>
+              <option value="tech">Chuyên ngành CNTT &amp; Kỹ thuật</option>
+              <option value="academic">Học thuật &amp; Nghiên cứu</option>
+              <option value="business">Thương mại &amp; Trịnh trọng</option>
+            </select>
+          </div>
+
+          <div class="xt-field">
+            <label for="pg-model-select">Mô hình AI sử dụng</label>
+            <select id="pg-model-select" class="xt-select">
+              <option value="default">Sử dụng mô hình đang cài đặt</option>
+              <option value="llama-3.3-70b-versatile">llama-3.3-70b-versatile (Khuyên dùng)</option>
+              <option value="groq/compound">groq/compound (Tìm kiếm Web &amp; Citations)</option>
+              <option value="groq/compound-mini">groq/compound-mini (Compound Siêu tốc)</option>
+              <option value="deepseek-r1-distill-llama-70b">deepseek-r1-distill-llama-70b</option>
+              <option value="openai/gpt-oss-120b">openai/gpt-oss-120b</option>
+              <option value="openai/gpt-oss-20b">openai/gpt-oss-20b</option>
+              <option value="qwen/qwen3.6-27b">qwen/qwen3.6-27b (Hỗ trợ Vision OCR)</option>
+              <option value="llama-3.1-8b-instant">llama-3.1-8b-instant (Siêu tốc độ)</option>
+            </select>
+          </div>
+
+          <div class="xt-field">
+            <label for="pg-tts-model-select">Bộ phát âm TTS thử</label>
+            <select id="pg-tts-model-select" class="xt-select">
+              <option value="default">Sử dụng TTS Engine đang cài đặt</option>
+              <option value="edge-tts">Edge Neural AI (Miễn phí)</option>
+              <option value="puter-polly">Puter AI — AWS Polly Neural</option>
+              <option value="puter-openai">Puter AI — OpenAI TTS</option>
+              <option value="puter-gemini">Puter AI — Gemini 2.5 Flash</option>
+              <option value="puter-elevenlabs">Puter AI — ElevenLabs v2</option>
+              <option value="puter-xai">Puter AI — xAI Grok</option>
+              <option value="google-translate">Google Translate TTS</option>
+            </select>
           </div>
         </div>
-        <div style="margin-top:14px; display:flex; justify-content:flex-end;">
+
+        <!-- Preset sample text chips -->
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap;">
+          <span style="font-size: 11.5px; font-weight: 600; color: var(--text-faint);">Mẫu thử nhanh:</span>
+          <button type="button" class="xt-btn pg-preset-btn" data-text="algorithm" data-mode="single" style="padding: 3px 9px; font-size: 11px; border-radius: 999px;">Từ: "algorithm"</button>
+          <button type="button" class="xt-btn pg-preset-btn" data-text="break a leg" data-mode="single" style="padding: 3px 9px; font-size: 11px; border-radius: 999px;">Thành ngữ: "break a leg"</button>
+          <button type="button" class="xt-btn pg-preset-btn" data-text="Artificial Intelligence is transforming how we build modern browser extensions." data-mode="text" style="padding: 3px 9px; font-size: 11px; border-radius: 999px;">Đoạn văn Anh-Việt</button>
+          <button type="button" class="xt-btn pg-preset-btn" data-text="Constantly refactoring code ensures clean architecture and zero memory leaks." data-mode="tech" style="padding: 3px 9px; font-size: 11px; border-radius: 999px;">Mẫu CNTT / Code</button>
+        </div>
+
+        <div class="xt-pg-grid">
+          <div>
+            <div class="xt-pg-toolbar">
+              <span>Văn bản gốc / Từ nhập</span>
+            </div>
+            <textarea id="pg-input" class="xt-pg-textarea" placeholder="Nhập từ đơn (VD: debug, resilient) hoặc đoạn văn bản cần thử nghiệm…"></textarea>
+          </div>
+          <div>
+            <div class="xt-pg-toolbar">
+              <div class="pg-tab-group">
+                <button type="button" id="pg-tab-rendered" class="pg-tab-btn active">Kết quả Dịch</button>
+                <button type="button" id="pg-tab-json" class="pg-tab-btn">Payload &amp; Debug JSON</button>
+              </div>
+              <div class="pg-action-group">
+                <button class="xt-btn pg-action-btn" id="pg-tts-orig-btn" type="button" title="Nghe văn bản gốc">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                  Nghe Gốc
+                </button>
+                <button class="xt-btn pg-action-btn" id="pg-tts-btn" type="button" title="Nghe bản dịch">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
+                  Nghe Bản Dịch
+                </button>
+                <button class="xt-btn pg-action-btn" id="pg-copy-btn" type="button">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                  Sao chép
+                </button>
+              </div>
+            </div>
+            <div id="pg-output" class="xt-pg-output xt-pg-empty">Kết quả dịch thử sẽ xuất hiện tại đây…</div>
+            <div id="pg-json-output" class="xt-pg-output" style="display: none; font-family: monospace; font-size: 11.5px; white-space: pre-wrap; word-break: break-all; background: var(--surface-alt); border-radius: 8px; padding: 12px;">Chưa có dữ liệu Debug.</div>
+          </div>
+        </div>
+
+        <div style="margin-top:14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <div id="pg-meta-badge" style="font-size: 11.5px; color: var(--text-muted);"></div>
           <button class="xt-btn xt-btn-primary" id="pg-run-btn" type="button">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l16 9-16 9V3Z"/></svg>
-            Dịch thử
+            Chạy Thử Nghiệm AI
           </button>
         </div>
       </div>
     </section>
 
-    <!-- ============ TAB 6 — THÔNG TIN & CẬP NHẬT ============ -->
+    <!-- ============ TAB 6 — VIDEO HƯỚNG DẪN ============ -->
+    <section class="xt-tab-panel" id="tab-videos">
+      <div class="xt-panel-header">
+        <h1>Video Hướng dẫn Trực quan</h1>
+        <p>Bộ video hướng dẫn chi tiết từng bước lấy API Key, Auth Token và Kích hoạt Giọng đọc AI.</p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px;">
+        <!-- Video 1: Key Groq -->
+        <div class="xt-opt-card">
+          <div class="xt-card-head">
+            <div>
+              <div class="xt-card-title"><span class="xt-dot"></span>1. Hướng dẫn lấy Key Groq Cloud</div>
+              <p class="xt-card-sub">Cách tạo tài khoản và lấy API Key Groq miễn phí siêu tốc.</p>
+            </div>
+          </div>
+          <div style="margin-top: 10px; border-radius: 8px; overflow: hidden; background: #000;">
+            <video controls preload="metadata" style="width: 100%; max-height: 240px; display: block; border-radius: 8px;">
+              <source src="../../Hướng dẫn lấy Key Groq.mp4" type="video/mp4">
+              Trình duyệt không hỗ trợ xem video.
+            </video>
+          </div>
+        </div>
+
+        <!-- Video 2: Token Puter -->
+        <div class="xt-opt-card">
+          <div class="xt-card-head">
+            <div>
+              <div class="xt-card-title"><span class="xt-dot"></span>2. Hướng dẫn lấy Auth Token Puter AI</div>
+              <p class="xt-card-sub">Cách lấy Token Puter để mở khóa các giọng đọc cao cấp (AWS Polly, OpenAI, Gemini, ElevenLabs...)</p>
+            </div>
+          </div>
+          <div style="margin-top: 10px; border-radius: 8px; overflow: hidden; background: #000;">
+            <video controls preload="metadata" style="width: 100%; max-height: 240px; display: block; border-radius: 8px;">
+              <source src="../../Hướng dẫn lấy Token Puter.mp4" type="video/mp4">
+              Trình duyệt không hỗ trợ xem video.
+            </video>
+          </div>
+        </div>
+
+        <!-- Video 3: Groq Speech -->
+        <div class="xt-opt-card">
+          <div class="xt-card-head">
+            <div>
+              <div class="xt-card-title"><span class="xt-dot"></span>3. Hướng dẫn kích hoạt Giọng nói Groq</div>
+              <p class="xt-card-sub">Cách chấp nhận điều khoản sử dụng mô hình giọng nói (Groq Speech Model Terms) trên Groq Console để phát âm hoạt động.</p>
+            </div>
+          </div>
+          <div style="margin-top: 10px; border-radius: 8px; overflow: hidden; background: #000;">
+            <video controls preload="metadata" style="width: 100%; max-height: 240px; display: block; border-radius: 8px;">
+              <source src="../../Hướng dẫn kích hoạt giọng nói của Groq.mp4" type="video/mp4">
+              Trình duyệt không hỗ trợ xem video.
+            </video>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TAB 7 — THÔNG TIN & CẬP NHẬT ============ -->
     <section class="xt-tab-panel" id="tab-about">
       <div class="xt-panel-header">
         <h1>Thông tin &amp; Cập nhật</h1>
@@ -389,7 +681,7 @@
           </div>
           <div>
             <h2>KimiZK Translator</h2>
-            <p id="opt-version-about">Phiên bản 1.0.5</p>
+            <p id="opt-version-about">Phiên bản 1.0.6</p>
           </div>
         </div>
       </div>
@@ -432,6 +724,7 @@
 
 <script src="../js/core/config.js"></script>
 <script src="../js/core/utils.js"></script>
+<script src="../js/core/google-translate-languages.js"></script>
 <script src="../js/core/storage.js"></script>
 <script src="../js/core/api.js"></script>
 <script src="../js/options.js"></script>
