@@ -59,7 +59,7 @@ const NotificationManager = {
                     <span class="xt-notification-icon">${icon}</span>
                     <span>${title}</span>
                 </div>
-                <button class="xt-notification-close" title="Đóng">×</button>
+                <button class="xt-notification-close" title="Đóng"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
             </div>
             <div class="xt-notification-body">
                 <div class="xt-notification-message">${message}</div>
