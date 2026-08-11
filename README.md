@@ -27,7 +27,7 @@ Dự án được tối ưu hóa với giao diện phẳng hiện đại, tốc 
 
 ### 1. Popup Tiện ích chính (Extension Popup)
 <div align="center">
-  <img src="assets/images/popup-extension-dark.png" alt="Popup tiện ích - Giao diện Tối" width="280" style="border-radius: 10px; margin-right: 12px;" />
+  <img src="assets/images/popup-extension-darkk.png" alt="Popup tiện ích - Giao diện Tối" width="280" style="border-radius: 10px; margin-right: 12px;" />
   <img src="assets/images/popup-extension-light.png" alt="Popup tiện ích - Giao diện Sáng" width="280" style="border-radius: 10px;" />
   <p><em>Giao diện Popup Tiện ích: Chế độ Tối (Dark Mode) và Chế độ Sáng (Light Mode)</em></p>
 </div>
