@@ -1,14 +1,17 @@
-/* Import Google Fonts cho tiện ích đa ngôn ngữ */
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&family=Source+Sans+Pro:wght@300;400;600;700&family=Noto+Sans+Mono:wght@400;500;600&display=swap');
+/* Import Google Fonts tinh gọn & chuẩn hóa cho tiện ích dịch thuật đa ngôn ngữ */
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
-/* Font variables cho tiện ích đa ngôn ngữ */
+/* Dynamic Responsive Font Stack cho tất cả các ngôn ngữ thế giới */
 :root {
-    --xt-font-primary: 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif !important;
-    --xt-font-secondary: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif !important;
-    --xt-font-mono: 'Noto Sans Mono', 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace !important;
+    --font-ui: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Malgun Gothic', sans-serif;
+    --font-mono: 'JetBrains Mono', 'Noto Sans Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+    
+    --xt-font-primary: var(--font-ui) !important;
+    --xt-font-secondary: var(--font-ui) !important;
+    --xt-font-mono: var(--font-mono) !important;
 }
 
-/* Áp dụng font cho tất cả elements của tiện ích */
+/* Áp dụng font nhất quán cho tất cả elements của tiện ích */
 .xt-translator-popup,
 .xt-translator-popup *,
 .xt-notification,
@@ -17,13 +20,17 @@
 .xt-apikey-overlay *,
 .xt-update-modal,
 .xt-update-modal * {
-    font-family: var(--xt-font-primary) !important;
+    font-family: var(--font-ui) !important;
 }
 
-/* Font cho code/mono text */
+/* Font cho IPA transcription, code & phím tắt */
 .xt-phonetic,
-.xt-transcription {
-    font-family: var(--xt-font-mono) !important;
+.xt-phonetic *,
+.xt-phonetic-badge,
+.xt-transcription,
+.xt-cmd-esc,
+.xt-shortcut-key {
+    font-family: var(--font-mono) !important;
 }
 
 /* Font cho buttons và interactive elements */
@@ -31,7 +38,7 @@
 .xt-apikey-save,
 .xt-apikey-close,
 .xt-notification-close {
-    font-family: var(--xt-font-secondary) !important;
+    font-family: var(--font-ui) !important;
 }
 
 /* Đảm bảo font không bị ghi đè bởi trang web */
