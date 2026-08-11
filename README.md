@@ -25,16 +25,31 @@ Dự án được tối ưu hóa với giao diện phẳng hiện đại, tốc 
 
 ## Giao diện tiện ích
 
+### 1. Popup Tiện ích chính (Extension Popup)
 <div align="center">
   <img src="assets/images/popup-extension-dark.png" alt="Popup tiện ích - Giao diện Tối" width="280" style="border-radius: 10px; margin-right: 12px;" />
   <img src="assets/images/popup-extension-light.png" alt="Popup tiện ích - Giao diện Sáng" width="280" style="border-radius: 10px;" />
-  <p><em>Popup Tiện ích: Chế độ Tối (Dark Mode) và Chế độ Sáng (Light Mode)</em></p>
+  <p><em>Giao diện Popup Tiện ích: Chế độ Tối (Dark Mode) và Chế độ Sáng (Light Mode)</em></p>
 </div>
 
+### 2. Cửa sổ Dịch nổi - Tra từ điển chuyên sâu (Single Word Dictionary)
 <div align="center">
-  <img src="assets/images/popup-translate-sentence.png" alt="Popup Dịch nổi - Dịch đoạn văn" width="280" style="border-radius: 10px; margin-right: 12px;" />
-  <img src="assets/images/popup-translate-dictionary.png" alt="Popup Dịch nổi - Tra từ điển chi tiết" width="280" style="border-radius: 10px;" />
-  <p><em>Cửa sổ Dịch nổi: Dịch đoạn văn ngữ cảnh (Trái) & Phân tích từ điển chi tiết (Phải)</em></p>
+  <img src="assets/images/popup-translate-dictionary.png" alt="Tra từ điển - Giao diện Tối" width="280" style="border-radius: 10px; margin-right: 12px;" />
+  <img src="assets/images/popup-translate-dictionary-light.png" alt="Tra từ điển - Giao diện Sáng" width="280" style="border-radius: 10px;" />
+  <p><em>Tra từ điển bôi đen trên trang web: Chế độ Tối (Trái) & Chế độ Sáng (Phải)</em></p>
+</div>
+
+### 3. Cửa sổ Dịch nổi - Dịch đoạn văn ngữ cảnh (Sentence Translation)
+<div align="center">
+  <img src="assets/images/popup-translate-sentence.png" alt="Dịch đoạn văn - Giao diện Tối" width="280" style="border-radius: 10px; margin-right: 12px;" />
+  <img src="assets/images/popup-translate-sentence-light.png" alt="Dịch đoạn văn - Giao diện Sáng" width="280" style="border-radius: 10px;" />
+  <p><em>Dịch câu/đoạn văn bôi đen nổi: Chế độ Tối (Trái) & Chế độ Sáng (Phải)</em></p>
+</div>
+
+### 4. Trang Cấu hình Nâng cao (Options Dashboard)
+<div align="center">
+  <img src="assets/images/options-page-dashboard.png" alt="Trang Cấu hình Options" width="680" style="border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);" />
+  <p><em>Trang Cài đặt Options Dashboard v1.0.6 với các nút Video Hướng dẫn Nhanh & Multi-Key Pool</em></p>
 </div>
 
 ---
