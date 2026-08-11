@@ -40,26 +40,100 @@ const StorageManager = {
     },
     
     /**
-     * Get Puter Auth Token from storage
-     * @returns {Promise<string|null>}
+     * Get preferred translation mode / domain style (auto, tech, academic, business, casual)
+     * @returns {Promise<string>}
      */
-    async getPuterToken() {
+    async getTranslationMode() {
         return new Promise(resolve => {
-            chrome.storage.local.get(['PUTER_TOKEN'], result => {
-                resolve(result.PUTER_TOKEN || null);
+            chrome.storage.local.get(['TRANSLATION_MODE'], result => {
+                resolve(result.TRANSLATION_MODE || 'auto');
             });
         });
     },
 
     /**
-     * Save Puter Auth Token to storage
-     * @param {string} token 
+     * Set preferred translation mode / domain style
+     * @param {string} mode
+     * @returns {Promise<boolean>}
+     */
+    async setTranslationMode(mode) {
+        return new Promise(resolve => {
+            chrome.storage.local.set({ TRANSLATION_MODE: mode || 'auto' }, () => {
+                resolve(!chrome.runtime.lastError);
+            });
+        });
+    },
+
+    /**
+     * Get all Puter Auth Tokens as an array
+     * @returns {Promise<string[]>}
+     */
+    async getPuterTokens() {
+        return new Promise(resolve => {
+            chrome.storage.local.get(['PUTER_TOKENS', 'PUTER_TOKEN'], result => {
+                if (Array.isArray(result.PUTER_TOKENS) && result.PUTER_TOKENS.length > 0) {
+                    resolve(result.PUTER_TOKENS.map(t => String(t).trim()).filter(Boolean));
+                } else if (result.PUTER_TOKEN) {
+                    const tokens = String(result.PUTER_TOKEN)
+                        .split(/[\n,]+/)
+                        .map(t => t.trim())
+                        .filter(Boolean);
+                    resolve(tokens);
+                } else {
+                    resolve([]);
+                }
+            });
+        });
+    },
+
+    /**
+     * Get primary or auto-rotated Puter Auth Token from storage
+     * @returns {Promise<string|null>}
+     */
+    async getPuterToken() {
+        const tokens = await this.getPuterTokens();
+        if (!tokens || tokens.length === 0) return null;
+        this._puterTokenIndex = ((this._puterTokenIndex || 0) + 1) % tokens.length;
+        return tokens[this._puterTokenIndex] || tokens[0];
+    },
+
+    /**
+     * Save Puter Auth Tokens to storage
+     * @param {string|string[]} tokens 
+     * @returns {Promise<boolean>}
+     */
+    async setPuterTokens(tokens) {
+        let tokenArray = [];
+        if (Array.isArray(tokens)) {
+            tokenArray = tokens.map(t => String(t).trim()).filter(Boolean);
+        } else if (typeof tokens === 'string') {
+            tokenArray = tokens.split(/[\n,]+/).map(t => t.trim()).filter(Boolean);
+        }
+        
+        return new Promise(resolve => {
+            chrome.storage.local.set({ 
+                PUTER_TOKENS: tokenArray,
+                PUTER_TOKEN: tokenArray.join('\n')
+            }, () => resolve(true));
+        });
+    },
+
+    /**
+     * Backward-compatible Puter Auth Token setter
+     * @param {string|string[]} token 
      * @returns {Promise<boolean>}
      */
     async setPuterToken(token) {
-        return new Promise(resolve => {
-            chrome.storage.local.set({ PUTER_TOKEN: token }, () => resolve(true));
-        });
+        if (typeof token === 'string' && (token.includes('\n') || token.includes(','))) {
+            return this.setPuterTokens(token);
+        }
+        const existing = await this.getPuterTokens();
+        if (existing.length > 1 && typeof token === 'string') {
+            return new Promise(resolve => {
+                chrome.storage.local.set({ PREFERRED_PUTER_TOKEN: token.trim() }, () => resolve(true));
+            });
+        }
+        return this.setPuterTokens(token);
     },
 
     /**
@@ -229,28 +303,112 @@ const StorageManager = {
     },
 
     /**
-     * Get TTS Voice setting
+     * Get TTS Voice setting for Original Text
      * @returns {Promise<string>}
      */
-    async getTtsVoice() {
+    async getTtsVoiceOrig() {
         return new Promise(resolve => {
-            chrome.storage.local.get(['ttsVoice'], result => {
-                resolve(result.ttsVoice || 'vi-VN-HoaiMyNeural');
+            chrome.storage.local.get(['ttsVoiceOrig'], result => {
+                resolve(result.ttsVoiceOrig || 'en-US-JennyNeural');
             });
         });
     },
 
     /**
-     * Set TTS Voice setting
+     * Set TTS Voice setting for Original Text
+     * @param {string} voice 
+     * @returns {Promise<boolean>}
+     */
+    async setTtsVoiceOrig(voice) {
+        return new Promise(resolve => {
+            chrome.storage.local.set({ ttsVoiceOrig: voice }, () => resolve(!chrome.runtime.lastError));
+        });
+    },
+
+    /**
+     * Get TTS Model setting for Original Text
+     * @returns {Promise<string>}
+     */
+    async getTtsModelOrig() {
+        return new Promise(resolve => {
+            chrome.storage.local.get(['ttsModelOrig', 'ttsModel'], result => {
+                resolve(result.ttsModelOrig || 'edge-tts');
+            });
+        });
+    },
+
+    /**
+     * Set TTS Model setting for Original Text
+     * @param {string} model 
+     * @returns {Promise<boolean>}
+     */
+    async setTtsModelOrig(model) {
+        return new Promise(resolve => {
+            chrome.storage.local.set({ ttsModelOrig: model }, () => resolve(!chrome.runtime.lastError));
+        });
+    },
+
+    /**
+     * Get TTS Voice setting for Translated Text
+     * @returns {Promise<string>}
+     */
+    async getTtsVoiceTrans() {
+        return new Promise(resolve => {
+            chrome.storage.local.get(['ttsVoiceTrans', 'ttsVoice'], result => {
+                resolve(result.ttsVoiceTrans || result.ttsVoice || 'vi-VN-HoaiMyNeural');
+            });
+        });
+    },
+
+    /**
+     * Set TTS Voice setting for Translated Text
+     * @param {string} voice 
+     * @returns {Promise<boolean>}
+     */
+    async setTtsVoiceTrans(voice) {
+        return new Promise(resolve => {
+            chrome.storage.local.set({ ttsVoiceTrans: voice, ttsVoice: voice }, () => resolve(!chrome.runtime.lastError));
+        });
+    },
+
+    /**
+     * Get TTS Model setting for Translated Text
+     * @returns {Promise<string>}
+     */
+    async getTtsModelTrans() {
+        return new Promise(resolve => {
+            chrome.storage.local.get(['ttsModelTrans', 'ttsModel'], result => {
+                resolve(result.ttsModelTrans || result.ttsModel || 'edge-tts');
+            });
+        });
+    },
+
+    /**
+     * Set TTS Model setting for Translated Text
+     * @param {string} model 
+     * @returns {Promise<boolean>}
+     */
+    async setTtsModelTrans(model) {
+        return new Promise(resolve => {
+            chrome.storage.local.set({ ttsModelTrans: model, ttsModel: model }, () => resolve(!chrome.runtime.lastError));
+        });
+    },
+
+    /**
+     * Get TTS Voice setting (backward compatibility -> Translated)
+     * @returns {Promise<string>}
+     */
+    async getTtsVoice() {
+        return this.getTtsVoiceTrans();
+    },
+
+    /**
+     * Set TTS Voice setting (backward compatibility -> Translated)
      * @param {string} voice - Voice ID
      * @returns {Promise<boolean>}
      */
     async setTtsVoice(voice) {
-        return new Promise(resolve => {
-            chrome.storage.local.set({ ttsVoice: voice }, () => {
-                resolve(!chrome.runtime.lastError);
-            });
-        });
+        return this.setTtsVoiceTrans(voice);
     },
 
     /**
@@ -279,28 +437,20 @@ const StorageManager = {
     },
 
     /**
-     * Get TTS Model setting
+     * Get TTS Model setting (backward compatibility -> Translated)
      * @returns {Promise<string>}
      */
     async getTtsModel() {
-        return new Promise(resolve => {
-            chrome.storage.local.get(['ttsModel'], result => {
-                resolve(result.ttsModel || 'edge-tts');
-            });
-        });
+        return this.getTtsModelTrans();
     },
 
     /**
-     * Set TTS Model setting
+     * Set TTS Model setting (backward compatibility -> Translated)
      * @param {string} model - TTS Model ID
      * @returns {Promise<boolean>}
      */
     async setTtsModel(model) {
-        return new Promise(resolve => {
-            chrome.storage.local.set({ ttsModel: model }, () => {
-                resolve(!chrome.runtime.lastError);
-            });
-        });
+        return this.setTtsModelTrans(model);
     },
 
     /**
@@ -367,8 +517,8 @@ const StorageManager = {
         return new Promise(resolve => {
             chrome.storage.local.get(['languagePreferences'], result => {
                 resolve(result.languagePreferences || {
-                    recentLanguages: ['Vietnamese', 'English', 'Japanese', 'Korean', 'Chinese'],
-                    favoriteLanguages: ['Vietnamese', 'English']
+                    recentLanguages: (typeof CONFIG !== 'undefined' && CONFIG.DEFAULT_POPULAR_TARGET_LANGUAGES) ? CONFIG.DEFAULT_POPULAR_TARGET_LANGUAGES.slice(0, 10) : ['Vietnamese', 'English', 'Japanese', 'Korean', 'Chinese (Simplified)', 'French', 'German', 'Spanish', 'Russian', 'Thai'],
+                    favoriteLanguages: ['Vietnamese', 'English', 'Japanese', 'Korean']
                 });
             });
         });
@@ -433,6 +583,60 @@ const StorageManager = {
         const favs = preferences.favoriteLanguages || [];
         preferences.favoriteLanguages = favs.filter(l => l !== language);
         return this.setLanguagePreferences(preferences);
+    },
+
+    /**
+     * Get hidden target languages list
+     * @returns {Promise<Array<string>>}
+     */
+    async getHiddenTargetLanguages() {
+        return new Promise(resolve => {
+            chrome.storage.local.get(['hiddenTargetLanguages'], result => {
+                resolve(result.hiddenTargetLanguages || []);
+            });
+        });
+    },
+
+    /**
+     * Remove language from target quick list (adds to hiddenTargetLanguages and removes from favorites & recents)
+     * @param {string} language - Language to remove
+     * @returns {Promise<boolean>}
+     */
+    async removeTargetLanguageFromQuickList(language) {
+        const preferences = await this.getLanguagePreferences();
+        const favs = preferences.favoriteLanguages || [];
+        const recents = preferences.recentLanguages || [];
+        preferences.favoriteLanguages = favs.filter(l => l !== language);
+        preferences.recentLanguages = recents.filter(l => l !== language);
+        await this.setLanguagePreferences(preferences);
+
+        return new Promise(resolve => {
+            chrome.storage.local.get(['hiddenTargetLanguages'], result => {
+                const hidden = result.hiddenTargetLanguages || [];
+                if (!hidden.includes(language)) {
+                    hidden.push(language);
+                }
+                chrome.storage.local.set({ hiddenTargetLanguages: hidden }, () => {
+                    resolve(!chrome.runtime.lastError);
+                });
+            });
+        });
+    },
+
+    /**
+     * Unhide target language
+     * @param {string} language - Language to restore
+     * @returns {Promise<boolean>}
+     */
+    async unhideTargetLanguage(language) {
+        return new Promise(resolve => {
+            chrome.storage.local.get(['hiddenTargetLanguages'], result => {
+                const hidden = (result.hiddenTargetLanguages || []).filter(l => l !== language);
+                chrome.storage.local.set({ hiddenTargetLanguages: hidden }, () => {
+                    resolve(!chrome.runtime.lastError);
+                });
+            });
+        });
     },
 
     /**
