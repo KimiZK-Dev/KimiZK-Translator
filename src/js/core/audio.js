@@ -30,6 +30,18 @@ const AudioManager = {
     // Current audio button reference
     _currentAudioButton: null,
     
+    // Cleanup callback for an in-progress progress-bar drag (mouse or touch).
+    // Set while dragging, cleared when the drag ends normally. stopCurrentAudio()
+    // calls this if a new playback interrupts a drag in progress, so the
+    // document-level mousemove/touchmove listeners from the old controls never leak.
+    _activeDragCleanup: null,
+    
+    // Monotonically increasing token used to guard against race conditions
+    // when the user rapidly clicks multiple "listen" buttons in a row.
+    // Only the request that holds the latest token is allowed to apply its
+    // result (insert controls / mutate button state) once its async work resolves.
+    _playToken: 0,
+    
     // Cache configuration
     MAX_CACHE_SIZE: 50,
     
@@ -38,6 +50,14 @@ const AudioManager = {
      */
     stopCurrentAudio() {
         try {
+            // Cancel any in-flight progress-bar drag so its document-level
+            // mousemove/touchmove listeners don't leak onto the next audio.
+            if (this._activeDragCleanup) {
+                try { this._activeDragCleanup(); } catch (e) {}
+                this._activeDragCleanup = null;
+            }
+
+            this.detachFromPopup();
             // Stop AudioContext
             if (this.currentAudioSource) {
                 this.currentAudioSource.stop();
@@ -159,9 +179,9 @@ const AudioManager = {
                 </div>
                 <div class="xt-audio-player">
                     <div class="xt-audio-progress">
-                        <div class="xt-progress-bar">
+                        <div class="xt-progress-bar" role="slider" tabindex="0" aria-label="Tiến trình phát âm thanh" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
                             <div class="xt-progress-fill" style="width: 0%"></div>
-                            <div class="xt-progress-handle"></div>
+                            <div class="xt-progress-handle" style="left: 0%"></div>
                         </div>
                         <div class="xt-time-display">
                             <span class="xt-current-time">0:00</span>
@@ -169,11 +189,11 @@ const AudioManager = {
                         </div>
                     </div>
                     <div class="xt-audio-volume">
-                        <span class="xt-volume-icon" title="Âm lượng">
+                        <span class="xt-volume-icon" title="Âm lượng" role="button" tabindex="0" aria-label="Tắt/Bật âm thanh">
                             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
                         </span>
                         <div class="xt-volume-slider">
-                            <input type="range" min="0" max="100" value="100" class="xt-volume-input">
+                            <input type="range" min="0" max="100" value="100" class="xt-volume-input" aria-label="Âm lượng">
                         </div>
                     </div>
                 </div>
@@ -181,6 +201,29 @@ const AudioManager = {
         `;
     },
     
+    /**
+     * Attach audio controls to UIManager popup
+     */
+    attachToPopup(popup, controls) {
+        this.currentPopup = popup;
+        this.currentControls = controls;
+        if (typeof UIManager !== 'undefined') {
+            UIManager.attachedAudioControls = controls;
+            UIManager.syncAttachedElements();
+        }
+    },
+
+    /**
+     * Detach audio controls from UIManager popup
+     */
+    detachFromPopup() {
+        if (typeof UIManager !== 'undefined' && UIManager.attachedAudioControls === this.currentControls) {
+            UIManager.attachedAudioControls = null;
+        }
+        this.currentPopup = null;
+        this.currentControls = null;
+    },
+
     /**
      * Setup audio controls for an audio element
      * @param {HTMLAudioElement|AudioBufferSourceNode} audio - Audio element or source node
@@ -192,14 +235,27 @@ const AudioManager = {
         const controls = document.getElementById(`audio-controls-${controlsId}`);
         if (!controls) return;
 
-        // Position controls
-        const popupRect = popup.getBoundingClientRect();
-        Object.assign(controls.style, {
-            position: 'fixed',
-            zIndex: '2147483647',
-            left: `${popupRect.right + 10}px`,
-            top: `${popupRect.top}px`
-        });
+        // Apply active theme to audio controls
+        if (typeof UIManager !== 'undefined' && UIManager.applyTheme) {
+            UIManager.applyTheme();
+        } else if (popup && (popup.classList.contains('dark-theme') || popup.classList.contains('dark'))) {
+            controls.classList.add('dark-theme', 'dark');
+        } else if (typeof StorageManager !== 'undefined' && StorageManager.getTheme) {
+            StorageManager.getTheme().then(theme => {
+                let isDark = theme === 'dark';
+                if (theme === 'auto') {
+                    isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                }
+                if (isDark) {
+                    controls.classList.add('dark-theme', 'dark');
+                } else {
+                    controls.classList.add('light-theme');
+                }
+            });
+        }
+
+        // Register attachment with popup
+        this.attachToPopup(popup, controls);
 
         // Get control elements
         const elements = {
@@ -224,6 +280,7 @@ const AudioManager = {
                 elements.progressFill.style.width = `${progress}%`;
                 elements.progressHandle.style.left = `${progress}%`;
                 elements.currentTime.textContent = Utils.formatTime(this._currentPlayPosition);
+                elements.progressBar.setAttribute('aria-valuenow', Math.round(progress));
                 
                 // Check if audio ended
                 if (this._currentPlayPosition >= this._audioDuration) {
@@ -279,6 +336,12 @@ const AudioManager = {
 
         // Progress bar interaction handlers
         let isDraggingProgress = false;
+
+        // Works for both MouseEvent and TouchEvent so the same drag logic
+        // powers desktop mouse dragging and mobile touch dragging.
+        const getClientX = e => (e.touches && e.touches.length) ? e.touches[0].clientX
+            : (e.changedTouches && e.changedTouches.length) ? e.changedTouches[0].clientX
+            : e.clientX;
         
         const startProgressDrag = e => {
             e.preventDefault();
@@ -298,6 +361,14 @@ const AudioManager = {
             
             document.addEventListener('mousemove', updateProgressDrag);
             document.addEventListener('mouseup', stopProgressDrag);
+            document.addEventListener('touchmove', updateProgressDrag, { passive: false });
+            document.addEventListener('touchend', stopProgressDrag);
+            document.addEventListener('touchcancel', stopProgressDrag);
+
+            // Let stopCurrentAudio() force-cancel an in-progress drag if a new
+            // audio starts (e.g. user starts dragging then clicks another
+            // "listen" button) instead of leaking these document listeners.
+            this._activeDragCleanup = stopProgressDrag;
         };
 
         const updateProgressDrag = e => {
@@ -307,13 +378,14 @@ const AudioManager = {
             e.stopImmediatePropagation();
             
             const rect = elements.progressBar.getBoundingClientRect();
-            const percentage = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+            const percentage = Math.min(1, Math.max(0, (getClientX(e) - rect.left) / rect.width));
             const newTime = this._audioDuration * percentage;
             
             // Update visual immediately
             elements.progressFill.style.width = `${percentage * 100}%`;
             elements.progressHandle.style.left = `${percentage * 100}%`;
             elements.currentTime.textContent = Utils.formatTime(newTime);
+            elements.progressBar.setAttribute('aria-valuenow', Math.round(percentage * 100));
             
             // Store target time for seeking
             this._seekTargetTime = newTime;
@@ -322,6 +394,7 @@ const AudioManager = {
         const stopProgressDrag = () => {
             isDraggingProgress = false;
             this._isDraggingProgress = false;
+            this._activeDragCleanup = null;
             
             // Perform the actual seeking
             this._performSeek(this._seekTargetTime);
@@ -342,10 +415,13 @@ const AudioManager = {
             
             document.removeEventListener('mousemove', updateProgressDrag);
             document.removeEventListener('mouseup', stopProgressDrag);
+            document.removeEventListener('touchmove', updateProgressDrag);
+            document.removeEventListener('touchend', stopProgressDrag);
+            document.removeEventListener('touchcancel', stopProgressDrag);
         };
 
-        // Click on progress bar to seek
-        elements.progressBar.addEventListener('click', e => {
+        // Click (or tap without drag) on progress bar to seek
+        const seekFromPointerEvent = e => {
             if (isDraggingProgress) return;
             e.preventDefault();
             e.stopPropagation();
@@ -356,7 +432,7 @@ const AudioManager = {
             this._isDragSeeking = false;
             
             const rect = elements.progressBar.getBoundingClientRect();
-            const percentage = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+            const percentage = Math.min(1, Math.max(0, (getClientX(e) - rect.left) / rect.width));
             const newTime = this._audioDuration * percentage;
             
             // Store playing state
@@ -369,6 +445,7 @@ const AudioManager = {
             elements.progressFill.style.width = `${percentage * 100}%`;
             elements.progressHandle.style.left = `${percentage * 100}%`;
             elements.currentTime.textContent = Utils.formatTime(newTime);
+            elements.progressBar.setAttribute('aria-valuenow', Math.round(percentage * 100));
             
             // Perform seeking
             this._performSeek(newTime);
@@ -378,11 +455,37 @@ const AudioManager = {
                 this._isSeeking = false;
                 this._isInteractingWithAudio = false;
             }, 200);
+        };
+        elements.progressBar.addEventListener('click', seekFromPointerEvent);
+
+        // Keyboard seeking: Left/Right (or Down/Up) nudge by 5 seconds, Home/End jump to start/end
+        elements.progressBar.addEventListener('keydown', e => {
+            if (this._audioDuration <= 0) return;
+            let delta = 0;
+            if (e.key === 'ArrowRight' || e.key === 'ArrowUp') delta = 5;
+            else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') delta = -5;
+            else if (e.key === 'Home') { delta = -this._audioDuration; }
+            else if (e.key === 'End') { delta = this._audioDuration; }
+            else return;
+
+            e.preventDefault();
+            e.stopPropagation();
+            const newTime = Math.min(this._audioDuration, Math.max(0, this._currentPlayPosition + delta));
+            const percentage = this._audioDuration > 0 ? (newTime / this._audioDuration) : 0;
+
+            elements.progressFill.style.width = `${percentage * 100}%`;
+            elements.progressHandle.style.left = `${percentage * 100}%`;
+            elements.currentTime.textContent = Utils.formatTime(newTime);
+            elements.progressBar.setAttribute('aria-valuenow', Math.round(percentage * 100));
+
+            this._performSeek(newTime);
         });
 
-        // Setup drag events
+        // Setup drag events (mouse + touch)
         elements.progressBar.addEventListener('mousedown', startProgressDrag);
         elements.progressHandle.addEventListener('mousedown', startProgressDrag);
+        elements.progressBar.addEventListener('touchstart', startProgressDrag, { passive: false });
+        elements.progressHandle.addEventListener('touchstart', startProgressDrag, { passive: false });
 
         // Volume control setup
         this._setupVolumeControl(elements, audio, isAudioContext);
@@ -501,6 +604,11 @@ const AudioManager = {
      */
     _setupVolumeControl(elements, audio, isAudioContext) {
         let currentVolume = 1.0;
+        // Remembers the last non-zero volume so the mute/unmute toggle on the
+        // speaker icon always restores what the user actually had set, even if
+        // they muted via the icon without ever touching the slider itself
+        // (previously this fell back to a hardcoded 0.5 in that case).
+        let lastNonZeroVolume = 1.0;
         
         // Set initial volume
         if (isAudioContext) {
@@ -515,6 +623,8 @@ const AudioManager = {
             }
         }
         
+        if (currentVolume > 0) lastNonZeroVolume = currentVolume;
+        
         // Set initial volume icon
         this._updateVolumeIcon(elements.volumeIcon, currentVolume);
         
@@ -524,6 +634,7 @@ const AudioManager = {
             e.preventDefault();
             const volume = e.target.value / 100;
             currentVolume = volume;
+            if (volume > 0) lastNonZeroVolume = volume;
             
             if (isAudioContext) {
                 if (this.currentAudioSource && this.currentAudioSource.gain) {
@@ -559,8 +670,8 @@ const AudioManager = {
                     }
                 }
             } else {
-                // Unmute
-                const newVolume = Math.max(0.5, parseFloat(elements.volumeInput.getAttribute('data-last-volume') || 0.5));
+                // Unmute - restore the last volume the user actually chose
+                const newVolume = lastNonZeroVolume > 0 ? lastNonZeroVolume : 1.0;
                 elements.volumeInput.value = newVolume * 100;
                 currentVolume = newVolume;
                 
@@ -578,11 +689,17 @@ const AudioManager = {
             }
         });
 
-        // Store last volume before muting
+        // Prevent the slider drag from bubbling up and closing the popup/controls
         elements.volumeInput.addEventListener('mousedown', e => {
             e.stopPropagation();
-            if (currentVolume > 0) {
-                elements.volumeInput.setAttribute('data-last-volume', currentVolume.toString());
+        });
+
+        // Keyboard accessibility: Enter/Space on the speaker icon toggles mute,
+        // matching the click handler above.
+        elements.volumeIcon.addEventListener('keydown', e => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                elements.volumeIcon.click();
             }
         });
     },
@@ -746,46 +863,55 @@ const AudioManager = {
      * @param {boolean} isSingleWord - Whether text is a single word
      * @param {HTMLElement} popup - Popup element for positioning
      */
-    setupAudioButton(button, text, isSingleWord, popup) {
+    setupAudioButton(button, text, isSingleWord, popup, isOriginal = false) {
         if (!button) return;
         
-        this._currentAudioButton = button;
-        const icon = button.querySelector('.xt-btn-icon');
+        const icon = button.querySelector('.xt-btn-icon') || button;
         const textSpan = button.querySelector('.xt-btn-text');
+        if (icon && !button.dataset.origIcon) {
+            button.dataset.origIcon = icon.innerHTML;
+        }
+        if (textSpan && !button.dataset.origText) {
+            button.dataset.origText = textSpan.textContent;
+        }
         const audioId = Utils.generateId();
 
-        const toggleAudio = async () => {
+        const toggleAudio = async (e) => {
+            if (e && typeof e.stopPropagation === 'function') {
+                e.stopPropagation();
+            }
             try {
                 // Don't allow toggle during seeking
                 if (this._isSeeking || this._isDraggingProgress) {
-                    // console.log('Cannot toggle audio during seeking');
                     return;
                 }
                 
                 // Check current audio state
                 const isPlaying = this.isAudioPlaying();
                 const isPaused = this.isAudioPaused();
+                const isSameButton = (this._currentAudioButton === button);
                 
-                // Handle pause
-                if (isPlaying) {
-                    // console.log("Pausing audio...");
+                // Handle pause (only when clicking the same button that is currently playing)
+                if (isSameButton && isPlaying) {
                     this._pauseAudio();
                     this._updateAudioButtonState(false);
                     return;
                 }
 
-                // Handle resume
-                if (isPaused) {
-                    // console.log("Resuming audio...");
+                // Handle resume (only when clicking the same button that is currently paused)
+                if (isSameButton && isPaused) {
                     await this._resumeAudio();
                     this._updateAudioButtonState(true);
                     return;
                 }
 
-                // Handle play new audio
-                if (!this.currentAudio && !this.currentAudioSource) {
-                    await this._playNewAudio(button, icon, textSpan, text, audioId, popup);
-                }
+                // Handle play new audio (when clicking a different button or starting fresh audio)
+                // Claim a fresh token for this playback request. If the user
+                // clicks another button before this one finishes loading,
+                // that click will bump the token and this request will
+                // discard its result instead of racing onto the DOM.
+                const myToken = ++this._playToken;
+                await this._playNewAudio(button, icon, textSpan, text, audioId, popup, isOriginal, myToken);
             } catch (error) {
                 console.error("Audio setup error:", error);
                 NotificationManager.showAudioError(error.message || "Lỗi khi thiết lập âm thanh");
@@ -795,7 +921,7 @@ const AudioManager = {
 
         button.addEventListener('click', toggleAudio);
     },
-    
+
     /**
      * Pause current audio
      * @private
@@ -809,7 +935,6 @@ const AudioManager = {
             this.currentAudioContext.suspend();
             this._updateCurrentPosition();
         }
-        // Stop progress tracking
         if (this._progressInterval) {
             clearInterval(this._progressInterval);
             this._progressInterval = null;
@@ -822,15 +947,11 @@ const AudioManager = {
      */
     async _resumeAudio() {
         if (this.currentAudio) {
-            // For HTML Audio, just resume from current position
             await this.currentAudio.play();
         } else if (this.currentAudioContext && this.currentAudioBuffer) {
-            // For AudioContext, need to restart from current position
             await this._seekAudioContext(this._currentPlayPosition);
             await this.currentAudioContext.resume();
         }
-        
-        // Restart progress tracking
         this._startProgressTracking();
     },
     
@@ -838,29 +959,53 @@ const AudioManager = {
      * Play new audio
      * @private
      */
-    async _playNewAudio(button, icon, textSpan, text, audioId, popup) {
+    async _playNewAudio(button, icon, textSpan, text, audioId, popup, isOriginal = false, myToken = null) {
         this.stopCurrentAudio();
-        button.disabled = true;
-        if (icon) icon.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="xt-spin"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line></svg>`;
-        textSpan.textContent = "Đang tải...";
+        // If no token was supplied (legacy callers), fall back to a fresh one
+        if (myToken === null) myToken = ++this._playToken;
+        this._currentAudioButton = button;
 
-        // Build dynamic composite cache key based on voice persona, direction tag, and text
-        const savedVoice = (typeof StorageManager !== 'undefined' && StorageManager.getTtsVoice) ? await StorageManager.getTtsVoice() : 'hannah';
+        const textToSpeak = (typeof text === 'function') ? text() : String(text || '').trim();
+        if (!textToSpeak) {
+            this._resetAudioButtonState();
+            return;
+        }
+
+        if (icon && !button.dataset.origIcon) {
+            button.dataset.origIcon = icon.innerHTML;
+        }
+        if (textSpan && !button.dataset.origText) {
+            button.dataset.origText = textSpan.textContent;
+        }
+        button.disabled = true;
+        button.title = "Đang tải âm thanh...";
+        if (icon) icon.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="xt-spin"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line></svg>`;
+        if (textSpan) textSpan.textContent = "Đang tải...";
+
+        const savedVoice = isOriginal
+            ? ((typeof StorageManager !== 'undefined' && StorageManager.getTtsVoiceOrig) ? await StorageManager.getTtsVoiceOrig() : 'en-US-JennyNeural')
+            : ((typeof StorageManager !== 'undefined' && StorageManager.getTtsVoiceTrans) ? await StorageManager.getTtsVoiceTrans() : await StorageManager.getTtsVoice());
+            
         const savedDirection = (typeof StorageManager !== 'undefined' && StorageManager.getTtsDirection) ? await StorageManager.getTtsDirection() : 'none';
-        const cacheKey = `${savedVoice}_${savedDirection}_${text}`;
+        const cacheKey = `${isOriginal ? 'orig' : 'trans'}_${savedVoice}_${savedDirection}_${textToSpeak}`;
 
         // Get audio URL
         let audioUrl = this.ttsAudioCache[cacheKey];
         
         if (!audioUrl) {
-            // console.log("Audio not cached, making API request for:", text);
-            audioUrl = await ApiService.textToSpeech(text);
+            audioUrl = await ApiService.textToSpeech(textToSpeak, isOriginal);
             if (audioUrl && audioUrl !== 'WEB_SPEECH_PLAYING') {
                 this._addToCache(cacheKey, audioUrl);
-                // console.log("Audio cached for:", text);
             }
         } else {
             // console.log("Audio found in cache for:", text);
+        }
+
+        // A newer click superseded this request while we were awaiting the
+        // network/TTS call above. Bail out silently instead of stealing
+        // focus/state from whichever button the user is now waiting on.
+        if (myToken !== this._playToken) {
+            return;
         }
 
         if (audioUrl === 'WEB_SPEECH_PLAYING') {
@@ -897,6 +1042,17 @@ const AudioManager = {
                 }
             }
             
+            // Another click superseded us while the audio element/context was
+            // still spinning up (network fetch + decode can take a moment).
+            // Stop whatever we just started and let the newer request own the UI.
+            if (myToken !== this._playToken) {
+                if (this.currentAudio) { this.currentAudio.pause(); this.currentAudio = null; }
+                if (this.currentAudioSource) { try { this.currentAudioSource.stop(); } catch (e) {} this.currentAudioSource = null; }
+                if (this.currentAudioContext && this.currentAudioContext.state !== 'closed') { this.currentAudioContext.close(); }
+                this.currentAudioContext = null;
+                return;
+            }
+
             if (playbackSuccess) {
                 // console.log(`Audio playback successful using: ${playbackMethod}`);
                 
@@ -931,6 +1087,10 @@ const AudioManager = {
             const keysToRemove = cacheKeys.slice(0, cacheKeys.length - this.MAX_CACHE_SIZE);
             keysToRemove.forEach(key => {
                 const url = this.ttsAudioCache[key];
+                // Never revoke the blob URL that's currently loaded/playing -
+                // doing so would silently break the active player (pausing
+                // and reloading it would fail with a decode error).
+                if (url === this.currentAudioUrl) return;
                 URL.revokeObjectURL(url);
                 delete this.ttsAudioCache[key];
             });
@@ -1014,7 +1174,7 @@ const AudioManager = {
      */
     _updateAudioButtonState(isPlaying) {
         if (this._currentAudioButton) {
-            const icon = this._currentAudioButton.querySelector('.xt-btn-icon');
+            const icon = this._currentAudioButton.querySelector('.xt-btn-icon') || this._currentAudioButton;
             const textSpan = this._currentAudioButton.querySelector('.xt-btn-text');
             
             if (isPlaying) {
@@ -1033,11 +1193,21 @@ const AudioManager = {
      */
     _resetAudioButtonState() {
         if (this._currentAudioButton) {
-            const icon = this._currentAudioButton.querySelector('.xt-btn-icon');
+            const icon = this._currentAudioButton.querySelector('.xt-btn-icon') || this._currentAudioButton;
             const textSpan = this._currentAudioButton.querySelector('.xt-btn-text');
             
-            if (icon) icon.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>`;
-            if (textSpan) textSpan.textContent = "Nghe";
+            if (icon) {
+                if (this._currentAudioButton.dataset.origIcon) {
+                    icon.innerHTML = this._currentAudioButton.dataset.origIcon;
+                } else if (this._currentAudioButton.classList.contains('xt-listen-orig-btn') || this._currentAudioButton.id === 'popup-listen-orig-btn' || this._currentAudioButton.id === 'pg-tts-orig-btn') {
+                    icon.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>`;
+                } else {
+                    icon.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>`;
+                }
+            }
+            if (textSpan) {
+                textSpan.textContent = this._currentAudioButton.dataset.origText || (this._currentAudioButton.id === 'pg-tts-orig-btn' ? 'Nghe Gốc' : 'Nghe');
+            }
             this._currentAudioButton.disabled = false;
         }
     },
