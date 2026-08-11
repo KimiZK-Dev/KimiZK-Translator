@@ -72,7 +72,29 @@ const CONFIG = {
         portuguese: 'tiếng Bồ Đào Nha',
         italian: 'tiếng Ý',
         english: 'tiếng Anh'
-    }
+    },
+    // Default Popular Target Languages List
+    DEFAULT_POPULAR_TARGET_LANGUAGES: [
+        "Vietnamese",
+        "English",
+        "Japanese",
+        "Korean",
+        "Chinese (Simplified)",
+        "French",
+        "German",
+        "Spanish",
+        "Russian",
+        "Thai",
+        "Lao",
+        "Khmer",
+        "Myanmar (Burmese)",
+        "Filipino (Tagalog)",
+        "Italian",
+        "Portuguese (Brazil)",
+        "Hindi",
+        "Arabic",
+        "Indonesian"
+    ]
 };
 
 // Export for use in other modules
