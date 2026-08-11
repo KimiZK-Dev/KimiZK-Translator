@@ -1,0 +1,14 @@
+# Set default behavior to automatic text line ending normalization
+* text=auto eol=crlf
+
+# Specify text files explicitly to use Windows CRLF
+*.md text eol=crlf
+*.js text eol=crlf
+*.html text eol=crlf
+*.css text eol=crlf
+*.json text eol=crlf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.mp4 binary
