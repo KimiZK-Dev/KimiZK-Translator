@@ -7,23 +7,23 @@
   **Tiện ích dịch thuật đa ngôn ngữ thông minh trên Chrome với Multi-AI Engine, Edge Neural TTS & Vision OCR**
 
   [![Manifest V3](https://img.shields.io/badge/Manifest-V3-blue.svg)](https://developer.chrome.com/docs/extensions/mv3/intro/)
-  [![Version](https://img.shields.io/badge/version-1.0.5-emerald.svg)](https://github.com/KimiZK-Dev/KimiZK-Translator/releases)
+  [![Version](https://img.shields.io/badge/version-1.0.6-emerald.svg)](https://github.com/KimiZK-Dev/KimiZK-Translator/releases)
   [![License: MIT](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
-  [![Platform](https://img.shields.io/badge/platform-Chrome%20%7C%20Edge%20%7C%20Brave-slate.svg)](#-tương-thích)
+  [![Platform](https://img.shields.io/badge/platform-Chrome%20%7C%20Edge%20%7C%20Brave-slate.svg)](#tuong-thich)
 
 </div>
 
 ---
 
-## 📌 Tổng quan
+## Tổng quan
 
-**KimiZK Translator** là một tiện ích Chrome Extension hiện đại giúp bạn dịch thuật văn bản, tra cứu từ vựng, phát âm chuẩn AI và trích xuất chữ từ hình ảnh trực tiếp trên trình duyệt. Tiện ích được thiết kế theo phong cách tối giản, phản hồi nhanh và tích hợp nhiều lớp AI dự phòng (Failover Engine) để đảm bảo không bị gián đoạn khi sử dụng.
+**KimiZK Translator** là tiện ích mở rộng Chrome Extension thế hệ mới giúp dịch thuật văn bản bôi đen, tra cứu từ điển chuyên sâu, phát âm AI đa nhà cung cấp và nhận diện chữ từ hình ảnh (OCR) trực tiếp trên mọi trang web.
+
+Dự án được tối ưu hóa với giao diện phẳng hiện đại, tốc độ phản hồi tức thì và tích hợp cơ chế tự động chuyển đổi khóa API dự phòng (**Multi-Key Failover Pool**).
 
 ---
 
-## 🖼️ Giao diện Tiện ích (Popup Interface)
-
-Hỗ trợ 3 chế độ dịch chính (**Văn bản**, **Giọng nói STT**, **Chụp màn hình OCR**) và tích hợp nút chuyển đổi giao diện Sáng / Tối động:
+## Giao diện tiện ích
 
 <div align="center">
   <img src="assets/images/popup-extension-dark.png" alt="Popup tiện ích - Giao diện Tối" width="280" style="border-radius: 10px; margin-right: 12px;" />
@@ -31,114 +31,72 @@ Hỗ trợ 3 chế độ dịch chính (**Văn bản**, **Giọng nói STT**, **
   <p><em>Popup Tiện ích: Chế độ Tối (Dark Mode) và Chế độ Sáng (Light Mode)</em></p>
 </div>
 
----
-
-## 🔍 Cửa sổ Dịch nổi (Translation Overlay)
-
-Tự động xuất hiện khi bôi đen văn bản hoặc bấm phím tắt dịch trên trang web. Hỗ trợ dịch câu văn ngữ cảnh và tra cứu từ điển chuyên sâu kèm loại từ, giải thích & ví dụ thực tế:
-
 <div align="center">
   <img src="assets/images/popup-translate-sentence.png" alt="Popup Dịch nổi - Dịch đoạn văn" width="280" style="border-radius: 10px; margin-right: 12px;" />
-  <img src="assets/images/popup-translate-dictionary.png" alt="Popup Dịch nổi - Tra từ điển chuyên sâu" width="280" style="border-radius: 10px;" />
+  <img src="assets/images/popup-translate-dictionary.png" alt="Popup Dịch nổi - Tra từ điển chi tiết" width="280" style="border-radius: 10px;" />
   <p><em>Cửa sổ Dịch nổi: Dịch đoạn văn ngữ cảnh (Trái) & Phân tích từ điển chi tiết (Phải)</em></p>
 </div>
 
 ---
 
-## ⚙️ Trang Cấu hình (Options Dashboard)
-
-Trung tâm cài đặt nâng cao cho phép quản lý danh sách API Key dự phòng (Multi-Key Pool), cấp quyền micro 1-Click, tùy chọn mô hình AI và nhà cung cấp giọng đọc TTS:
-
-<div align="center">
-  <img src="assets/images/options-page-dashboard.png" alt="Trang Cấu hình Options - Cấu hình AI & API" width="680" style="border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);" />
-  <p><em>Giao diện Cấu hình AI & API với tính năng Multi-Key Pool tự động chuyển key khi lỗi 429</em></p>
-</div>
-
----
-
-## 🎬 Video Hướng dẫn (Tutorial Videos)
-
-### 1. Hướng dẫn Lấy Groq API Key miễn phí
-
-<div align="center">
-  <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer">
-    <img src="https://img.youtube.com/vi/DEFAULT_VIDEO_ID/hqdefault.jpg" alt="Video Hướng dẫn Lấy Groq API Key" width="560" style="border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.15);" />
-  </a>
-  <p>🎬 <em>[Video Placeholder] Nhấp vào ảnh để xem video hướng dẫn đăng ký & lấy Groq API Key miễn phí</em></p>
-</div>
-
-### 2. Hướng dẫn Lấy Puter Auth Token
-
-<div align="center">
-  <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer">
-    <img src="https://img.youtube.com/vi/DEFAULT_VIDEO_ID/hqdefault.jpg" alt="Video Hướng dẫn Lấy Puter Token" width="560" style="border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.15);" />
-  </a>
-  <p>🎬 <em>[Video Placeholder] Nhấp vào ảnh để xem video hướng dẫn lấy Puter Auth Token và dùng các giọng đọc AI</em></p>
-</div>
-
----
-
-## ✨ Tính năng nổi bật
+## Tính năng chính
 
 ### 1. Multi-AI Translation Engine
-- **Mô hình AI đa dạng**: Tích hợp các mô hình ngôn ngữ thế hệ mới như `llama-3.3-70b-versatile`, `qwen3.6-27b` và `groq/compound-mini`.
-- **Phân tích nghĩa chuyên sâu**: Hiển thị loại từ (Danh từ, Động từ, Tính từ...), giải thích ngữ cảnh chi tiết và ví dụ thực tế.
+- Hỗ trợ 8 mô hình AI mạnh mẽ được tối ưu hóa: `llama-3.3-70b-versatile`, `groq/compound`, `groq/compound-mini`, `deepseek-r1-distill-llama-70b`, `openai/gpt-oss-120b`, `openai/gpt-oss-20b`, `qwen/qwen3.6-27b`, `llama-3.1-8b-instant`.
+- Phân tích từ điển chuyên sâu: Loại từ, phiên âm IPA, định nghĩa chi tiết, từ đồng nghĩa, biến thể ngữ pháp và ví dụ thực tế.
 
-### 2. Hệ thống Âm thanh Đa tầng (Multi-Provider TTS)
-- **Microsoft Edge Neural AI (Mặc định)**: Giọng đọc tự nhiên, chuẩn bản ngữ (Hoài My, Nam Minh, Ava, Andrew, Nanami, Sun-Hi...) hoàn toàn miễn phí mà không cần API Key.
-- **Puter AI Cloud TTS**: Hỗ trợ 6 nhà cung cấp giọng đọc cao cấp (AWS Polly, OpenAI TTS, Google Gemini TTS, ElevenLabs, xAI Grok, Speechify) thông qua Puter Auth Token.
-- **Groq Orpheus AI TTS**: Giọng đọc phát âm truyền cảm cho tiếng Anh và tiếng Ả Rập.
+### 2. Phát âm AI Đa nền tảng (Multi-Provider TTS)
+- **Microsoft Edge Neural AI (Mặc định)**: Phát âm tự nhiên chuẩn bản ngữ, hoàn toàn miễn phí không cần API Key.
+- **Puter AI Cloud TTS**: Hỗ trợ 6 nhà cung cấp cao cấp (AWS Polly, OpenAI TTS, Gemini TTS, ElevenLabs, xAI Grok, Speechify).
+- **Groq Orpheus Speech**: Giọng đọc cảm xúc thế hệ mới.
 
-### 3. Tự động dự phòng API Key (Multi-Key Pool)
-- Nhập danh sách nhiều Groq API Key trong cài đặt. Khi một key chạm giới hạn lượt dùng (Rate Limit HTTP 429), hệ thống tự động chuyển sang key tiếp theo mà không làm gián đoạn việc dịch.
+### 3. Tự động luân chuyển API Key (Multi-Key Pool)
+- Tự động chuyển đổi sang API Key tiếp theo khi gặp giới hạn Rate Limit (HTTP 429), giúp quá trình dịch không bao giờ bị gián đoạn.
 
-### 4. Thu âm Giọng nói (Whisper STT) & Chụp ảnh màn hình (Vision OCR)
-- **Voice STT**: Thu âm trực tiếp từ micro và chuyển đổi thành văn bản dịch bằng `whisper-large-v3-turbo`.
-- **Screen OCR**: Khoanh vùng vùng ảnh bất kỳ trên trang web để trích xuất văn bản và dịch nghĩa tức thì.
+### 4. Thu âm Voice STT & Nhận diện Vision OCR
+- **Voice STT**: Chuyển giọng nói từ micro thành văn bản dịch bằng `whisper-large-v3-turbo`.
+- **Vision OCR**: Khoanh vùng ảnh bất kỳ trên trang web để trích xuất và dịch nghĩa tức thì.
 
-### 5. Điều khiển nhanh & Giao diện Linh hoạt
-- **Command Palette (`Ctrl + K` / `Cmd + K`)**: Bảng điều khiển lệnh nhanh kiểu Raycast / Spotlight.
-- **Theme Động**: Đổi giao diện Sáng / Tối với biểu tượng Mặt Trời ☀️ / Mặt Trăng 🌙 biến đổi theo trạng thái.
+### 5. Điều khiển nhanh & Giao diện Tinh tế
+- **Command Palette (`Ctrl + K` / `Cmd + K`)**: Tìm kiếm và thực thi lệnh nhanh chóng.
+- **UI/UX Tối giản**: Xóa bỏ hoàn toàn emoji rườm rà, thay bằng biểu tượng SVG phẳng hiện đại.
 
 ---
 
-## ⌨️ Phím tắt mặc định
+## Phím tắt mặc định
 
 | Phím tắt | Thao tác |
 |---|---|
-| **`Ctrl + Shift + L`** (hoặc `Cmd + Shift + L`) | Dịch văn bản bôi đen trên trang web |
-| **`Ctrl + K`** (hoặc `Cmd + K`) | Mở bảng lệnh nhanh Command Palette |
-| **`Escape`** | Đóng nhanh popup dịch hoặc bảng lệnh |
+| **`Ctrl + Shift + L`** | Dịch văn bản bôi đen trên trang web |
+| **`Ctrl + K`** | Mở bảng lệnh nhanh Command Palette |
+| **`Escape`** | Đóng nhanh cửa sổ dịch hoặc bảng lệnh |
 
 ---
 
-## 🛠️ Hướng dẫn Cài đặt
+## Cài đặt nhanh
 
 1. **Tải mã nguồn**:
    ```bash
    git clone https://github.com/KimiZK-Dev/KimiZK-Translator.git
    ```
-2. **Cài đặt vào trình duyệt**:
+2. **Tải vào trình duyệt**:
    - Truy cập `chrome://extensions/` trên Chrome, Edge, Brave hoặc Cốc Cốc.
-   - Bật **Chế độ dành cho nhà phát triển (Developer mode)** ở góc trên bên phải.
-   - Bấm **Tải tiện ích đã giải nén (Load unpacked)** và chọn thư mục `KimiZK-Translator`.
-3. **Cấu hình API**:
-   - Nhấp vào biểu tượng KimiZK Translator ➔ Mở **Cài đặt** ➔ Nhập API Key từ [Groq Console](https://console.groq.com/) (miễn phí).
+   - Bật **Chế độ dành cho nhà phát triển (Developer mode)**.
+   - Bấm **Tải tiện ích đã giải nén (Load unpacked)** và chọn thư mục project.
+3. **Cấu hình API Key**:
+   - Mở **Cài đặt** ➔ Nhập API Key từ [Groq Console](https://console.groq.com/) (miễn phí).
 
 ---
 
-## 🛡️ Tương thích & Bảo mật
+## Tương thích & Bảo mật
 
 - **Tương thích**: Chrome, Microsoft Edge, Brave, Cốc Cốc.
-- **Bảo mật dữ liệu**: API Key và các thiết lập cá nhân được lưu trữ cục bộ trong `chrome.storage.local`. Không có dữ liệu nào bị gửi về máy chủ bên thứ ba không xác định.
+- **Bảo mật**: API Key và các thiết lập cá nhân được lưu trữ cục bộ trong `chrome.storage.local`. Không gửi dữ liệu tới máy chủ thứ ba không xác định.
 
 ---
 
-## 📝 Giấy phép
+## Tác giả & Hỗ trợ
 
-Dự án được phát hành theo giấy phép [MIT License](LICENSE).
-
-## 📞 Thông tin Tác giả
-
-- **Tác giả / Organization**: [KimiZK-Dev](https://github.com/KimiZK-Dev)
-- **Facebook Support**: [NgHxBach](https://www.facebook.com/NgHxBach)
+- **Tác giả / Tổ chức**: [KimiZK-Dev](https://github.com/KimiZK-Dev)
+- **Hỗ trợ trực tiếp**: [Facebook Tác giả (NgHxBach)](https://www.facebook.com/NgHxBach)
+- **Giấy phép**: [MIT License](LICENSE)
