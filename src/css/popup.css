@@ -4,21 +4,29 @@
    ========================================================================== */
 
 :root {
-  --bg: #F5F6F8;
+  --bg: #FFFFFF;
+  --panel: #f8fafc;
   --surface: #FFFFFF;
   --surface-alt: #F0F1F4;
-  --border: #E2E4EA;
+  --border: #e6eaf0;
+  --border-soft: #eef1f5;
   --border-strong: #D2D5DD;
 
-  --text: #14161A;
+  --text: #0f172a;
+  --ink: #0f172a;
+  --ink-2: #475569;
+  --ink-3: #94a3b8;
   --text-muted: #6B7280;
   --text-faint: #9AA0AC;
 
-  --accent: #375DFB;
-  --accent-hover: #2C4FE0;
-  --accent-soft: #EBF0FF;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --accent-soft: #eff4ff;
   --accent-text-on: #FFFFFF;
 
+  --amber: #b45309;
+  --amber-soft: #fef3e8;
+  --amber-border: #f7dfc3;
   --success: #16A34A;
   --success-soft: #E9F8EF;
   --warning: #D97706;
@@ -33,37 +41,181 @@
   --shadow-sm: 0 1px 2px rgba(20,22,26,0.05);
   --shadow-md: 0 8px 24px rgba(20,22,26,0.12);
 
-  --font-ui: "Inter", "Be Vietnam Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+  --font-ui: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Malgun Gothic', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Noto Sans Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   color-scheme: light;
 }
 
 body.dark-theme, body.dark {
   --bg: #0f172a;
+  --panel: #141f35;
   --surface: #1e293b;
   --surface-alt: #253347;
-  --border: #32405a;
+  --border: #22314d;
+  --border-soft: #1b2740;
   --border-strong: #3d4c68;
 
-  --text: #EDEEF0;
+  --text: #f1f5f9;
+  --ink: #f1f5f9;
+  --ink-2: #a9b8cf;
+  --ink-3: #64748b;
   --text-muted: #9198A6;
   --text-faint: #6b7688;
 
-  --accent: #7089FF;
+  --accent: #7c9dfa;
   --accent-hover: #8AA0FF;
-  --accent-soft: #1C2440;
+  --accent-soft: #182544;
   --accent-text-on: #0F1115;
 
+  --amber: #fbbf24;
+  --amber-soft: #241d0d;
+  --amber-border: #3a2c11;
   --success: #34D399;
   --success-soft: #133226;
   --warning: #FBBF24;
   --warning-soft: #33270D;
   --danger: #F87171;
   --danger-soft: #341617;
+
+  /* POS badge: vàng sáng hơn cho nền tối, đạt chuẩn tương phản WCAG */
+  --pos-bg: rgba(251, 191, 36, 0.15);
+  --pos-color: #FBBF24;
+  --pos-border: rgba(251, 191, 36, 0.3);
+
   color-scheme: dark;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* Custom Searchable Select Dropdown */
+.kz-select-custom-wrap {
+  position: relative;
+  flex: 1;
+}
+.kz-select-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+}
+.kz-select-trigger:hover {
+  border-color: var(--accent);
+}
+.kz-select-trigger span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.kz-select-arrow {
+  flex-shrink: 0;
+  margin-left: 6px;
+  transition: transform 0.2s ease;
+}
+.kz-select-custom-wrap.open .kz-select-arrow {
+  transform: rotate(180deg);
+}
+
+.kz-select-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
+  z-index: 100;
+  overflow: hidden;
+  padding: 6px;
+}
+.kz-select-search-box {
+  position: relative;
+  margin-bottom: 6px;
+}
+.kz-select-search-box svg {
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+}
+.kz-select-search-box input {
+  width: 100%;
+  padding: 6px 8px 6px 28px;
+  font-size: 11.5px;
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  outline: none;
+}
+.kz-select-search-box input:focus {
+  border-color: var(--accent);
+}
+
+.kz-select-options-list {
+  max-height: 180px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.kz-select-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+.kz-select-option:hover {
+  background: var(--surface-alt);
+}
+.kz-select-option.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
+}
+.kz-select-option-label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.chip-delete-btn, .kz-select-option-del, .xt-target-chip-del, .xt-chip-del {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0;
+  margin-left: 6px;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+.chip-delete-btn:hover, .kz-select-option-del:hover, .xt-target-chip-del:hover, .xt-chip-del:hover {
+  background: rgba(220, 38, 38, 0.12);
+  color: var(--danger, #dc2626);
+  transform: scale(1.1);
+}
 html, body { margin: 0; padding: 0; }
 body {
   width: 380px;
@@ -80,9 +232,12 @@ body {
 
 body::-webkit-scrollbar,
 .kz-mode-panel::-webkit-scrollbar,
-.xt-popup-body::-webkit-scrollbar {
+.xt-popup-body::-webkit-scrollbar,
+.kz-result-body::-webkit-scrollbar,
+.kz-tabs-bar::-webkit-scrollbar {
   display: none !important;
   width: 0 !important;
+  height: 0 !important;
 }
 
 button, input, select, textarea { font-family: inherit; font-size: inherit; color: inherit; }
@@ -148,28 +303,7 @@ button, input, select, textarea { font-family: inherit; font-size: inherit; colo
 }
 .kz-select:focus, .xt-select:focus { border-color: var(--accent); outline: none; }
 
-/* Segmented Control Pill Buttons for target language */
-.xt-segmented-control {
-  display: flex;
-  gap: 4px;
-  padding: 8px 14px 4px;
-}
-.xt-seg-btn {
-  flex: 1;
-  padding: 5px 2px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  background: var(--surface-alt);
-  color: var(--text-muted);
-  font-size: 11px; font-weight: 550;
-  cursor: pointer; text-align: center;
-  transition: all .12s ease;
-}
-.xt-seg-btn.active, .xt-seg-btn:hover {
-  background: var(--accent);
-  color: var(--accent-text-on);
-  border-color: var(--accent);
-}
+
 
 /* ---------------------------------------------------------------------- */
 /* Mode tabs (segmented control)                                          */
@@ -243,7 +377,7 @@ button, input, select, textarea { font-family: inherit; font-size: inherit; colo
 .kz-btn:disabled, .xt-submit-btn:disabled { opacity: .65; cursor: default; }
 .kz-btn svg, .xt-submit-btn svg { width: 15px; height: 15px; }
 
-.kz-spinner, .xt-spin {
+.kz-spinner {
   width: 15px; height: 15px;
   border: 2px solid rgba(255,255,255,.35);
   border-top-color: #fff;
@@ -251,9 +385,20 @@ button, input, select, textarea { font-family: inherit; font-size: inherit; colo
   animation: kz-spin .7s linear infinite;
   display: none;
 }
-.kz-btn.is-loading .kz-spinner, .xt-submit-btn.is-loading .xt-spin { display: inline-block; }
+.kz-btn.is-loading .kz-spinner { display: inline-block; }
 .kz-btn.is-loading .kz-btn-label { display: none; }
 @keyframes kz-spin { to { transform: rotate(360deg); } }
+
+/* Universal SVG Spinning Animation for buttons */
+svg.xt-spin, .xt-spin {
+  display: inline-block !important;
+  animation: xt-spin 0.8s linear infinite !important;
+  transform-origin: center center !important;
+}
+@keyframes xt-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 
 /* ---------------------------------------------------------------------- */
 /* Mode 2 — Voice (STT)                                                    */
@@ -295,30 +440,7 @@ button, input, select, textarea { font-family: inherit; font-size: inherit; colo
   100% { transform: scale(1.35); opacity: 0; }
 }
 
-.kz-soundwave, .xt-voice-waves {
-  display: flex; align-items: flex-end; justify-content: center;
-  gap: 3px;
-  height: 32px;
-  opacity: .25;
-}
-.kz-soundwave span, .xt-voice-waves .bar {
-  width: 3px;
-  background: var(--accent);
-  border-radius: 2px;
-  height: 20%;
-  transition: height .12s ease;
-}
-.kz-voice-stage.is-recording .kz-soundwave, .xt-voice-card.is-recording .xt-voice-waves { opacity: 1; }
-.kz-voice-stage.is-recording .kz-soundwave span, .xt-voice-card.is-recording .xt-voice-waves .bar { animation: kz-wave 1s ease-in-out infinite; }
-.kz-soundwave span:nth-child(1), .xt-voice-waves .bar:nth-child(1) { animation-delay: 0s; }
-.kz-soundwave span:nth-child(2), .xt-voice-waves .bar:nth-child(2) { animation-delay: .1s; }
-.kz-soundwave span:nth-child(3), .xt-voice-waves .bar:nth-child(3) { animation-delay: .2s; }
-.kz-soundwave span:nth-child(4), .xt-voice-waves .bar:nth-child(4) { animation-delay: .3s; }
-.kz-soundwave span:nth-child(5), .xt-voice-waves .bar:nth-child(5) { animation-delay: .4s; }
-@keyframes kz-wave {
-  0%, 100% { height: 20%; }
-  50% { height: 100%; }
-}
+
 
 .kz-voice-status, .xt-voice-status {
   font-size: 12.5px;
@@ -326,8 +448,18 @@ button, input, select, textarea { font-family: inherit; font-size: inherit; colo
   color: var(--text-muted);
   text-align: center;
 }
-.kz-voice-stage.is-recording .kz-voice-status, .xt-voice-card.is-recording .xt-voice-status { color: var(--danger); }
 .xt-voice-hint { font-size: 11px; color: var(--text-faint); text-align: center; }
+
+.xt-inline-link-btn {
+  color: #60a5fa; 
+  background: none; 
+  border: none; 
+  text-decoration: underline;
+  cursor: pointer; 
+  font-weight: 600; 
+  padding: 0; 
+  font-size: inherit;
+}
 
 /* ---------------------------------------------------------------------- */
 /* Mode 3 — Vision (OCR) Hero Layout                                       */
@@ -342,26 +474,24 @@ button, input, select, textarea { font-family: inherit; font-size: inherit; colo
 .kz-vision-hero-btn {
   display: flex; align-items: center; gap: 12px;
   width: 100%; padding: 14px 12px;
-  border: 1px solid var(--accent);
+  border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  background: var(--accent-soft);
+  background: var(--surface-alt);
   color: var(--text);
   cursor: pointer; text-align: left;
-  transition: all .18s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 4px 12px rgba(55, 93, 251, 0.12);
+  transition: all .18s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 .kz-vision-hero-btn:hover {
-  background: var(--accent);
-  color: var(--accent-text-on);
+  border-color: var(--accent);
+  background: var(--accent-soft);
   transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(55, 93, 251, 0.25);
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.15);
 }
 .kz-vision-hero-btn:hover .kz-vision-hero-icon {
-  background: rgba(255, 255, 255, 0.25);
+  background: var(--accent);
   color: #ffffff;
-}
-.kz-vision-hero-btn:hover .kz-vision-hero-text span {
-  color: rgba(255, 255, 255, 0.85);
+  border-color: var(--accent);
 }
 .kz-vision-hero-icon {
   width: 42px; height: 42px; flex-shrink: 0;
@@ -379,90 +509,394 @@ button, input, select, textarea { font-family: inherit; font-size: inherit; colo
 /* ---------------------------------------------------------------------- */
 /* Result card (shared visual language with floating popup)                */
 /* ---------------------------------------------------------------------- */
-.kz-result, .xt-result-box, #popup-result-container {
-  margin-top: 12px;
+/* ====================================================================== */
+/* Khung Kết quả Dịch (#popup-result-container) — bản đã fix UI          */
+/* ====================================================================== */
+#popup-result-container, .kz-result {
+  margin-top: 14px;
   border: 1px solid var(--border);
-  border-radius: var(--radius-md);
+  border-radius: 14px;
   background: var(--surface);
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
   display: flex;
   flex-direction: column;
   overflow: hidden;
   width: 100%;
+  box-sizing: border-box;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.kz-result.is-visible, .xt-result-box { animation: kz-fade .18s ease; }
 
-.kz-result-head, .xt-result-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 10px 12px;
+.kz-result.is-visible {
+  animation: kz-fade 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Header Khung Kết Quả */
+.kz-result-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 14px;
   border-bottom: 1px solid var(--border);
   background: var(--surface-alt);
 }
-.kz-lang-badge, .xt-result-badge {
-  display: inline-flex; align-items: center; gap: 5px;
-  font-size: 11px; font-weight: 600; color: var(--text-muted);
-}
-.kz-lang-badge svg, .xt-result-badge svg { width: 12px; height: 12px; color: var(--accent); }
 
-.kz-result-actions, .xt-result-actions { display: flex; gap: 4px; }
-.kz-mini-btn, .xt-micro-btn {
-  width: 26px; height: 26px;
-  border: none; background: transparent;
-  border-radius: var(--radius-sm);
+.kz-head-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  font-size: 11.5px;
   color: var(--text-muted);
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer;
+  flex: 1;
+  min-width: 0;
 }
-.kz-mini-btn:hover, .xt-micro-btn:hover { background: var(--border); color: var(--text); }
-.kz-mini-btn svg, .xt-micro-btn svg { width: 14px; height: 14px; }
-.kz-mini-btn.is-copied, .xt-micro-btn.is-copied { color: var(--success); }
 
-.kz-result-body, .xt-result-content {
-  padding: 12px 14px;
-  white-space: pre-wrap;
-  line-height: 1.6;
-  word-break: break-word;
-  font-size: 13.5px;
+.kz-lang-badge {
+  font-weight: 650;
   color: var(--text);
-  max-height: 280px;
-  overflow-y: auto;
+  font-size: 11.5px;
+  white-space: nowrap;
 }
+
+.kz-meta-sep {
+  color: var(--text-faint);
+  font-size: 11px;
+}
+
+.kz-phonetic-badge {
+  font-family: var(--font-mono, monospace);
+  font-weight: 550;
+  color: var(--text-muted);
+  font-size: 11.5px;
+}
+
+.kz-pos-badge {
+  display: inline-flex !important;
+  font-size: 10px !important;
+  text-transform: uppercase !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.4px !important;
+  padding: 2px 7px !important;
+  background: var(--accent-soft, rgba(99, 102, 241, 0.12)) !important;
+  color: var(--accent, #6366f1) !important;
+  border: 1px solid rgba(99, 102, 241, 0.25) !important;
+  border-radius: 6px !important;
+  line-height: 1.2 !important;
+}
+
+.kz-level-badge {
+  display: inline-flex !important;
+  font-size: 9.5px !important;
+  font-weight: 700 !important;
+  padding: 2px 6px !important;
+  border-radius: 5px !important;
+  background: rgba(16, 185, 129, 0.12) !important;
+  color: #10b981 !important;
+  border: 1px solid rgba(16, 185, 129, 0.25) !important;
+  line-height: 1.2 !important;
+}
+
+/* Nút thao tác nhanh */
+.kz-result-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.kz-mini-btn {
+  width: 28px;
+  height: 28px;
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: 8px;
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  padding: 0;
+}
+
+.kz-mini-btn:hover {
+  background: var(--border);
+  color: var(--text);
+}
+
+.kz-mini-btn#popup-listen-orig-btn,
+.kz-mini-btn.xt-listen-orig-btn {
+  color: var(--accent, #6366f1);
+  background: rgba(99, 102, 241, 0.08);
+  border-color: rgba(99, 102, 241, 0.2);
+}
+.kz-mini-btn#popup-listen-orig-btn:hover,
+.kz-mini-btn.xt-listen-orig-btn:hover {
+  color: #4f46e5;
+  background: rgba(99, 102, 241, 0.18);
+  border-color: rgba(99, 102, 241, 0.4);
+  transform: translateY(-1px);
+}
+
+.kz-mini-btn#popup-listen-btn,
+.kz-mini-btn.xt-listen-btn {
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.08);
+  border-color: rgba(16, 185, 129, 0.2);
+}
+.kz-mini-btn#popup-listen-btn:hover,
+.kz-mini-btn.xt-listen-btn:hover {
+  color: #059669;
+  background: rgba(16, 185, 129, 0.18);
+  border-color: rgba(16, 185, 129, 0.4);
+  transform: translateY(-1px);
+}
+
+.kz-mini-btn#popup-copy-btn {
+  color: var(--text-muted);
+  background: var(--surface-alt);
+  border-color: var(--border);
+}
+.kz-mini-btn#popup-copy-btn:hover {
+  color: var(--text);
+  background: var(--border);
+}
+
+.kz-mini-btn:focus-visible {
+  outline: 2px solid var(--accent, #6366f1);
+  outline-offset: 1px;
+}
+.kz-mini-btn svg { width: 14px; height: 14px; stroke-width: 2; }
+
+/* Body Khung Kết Quả */
+.kz-result-body {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Thông báo sửa chính tả */
+.kz-correction-notice {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--amber-soft, rgba(251, 191, 36, 0.12));
+  border: 1px solid var(--amber-border, rgba(251, 191, 36, 0.3));
+  color: var(--amber, #b45309);
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.kz-correction-notice svg { flex-shrink: 0; }
+.kz-corr-orig { color: var(--text-faint); text-decoration: line-through; margin: 0 2px; }
+.kz-corr-target { color: var(--text); font-weight: 700; margin-left: 2px; }
+
+/* Bản dịch chính */
 .kz-translated-text {
   white-space: pre-wrap;
-  line-height: 1.6;
+  line-height: 1.55;
   word-break: break-word;
-  font-size: 14px;
-  margin: 0 0 8px;
-}
-.kz-ipa {
-  display: inline-block;
-  font-family: var(--font-mono);
-  font-size: 11.5px;
-  color: var(--accent);
-  background: var(--accent-soft);
-  padding: 2px 8px;
-  border-radius: 6px;
-  margin-bottom: 4px;
+  font-size: 16px;
+  font-weight: 650;
+  color: var(--text);
+  margin: 0;
+  letter-spacing: -0.01em;
 }
 
-.kz-pos-tag {
-  display: inline-block;
-  font-size: 10.5px; font-weight: 650; text-transform: uppercase; letter-spacing: .03em;
-  color: var(--text-muted);
+/* Thanh Tabs */
+.kz-tabs-bar {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  padding: 4px;
+  margin-top: 4px;
   background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  scrollbar-width: none;
+}
+.kz-tabs-bar::-webkit-scrollbar { display: none; }
+
+.kz-tab-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px;
+  border-radius: 7px;
+  font-size: 11.5px;
+  font-weight: 550;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  border: none;
+  white-space: nowrap;
+  min-height: 26px;
+  transition: all 0.15s ease;
+  line-height: 1.2;
+}
+.kz-tab-pill svg {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  stroke: currentColor;
+  opacity: 0.8;
+  transition: opacity 0.15s ease;
+}
+.kz-tab-pill:hover { color: var(--text); background: rgba(0, 0, 0, 0.04); }
+.kz-tab-pill:hover svg { opacity: 1; }
+.dark-theme .kz-tab-pill:hover { background: rgba(255, 255, 255, 0.06); }
+.kz-tab-pill.active,
+.kz-tab-pill[aria-selected="true"] {
+  background: var(--surface);
+  color: var(--accent, #6366f1);
+  font-weight: 650;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.kz-tab-pill.active svg,
+.kz-tab-pill[aria-selected="true"] svg {
+  color: var(--accent, #6366f1);
+  opacity: 1;
+}
+.kz-tab-count {
+  color: var(--text-faint);
+  font-weight: 500;
+  margin-left: 3px;
+  font-size: 10.5px;
+}
+.kz-tab-pill.active .kz-tab-count,
+.kz-tab-pill[aria-selected="true"] .kz-tab-count {
+  color: var(--accent, #6366f1);
+  opacity: 0.85;
+}
+
+/* Nội dung Tab Panes */
+.kz-tab-contents {
+  margin-top: 2px;
+}
+.kz-tab-pane {
+  font-size: 12.5px;
+  color: var(--text);
+  line-height: 1.6;
+  padding: 4px 0 0 0;
+  border: none;
+}
+.kz-tab-pane.hidden { display: none !important; }
+
+/* Chi tiết Giải thích / Desc */
+.kz-desc-text {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text);
+}
+.kz-usage-notes {
+  margin-top: 10px;
+  padding: 8px 12px;
+  background: var(--accent-soft, rgba(99, 102, 241, 0.06));
+  border: 1px solid rgba(99, 102, 241, 0.15);
+  border-radius: 8px;
+  font-size: 11.5px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  line-height: 1.5;
+}
+.kz-usage-notes svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--accent, #6366f1);
+}
+
+/* Danh sách Ví dụ */
+.kz-example-item {
+  margin-bottom: 8px;
+  padding: 8px 10px;
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.kz-example-item:last-child { margin-bottom: 0; }
+.kz-example-orig { font-style: italic; color: var(--text); font-weight: 550; font-size: 12.5px; }
+.kz-example-trans { color: var(--text-muted); font-size: 12px; margin-top: 3px; }
+
+/* Chip Đồng nghĩa / Biến thể */
+.kz-tag-chip {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  padding: 8px 12px;
+  margin: 6px 0;
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease;
+}
+.kz-tag-chip:hover {
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+}
+.kz-chip-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+}
+.kz-chip-title-wrap {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+.kz-chip-term {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  word-break: break-word;
+}
+.kz-chip-pos {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 1px 6px;
+  border-radius: 5px;
+  white-space: nowrap;
+}
+.kz-chip-level {
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: rgba(99, 102, 241, 0.12);
+  color: var(--accent, #6366f1);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  white-space: nowrap;
+}
+.kz-chip-form-tag {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-soft, rgba(99, 102, 241, 0.08));
   padding: 2px 7px;
   border-radius: 5px;
-  margin: 8px 0 4px;
+  line-height: 1.4;
+  word-break: break-word;
+  align-self: flex-start;
 }
-.kz-definition, .xt-result-desc { font-size: 12.5px; color: var(--text); margin: 6px 0 4px; }
-
-.kz-synonyms { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-.kz-synonym-chip {
-  font-size: 11px; font-weight: 550;
-  padding: 3px 9px;
-  background: var(--surface-alt);
-  border-radius: 999px;
+.kz-chip-meaning {
+  font-size: 12px;
   color: var(--text-muted);
+  line-height: 1.45;
 }
 
 /* Skeleton Loader */
@@ -554,8 +988,57 @@ button, input, select, textarea { font-family: inherit; font-size: inherit; colo
 .xt-cmd-list { max-height: 280px; overflow-y: auto; padding: 6px; }
 .xt-cmd-group-title { font-size: 10px; font-weight: 700; color: var(--text-faint); padding: 6px 8px 4px; text-transform: uppercase; }
 .xt-cmd-item {
-  display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: var(--radius-sm); cursor: pointer; transition: background .1s ease;
+  display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: var(--radius-sm); cursor: pointer; transition: all .12s ease;
 }
-.xt-cmd-item:hover { background: var(--surface-alt); }
+.xt-cmd-item:hover, .xt-cmd-item.is-selected {
+  background: var(--surface-alt);
+}
+.xt-cmd-item.is-selected {
+  outline: 1.5px solid var(--accent, #6366f1);
+  outline-offset: -1.5px;
+}
+.xt-cmd-item.is-active .xt-cmd-text strong {
+  color: var(--accent, #6366f1);
+}
 .xt-cmd-text strong { display: block; font-size: 12px; color: var(--text); }
 .xt-cmd-text span { font-size: 10.5px; color: var(--text-muted); }
+
+.xt-cmd-badge {
+  margin-left: auto;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--accent-soft, rgba(99, 102, 241, 0.15));
+  color: var(--accent, #6366f1);
+  white-space: nowrap;
+  border: 1px solid rgba(99, 102, 241, 0.25);
+}
+
+/* Toast notification inside Extension Popup */
+.kz-popup-toast {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  opacity: 0;
+  background: var(--surface-elevated, #1e293b);
+  color: var(--text, #f8fafc);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 20px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(8px);
+  z-index: 10000;
+  pointer-events: none;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.15));
+}
+.kz-popup-toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
